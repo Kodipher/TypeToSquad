@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://cbv2fdlo75sbm"]
+
+[node name="MessageInput" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="MessageContainer" type="MarginContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TextEdit" type="TextEdit" parent="HBox/MessageContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "(Message)"
+wrap_mode = 1
+caret_blink = true
+
+[node name="SpeechButtonContainer" type="CenterContainer" parent="HBox"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="HBox/SpeechButtonContainer"]
+layout_mode = 2
+
+[node name="ButtonSpeak" type="Button" parent="HBox/SpeechButtonContainer/VBox"]
+layout_mode = 2
+text = "Speak"
+
+[node name="ButtonShut" type="Button" parent="HBox/SpeechButtonContainer/VBox"]
+layout_mode = 2
+text = "Shut"
+
+[node name="ButtonConfig" type="Button" parent="HBox"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "Cfg."

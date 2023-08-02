@@ -1,11 +1,7 @@
-[gd_scene format=3 uid="uid://cbv2fdlo75sbm"]
+[gd_scene load_steps=2 format=3 uid="uid://df5acmri3n8y2"]
 
-[node name="Root" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+[ext_resource type="PackedScene" uid="uid://cbv2fdlo75sbm" path="res://scenes/message_input.tscn" id="1_wn37n"]
+
+[node name="Main" type="Node"]
+
+[node name="MessageInput" parent="." instance=ExtResource("1_wn37n")]
