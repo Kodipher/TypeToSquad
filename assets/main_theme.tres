@@ -1,0 +1,52 @@
+[gd_resource type="Theme" load_steps=12 format=3 uid="uid://bivjfrxqw5eu3"]
+
+[ext_resource type="SystemFont" uid="uid://e8cxtogl1ies" path="res://assets/fnt_arial.tres" id="1_inatb"]
+[ext_resource type="StyleBox" uid="uid://dmfuw7vfhjh8d" path="res://assets/stlb_button_base.tres" id="3_r43sc"]
+[ext_resource type="StyleBox" uid="uid://cfshufro1ngka" path="res://assets/stlb_button_hover.tres" id="4_xex63"]
+[ext_resource type="StyleBox" uid="uid://dbqac263lm5ii" path="res://assets/stlb_button_click.tres" id="5_bdalh"]
+[ext_resource type="StyleBox" uid="uid://dke5oqsheuhml" path="res://assets/stlb_panel.tres" id="5_w4a1y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdfv8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t4poj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hls25"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xe8p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2do5l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tyoll"]
+
+[resource]
+default_font = ExtResource("1_inatb")
+default_font_size = 16
+Button/font_sizes/font_size = 16
+Button/fonts/font = ExtResource("1_inatb")
+Button/styles/focus = SubResource("StyleBoxEmpty_hdfv8")
+Button/styles/hover = ExtResource("4_xex63")
+Button/styles/normal = ExtResource("3_r43sc")
+Button/styles/pressed = ExtResource("5_bdalh")
+Fonts/fonts/large = ExtResource("1_inatb")
+Fonts/fonts/normal = ExtResource("1_inatb")
+HBoxContainer/constants/separation = 8
+Label/font_sizes/font_size = 16
+Label/fonts/font = ExtResource("1_inatb")
+Label/styles/normal = SubResource("StyleBoxEmpty_t4poj")
+LineEdit/colors/selection_color = Color(0, 0.6, 1, 0.8)
+LineEdit/font_sizes/font_size = 16
+LineEdit/fonts/font = ExtResource("1_inatb")
+LineEdit/styles/focus = SubResource("StyleBoxEmpty_hls25")
+LineEdit/styles/normal = SubResource("StyleBoxEmpty_1xe8p")
+MarginContainer/constants/margin_bottom = 8
+MarginContainer/constants/margin_left = 8
+MarginContainer/constants/margin_right = 8
+MarginContainer/constants/margin_top = 8
+Panel/styles/panel = ExtResource("5_w4a1y")
+TextEdit/colors/background_color = Color(0, 0, 0, 0)
+TextEdit/colors/selection_color = Color(0, 0.6, 1, 0.8)
+TextEdit/font_sizes/font_size = 16
+TextEdit/fonts/font = ExtResource("1_inatb")
+TextEdit/styles/focus = SubResource("StyleBoxEmpty_2do5l")
+TextEdit/styles/normal = SubResource("StyleBoxEmpty_tyoll")
+VBoxContainer/constants/separation = 8

@@ -32,3 +32,7 @@ project/assembly_name="Type To Sqaud"
 [physics]
 
 common/physics_ticks_per_second=30
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
