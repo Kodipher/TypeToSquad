@@ -21,14 +21,14 @@ public partial class MessageEdit : TextEdit {
 
 		speakButton = GetNode<Button>("%ButtonSpeak");
 		shutButton = GetNode<Button>("%ButtonShut");
-		infoButton = GetNode<Button>("%ButtonConfig");
-		configButton = GetNode<Button>("%ButtonInfo");
+		configButton = GetNode<Button>("%ButtonConfig");
+		infoButton = GetNode<Button>("%ButtonInfo");
 
 		interceptedKeysToButtons = new Dictionary<Key, Button>() {
 			{ Key.Enter, speakButton },	// Has separate handling
 			{ Key.Escape, shutButton },
-			{ Key.F1, infoButton },
-			{ Key.F2, configButton }
+			{ Key.F2, configButton },
+			{ Key.F1, infoButton }
 		};
 
 	}
