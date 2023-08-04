@@ -1,11 +1,10 @@
 using Godot;
-using System;
 
 
-namespace Scenes.MessageInput;
+namespace Scenes.MessagePanel;
 
 
-public partial class MessageInput : Control {
+public partial class MessagePanel : Control {
 
 	
 	public override void _Ready() {

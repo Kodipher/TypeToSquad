@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://cbv2fdlo75sbm"]
 
-[ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/main_theme.tres" id="1_1ko61"]
-[ext_resource type="Script" path="res://Scenes/MessageInput/MessageInput.cs" id="2_3yjso"]
-[ext_resource type="Script" path="res://Scenes/MessageInput/MessageEdit.cs" id="2_f41vl"]
+[ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/main_theme.tres" id="1_6me0l"]
+[ext_resource type="Script" path="res://Scenes/MessagePanel/MessagePanel.cs" id="2_uit8t"]
+[ext_resource type="Script" path="res://Scenes/MessagePanel/MessageEdit.cs" id="3_8x5v2"]
 
-[node name="MessageInput" type="Control"]
+[node name="MessagePanel" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,8 +13,8 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = ExtResource("1_1ko61")
-script = ExtResource("2_3yjso")
+theme = ExtResource("1_6me0l")
+script = ExtResource("2_uit8t")
 
 [node name="Background" type="Panel" parent="."]
 layout_mode = 1
@@ -25,7 +25,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 theme_type_variation = &"PanelDark"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -35,17 +35,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 
 [node name="VBox" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 alignment = 1
 
 [node name="Panel" type="Panel" parent="MarginContainer/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 
 [node name="MessageEdit" type="TextEdit" parent="MarginContainer/VBox/Panel"]
 unique_name_in_owner = true
@@ -56,30 +56,30 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 placeholder_text = "(Message)"
 wrap_mode = 1
 caret_blink = true
-script = ExtResource("2_f41vl")
+script = ExtResource("3_8x5v2")
 
 [node name="ButtonsBox" type="HBoxContainer" parent="MarginContainer/VBox"]
 layout_mode = 2
 size_flags_vertical = 8
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 alignment = 1
 
 [node name="ButtonSpeak" type="Button" parent="MarginContainer/VBox/ButtonsBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 text = "Speak"
 
 [node name="ButtonShut" type="Button" parent="MarginContainer/VBox/ButtonsBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 text = "Shut"
 
 [node name="ButtonConfig" type="Button" parent="MarginContainer/VBox/ButtonsBox"]
@@ -87,7 +87,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 text = "[c]"
 
 [node name="ButtonInfo" type="Button" parent="MarginContainer/VBox/ButtonsBox"]
@@ -95,6 +95,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
-theme = ExtResource("1_1ko61")
+theme = ExtResource("1_6me0l")
 text = "[i]
 "

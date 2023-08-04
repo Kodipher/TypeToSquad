@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 
 
-namespace Scenes.MessageInput;
+namespace Scenes.MessagePanel;
 
 
 public partial class MessageEdit : TextEdit {
