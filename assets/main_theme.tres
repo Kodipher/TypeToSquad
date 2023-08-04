@@ -4,7 +4,9 @@
 [ext_resource type="StyleBox" uid="uid://dmfuw7vfhjh8d" path="res://assets/stlb_button_base.tres" id="3_r43sc"]
 [ext_resource type="StyleBox" uid="uid://cfshufro1ngka" path="res://assets/stlb_button_hover.tres" id="4_xex63"]
 [ext_resource type="StyleBox" uid="uid://dbqac263lm5ii" path="res://assets/stlb_button_click.tres" id="5_bdalh"]
+[ext_resource type="StyleBox" uid="uid://dd1w4rlvdl5r3" path="res://assets/stlb_panel_dark.tres" id="5_ly5sc"]
 [ext_resource type="StyleBox" uid="uid://dke5oqsheuhml" path="res://assets/stlb_panel.tres" id="5_w4a1y"]
+[ext_resource type="StyleBox" uid="uid://181g14a61sno" path="res://assets/stlb_panel_mid.tres" id="7_hcfwu"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdfv8"]
 
@@ -12,11 +14,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hls25"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xe8p"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2do5l"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tyoll"]
 
 [resource]
 default_font = ExtResource("1_inatb")
@@ -37,16 +35,21 @@ LineEdit/colors/selection_color = Color(0, 0.6, 1, 0.8)
 LineEdit/font_sizes/font_size = 16
 LineEdit/fonts/font = ExtResource("1_inatb")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_hls25")
-LineEdit/styles/normal = SubResource("StyleBoxEmpty_1xe8p")
+LineEdit/styles/normal = ExtResource("5_w4a1y")
 MarginContainer/constants/margin_bottom = 8
 MarginContainer/constants/margin_left = 8
 MarginContainer/constants/margin_right = 8
 MarginContainer/constants/margin_top = 8
 Panel/styles/panel = ExtResource("5_w4a1y")
+PanelDark/base_type = &"Panel"
+PanelDark/styles/panel = ExtResource("5_ly5sc")
+PopupMenu/fonts/font = ExtResource("1_inatb")
+PopupMenu/styles/hover = ExtResource("4_xex63")
+PopupMenu/styles/panel = ExtResource("7_hcfwu")
 TextEdit/colors/background_color = Color(0, 0, 0, 0)
 TextEdit/colors/selection_color = Color(0, 0.6, 1, 0.8)
 TextEdit/font_sizes/font_size = 16
 TextEdit/fonts/font = ExtResource("1_inatb")
 TextEdit/styles/focus = SubResource("StyleBoxEmpty_2do5l")
-TextEdit/styles/normal = SubResource("StyleBoxEmpty_tyoll")
+TextEdit/styles/normal = ExtResource("5_w4a1y")
 VBoxContainer/constants/separation = 8

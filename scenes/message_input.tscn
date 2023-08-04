@@ -2,9 +2,8 @@
 
 [ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/main_theme.tres" id="1_khna2"]
 
-[node name="MessageInput" type="Node"]
-
-[node name="Background" type="Panel" parent="."]
+[node name="MessageInput" type="Control"]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,8 +11,21 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("1_khna2")
 
-[node name="GlobalMargin" type="MarginContainer" parent="Background"]
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_khna2")
+theme_type_variation = &"PanelDark"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,57 +34,60 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_khna2")
 
-[node name="VBox" type="VBoxContainer" parent="Background/GlobalMargin"]
+[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme = ExtResource("1_khna2")
 alignment = 1
 
-[node name="Panel" type="Panel" parent="Background/GlobalMargin/VBox"]
+[node name="Panel" type="Panel" parent="MarginContainer/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
+theme = ExtResource("1_khna2")
 
-[node name="MarginContainer" type="MarginContainer" parent="Background/GlobalMargin/VBox/Panel"]
+[node name="MessageEdit" type="TextEdit" parent="MarginContainer/VBox/Panel"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="MessageEdit" type="TextEdit" parent="Background/GlobalMargin/VBox/Panel/MarginContainer"]
-layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_khna2")
 placeholder_text = "(Message)"
 wrap_mode = 1
 caret_blink = true
 
-[node name="ButtonsBox" type="HBoxContainer" parent="Background/GlobalMargin/VBox"]
+[node name="ButtonsBox" type="HBoxContainer" parent="MarginContainer/VBox"]
 layout_mode = 2
 size_flags_vertical = 8
 theme = ExtResource("1_khna2")
 alignment = 1
 
-[node name="ButtonSpeak" type="Button" parent="Background/GlobalMargin/VBox/ButtonsBox"]
+[node name="ButtonSpeak" type="Button" parent="MarginContainer/VBox/ButtonsBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_khna2")
 text = "Speak"
 
-[node name="ButtonShut" type="Button" parent="Background/GlobalMargin/VBox/ButtonsBox"]
+[node name="ButtonShut" type="Button" parent="MarginContainer/VBox/ButtonsBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_khna2")
 text = "Shut"
 
-[node name="ButtonConfig" type="Button" parent="Background/GlobalMargin/VBox/ButtonsBox"]
+[node name="ButtonConfig" type="Button" parent="MarginContainer/VBox/ButtonsBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 theme = ExtResource("1_khna2")
 text = "[c]"
 
-[node name="ButtonInfo" type="Button" parent="Background/GlobalMargin/VBox/ButtonsBox"]
+[node name="ButtonInfo" type="Button" parent="MarginContainer/VBox/ButtonsBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
