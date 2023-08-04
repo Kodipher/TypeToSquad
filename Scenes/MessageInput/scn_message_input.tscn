@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://cbv2fdlo75sbm"]
+[gd_scene load_steps=4 format=3 uid="uid://cbv2fdlo75sbm"]
 
 [ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/main_theme.tres" id="1_1ko61"]
+[ext_resource type="Script" path="res://Scenes/MessageInput/MessageInput.cs" id="2_3yjso"]
 [ext_resource type="Script" path="res://Scenes/MessageInput/MessageEdit.cs" id="2_f41vl"]
 
 [node name="MessageInput" type="Control"]
@@ -13,6 +14,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("1_1ko61")
+script = ExtResource("2_3yjso")
 
 [node name="Background" type="Panel" parent="."]
 layout_mode = 1
