@@ -1,7 +1,7 @@
 using Godot;
 
 
-namespace Scenes.MessagePanel;
+namespace Panels.Message;
 
 
 public partial class MessagePanel : Control {

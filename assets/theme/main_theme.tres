@@ -1,12 +1,12 @@
 [gd_resource type="Theme" load_steps=12 format=3 uid="uid://bivjfrxqw5eu3"]
 
 [ext_resource type="SystemFont" uid="uid://e8cxtogl1ies" path="res://assets/fnt_arial.tres" id="1_inatb"]
-[ext_resource type="StyleBox" uid="uid://dmfuw7vfhjh8d" path="res://assets/stlb_button_base.tres" id="3_r43sc"]
-[ext_resource type="StyleBox" uid="uid://cfshufro1ngka" path="res://assets/stlb_button_hover.tres" id="4_xex63"]
-[ext_resource type="StyleBox" uid="uid://dbqac263lm5ii" path="res://assets/stlb_button_click.tres" id="5_bdalh"]
-[ext_resource type="StyleBox" uid="uid://dd1w4rlvdl5r3" path="res://assets/stlb_panel_dark.tres" id="5_ly5sc"]
-[ext_resource type="StyleBox" uid="uid://dke5oqsheuhml" path="res://assets/stlb_panel.tres" id="5_w4a1y"]
-[ext_resource type="StyleBox" uid="uid://181g14a61sno" path="res://assets/stlb_panel_mid.tres" id="7_hcfwu"]
+[ext_resource type="StyleBox" uid="uid://dmfuw7vfhjh8d" path="res://assets/theme/stlb_button_base.tres" id="3_r43sc"]
+[ext_resource type="StyleBox" uid="uid://cfshufro1ngka" path="res://assets/theme/stlb_button_hover.tres" id="4_xex63"]
+[ext_resource type="StyleBox" uid="uid://dbqac263lm5ii" path="res://assets/theme/stlb_button_click.tres" id="5_bdalh"]
+[ext_resource type="StyleBox" uid="uid://dd1w4rlvdl5r3" path="res://assets/theme/stlb_panel_dark.tres" id="5_ly5sc"]
+[ext_resource type="StyleBox" uid="uid://dke5oqsheuhml" path="res://assets/theme/stlb_panel.tres" id="5_w4a1y"]
+[ext_resource type="StyleBox" uid="uid://181g14a61sno" path="res://assets/theme/stlb_panel_mid.tres" id="7_hcfwu"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdfv8"]
 
