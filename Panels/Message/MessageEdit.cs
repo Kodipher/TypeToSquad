@@ -16,8 +16,8 @@ public partial class MessageEdit : TextEdit {
 
 
 	public override void _Ready() {
-		SetProcessInput(true);
 
+		// Find buttons
 		speakButton = GetNode<Button>("%ButtonSpeak");
 		shutButton = GetNode<Button>("%ButtonShut");
 		configButton = GetNode<Button>("%ButtonConfig");
@@ -30,6 +30,11 @@ public partial class MessageEdit : TextEdit {
 			{ Key.F1, infoButton }
 		};
 
+		// Change menu options
+		PopupMenu contextMenu = GetMenu();
+		contextMenu.RemoveItem(contextMenu.GetItemIndex((int)MenuItems.DisplayUcc));
+		contextMenu.RemoveItem(contextMenu.GetItemIndex((int)MenuItems.SubmenuInsertUcc));
+		contextMenu.RemoveItem(contextMenu.GetItemIndex((int)MenuItems.SubmenuTextDir));
 	}
 
 	public override void _GuiInput(InputEvent @event) {
