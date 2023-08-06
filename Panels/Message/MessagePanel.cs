@@ -1,7 +1,7 @@
 using Godot;
 
 
-namespace Panels.Message;
+namespace Kodipher.TypeToSqaud.Panels.Message;
 
 
 public partial class MessagePanel : Control {

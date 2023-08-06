@@ -2,11 +2,10 @@ using Godot;
 using System.Collections.Generic;
 
 
-namespace Panels.Message;
+namespace Kodipher.TypeToSqaud.Panels.Message;
 
 
 public partial class MessageEdit : TextEdit {
-
 
 	Button speakButton;
 	Button shutButton;
