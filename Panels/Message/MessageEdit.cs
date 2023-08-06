@@ -7,34 +7,53 @@ namespace Kodipher.TypeToSqaud.Panels.Message;
 
 public partial class MessageEdit : TextEdit {
 
-	Button speakButton;
-	Button shutButton;
-	Button infoButton;
-	Button configButton;
+	#region //// Signals and Exports
 
-	Dictionary<Key, Button> interceptedKeysToButtons;
+	[Signal]
+	public delegate void SpeakRequestedEventHandler();
 
+	[Signal]
+	public delegate void ShutRequestedEventHandler();
 
-	public override void _Ready() {
+	[Signal]
+	public delegate void ConfigRequestedEventHandler();
 
-		// Find buttons
-		speakButton = GetNode<Button>("%ButtonSpeak");
-		shutButton = GetNode<Button>("%ButtonShut");
-		configButton = GetNode<Button>("%ButtonConfig");
-		infoButton = GetNode<Button>("%ButtonInfo");
+	[Signal]
+	public delegate void InfoRequestedEventHandler();
 
-		interceptedKeysToButtons = new Dictionary<Key, Button>() {
-			{ Key.Enter, speakButton },	// Has separate handling
-			{ Key.Escape, shutButton },
-			{ Key.F2, configButton },
-			{ Key.F1, infoButton }
-		};
+	[Signal]
+	public delegate void HistoryPreviousRequestedEventHandler();
 
-		// Change menu options
+	[Signal]
+	public delegate void HistoryNextRequestedEventHandler();
+
+	static readonly Dictionary<Key, StringName> keyToSignalMapping = new() {
+		{ Key.Escape, SignalName.ShutRequested },
+		{ Key.F2, SignalName.ConfigRequested },
+		{ Key.F1, SignalName.InfoRequested },
+		{ Key.Up, SignalName.HistoryPreviousRequested },
+		{ Key.Down, SignalName.HistoryNextRequested },
+
+		// Has separate handling but included for .Keys
+		{ Key.Enter, SignalName.SpeakRequested },
+		{ Key.KpEnter, SignalName.SpeakRequested },
+	};
+
+	#endregion
+
+	#region //// Context Menu
+
+	public void SetupContextMenu() {
 		PopupMenu contextMenu = GetMenu();
 		contextMenu.RemoveItem(contextMenu.GetItemIndex((int)MenuItems.DisplayUcc));
 		contextMenu.RemoveItem(contextMenu.GetItemIndex((int)MenuItems.SubmenuInsertUcc));
 		contextMenu.RemoveItem(contextMenu.GetItemIndex((int)MenuItems.SubmenuTextDir));
+	}
+
+	#endregion
+
+	public override void _Ready() {
+		SetupContextMenu();
 	}
 
 	public override void _GuiInput(InputEvent @event) {
@@ -62,7 +81,7 @@ public partial class MessageEdit : TextEdit {
 
 			} else {
 				// Otherwise speak the message
-				speakButton.EmitSignal(Button.SignalName.Pressed);
+				EmitSignal(SignalName.SpeakRequested);
 
 			}
 
@@ -71,8 +90,8 @@ public partial class MessageEdit : TextEdit {
 		}
 
 		// Handle other buttons
-		if (interceptedKeysToButtons.TryGetValue(eventKey.Keycode, out Button buttonToPress)) {
-			buttonToPress.EmitSignal(Button.SignalName.Pressed);
+		if (keyToSignalMapping.TryGetValue(eventKey.Keycode, out StringName signalToEmit)) {
+			EmitSignal(signalToEmit);
 			AcceptEvent();
 			return;
 		}
