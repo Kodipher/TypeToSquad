@@ -1,4 +1,5 @@
 using Godot;
+using Kodipher.TypeToSqaud.Utils.Godot;
 
 
 namespace Kodipher.TypeToSqaud.Panels.Message;
@@ -52,10 +53,7 @@ public partial class MessagePanel : Control {
 
 		// Set message
 		MessageEditNode.Text = text;
-
-		var lastLineIndex = MessageEditNode.GetLineCount() - 1;
-		MessageEditNode.SetCaretLine(lastLineIndex);
-		MessageEditNode.SetCaretColumn(MessageEditNode.GetLine(lastLineIndex).Length);
+		MessageEditNode.SetCaretPositionToEnd();
 		MessageEditNode.MergeOverlappingCarets();
 	}
 
