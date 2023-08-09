@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://uoy1x1fxjxu4"]
+[gd_scene load_steps=3 format=3 uid="uid://uoy1x1fxjxu4"]
 
 [ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/theme/main_theme.tres" id="1_gl3nq"]
 
@@ -31,6 +31,8 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBox/Tabs/Output/VBoxContainer/HBoxVoice"]
 layout_mode = 2
 size_flags_horizontal = 2
+tooltip_text = "Voice to use when synthesising text"
+mouse_filter = 1
 text = "Voice"
 
 [node name="VoiceSelection" type="OptionButton" parent="VBox/Tabs/Output/VBoxContainer/HBoxVoice"]
@@ -58,6 +60,8 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBox/Tabs/Output/VBoxContainer/HBoxDevice"]
 layout_mode = 2
 size_flags_horizontal = 2
+tooltip_text = "The device to forward synthesised voice to"
+mouse_filter = 1
 text = "Output Device"
 
 [node name="DeviceSelection" type="OptionButton" parent="VBox/Tabs/Output/VBoxContainer/HBoxDevice"]
