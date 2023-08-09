@@ -1,6 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://uoy1x1fxjxu4"]
 
 [ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/theme/main_theme.tres" id="1_gl3nq"]
+[ext_resource type="Script" path="res://Panels/Config/ConfigPanel.cs" id="2_rbxur"]
 
 [node name="ConfigPanel" type="PanelContainer"]
 anchors_preset = 15
@@ -10,6 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_gl3nq")
 theme_type_variation = &"PanelContainerDark"
+script = ExtResource("2_rbxur")
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -88,14 +90,10 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 
-[node name="ButtonApply" type="Button" parent="VBox/HBox"]
+[node name="ButtonClose" type="Button" parent="VBox/HBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
-text = "Apply"
-
-[node name="ButtonCancel" type="Button" parent="VBox/HBox"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-text = "Cancel"
+text = "Save and Close
+"
