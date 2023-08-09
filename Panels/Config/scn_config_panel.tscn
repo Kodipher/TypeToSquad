@@ -1,0 +1,97 @@
+[gd_scene load_steps=2 format=3 uid="uid://uoy1x1fxjxu4"]
+
+[ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/theme/main_theme.tres" id="1_gl3nq"]
+
+[node name="ConfigPanel" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_gl3nq")
+theme_type_variation = &"PanelContainerDark"
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Tabs" type="TabContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Output" type="ScrollContainer" parent="VBox/Tabs"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBox/Tabs/Output"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxVoice" type="HBoxContainer" parent="VBox/Tabs/Output/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBox/Tabs/Output/VBoxContainer/HBoxVoice"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Voice"
+
+[node name="VoiceSelection" type="OptionButton" parent="VBox/Tabs/Output/VBoxContainer/HBoxVoice"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 5
+selected = 0
+allow_reselect = true
+popup/item_0/text = "None"
+popup/item_0/id = 0
+popup/item_1/text = ""
+popup/item_1/id = 1
+popup/item_1/separator = true
+popup/item_2/text = "TestItem1"
+popup/item_2/id = 2
+popup/item_3/text = "TestItem2"
+popup/item_3/id = 3
+popup/item_4/text = "TestItem3 That is a very long name"
+popup/item_4/id = 4
+
+[node name="HBoxDevice" type="HBoxContainer" parent="VBox/Tabs/Output/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBox/Tabs/Output/VBoxContainer/HBoxDevice"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Output Device"
+
+[node name="DeviceSelection" type="OptionButton" parent="VBox/Tabs/Output/VBoxContainer/HBoxDevice"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 5
+selected = 0
+allow_reselect = true
+popup/item_0/text = "Default"
+popup/item_0/id = 0
+popup/item_1/text = ""
+popup/item_1/id = 1
+popup/item_1/separator = true
+popup/item_2/text = "TestItem1"
+popup/item_2/id = 2
+popup/item_3/text = "TestItem2"
+popup/item_3/id = 3
+popup/item_4/text = "TestItem3 That is a very long name"
+popup/item_4/id = 4
+
+[node name="HBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+
+[node name="ButtonApply" type="Button" parent="VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "Apply"
+
+[node name="ButtonCancel" type="Button" parent="VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Cancel"
