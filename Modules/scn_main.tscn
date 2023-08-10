@@ -1,19 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://df5acmri3n8y2"]
+[gd_scene load_steps=3 format=3 uid="uid://df5acmri3n8y2"]
 
+[ext_resource type="Script" path="res://Modules/WindowManager.cs" id="1_06c6e"]
 [ext_resource type="PackedScene" uid="uid://cbv2fdlo75sbm" path="res://Panels/Message/scn_message_panel.tscn" id="1_ohmn3"]
-[ext_resource type="PackedScene" uid="uid://uoy1x1fxjxu4" path="res://Panels/Config/scn_config_panel.tscn" id="2_6lllm"]
-[ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/theme/main_theme.tres" id="2_n8jhk"]
 
 [node name="Main" type="Node"]
 
+[node name="WindowManager" type="Node" parent="."]
+script = ExtResource("1_06c6e")
+
 [node name="MessagePanel" parent="." instance=ExtResource("1_ohmn3")]
-
-[node name="ConfigWindow" type="Window" parent="."]
-title = "Configue"
-initial_position = 2
-size = Vector2i(600, 300)
-transient = true
-min_size = Vector2i(160, 90)
-theme = ExtResource("2_n8jhk")
-
-[node name="ConfigPanelWindow" parent="ConfigWindow" instance=ExtResource("2_6lllm")]
+unique_name_in_owner = true
