@@ -59,7 +59,6 @@ public partial class MessagePanel : Control {
 
 	#endregion
 
-
 	public override void _Ready() {
 
 		// Find message and connect message edit

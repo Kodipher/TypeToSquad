@@ -86,6 +86,11 @@ public partial class WindowManager : Node {
 
 	#region //// Window creation and destruction
 
+	/// <summary>
+	/// Creates a specific window.
+	/// If the window is already created it grabs focus instead.
+	/// </summary>
+	/// <param name="windowType"></param>
 	public void CreateWindow(Windows windowType) {
 
 		WindowInfo infoRef = windowData[windowType];
@@ -122,6 +127,10 @@ public partial class WindowManager : Node {
 
 	}
 
+	/// <summary>
+	/// Destroys specified window.
+	/// </summary>
+	/// <param name="windowType"></param>
 	public void DestroyWindow(Windows windowType) {
 		WindowInfo infoRef = windowData[windowType];
 		if (infoRef.IsCreated) {
