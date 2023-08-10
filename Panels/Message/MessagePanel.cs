@@ -1,5 +1,5 @@
 using Godot;
-using Kodipher.TypeToSqaud.Utils.Godot;
+using Kodipher.TypeToSqaud.Utils;
 
 
 namespace Kodipher.TypeToSqaud.Panels.Message;

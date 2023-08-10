@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Godot;
 using Kodipher.TypeToSqaud.Panels.Message;
 using Kodipher.TypeToSqaud.Panels.Config;
-using Kodipher.TypeToSqaud.Utils.Collections;
+using Kodipher.TypeToSqaud.Utils;
 
 
 namespace Kodipher.TypeToSqaud.Modules;
