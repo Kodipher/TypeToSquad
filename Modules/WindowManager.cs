@@ -86,11 +86,6 @@ public partial class WindowManager : Node {
 
 	#region //// Window creation and destruction
 
-	void ConnectCreationHandlers() {
-		var messagePanel = GetNode<MessagePanel>("%MessagePanel");
-		messagePanel.ConfigRequested += delegate () { CreateWindow(Windows.Config); };
-	}
-
 	public void CreateWindow(Windows windowType) {
 
 		WindowInfo infoRef = windowData[windowType];
@@ -146,9 +141,6 @@ public partial class WindowManager : Node {
 
 		// Finish info
 		ConfigureInitMethods();
-
-		// Connect creations
-		ConnectCreationHandlers();
 
 	}
 
