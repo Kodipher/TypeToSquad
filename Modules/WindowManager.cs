@@ -41,7 +41,7 @@ public partial class WindowManager : Node {
 
 	#endregion
 
-	#region //// Window storage and configuration
+	#region //// Window storage and settings
 
 	readonly static Theme main_theme = GD.Load<Theme>("res://assets/theme/main_theme.tres");
 
@@ -63,13 +63,20 @@ public partial class WindowManager : Node {
 
 		windowData[Windows.Config].InitMethod = delegate (Window windowRef, Node panelRef) {
 
+			ConfigPanel configPanelRef = (panelRef as ConfigPanel)!;
+
+			// Give config reference
+			var configRef = configManager.CurrentConfig;
+			configPanelRef.Ready += delegate { configPanelRef.PropogateConfigurationReference(configRef); };
+
+			// Closing window
 			void ConfigSaveAndClose() {
+				configManager.SaveCurrentConfig();
 				DestroyWindow(Windows.Config);
-				GD.Print("TODO Config saved");
 			};
 
 			windowRef.CloseRequested += ConfigSaveAndClose;
-			(panelRef as ConfigPanel)!.ClosePressed += ConfigSaveAndClose;
+			configPanelRef.ClosePressed += ConfigSaveAndClose;
 
 		};
 
@@ -130,7 +137,12 @@ public partial class WindowManager : Node {
 
 	#endregion
 
+	ConfigurationManager configManager = default!;
+
 	public override void _Ready() {
+
+		// Find related nodes
+		configManager = GetNode<ConfigurationManager>("%ConfigurationManager");
 
 		// Finish info
 		ConfigureInitMethods();

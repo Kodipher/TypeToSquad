@@ -1,11 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://df5acmri3n8y2"]
+[gd_scene load_steps=4 format=3 uid="uid://df5acmri3n8y2"]
 
 [ext_resource type="Script" path="res://Modules/WindowManager.cs" id="1_06c6e"]
+[ext_resource type="Script" path="res://Modules/ConfigurationManager.cs" id="1_nmrey"]
 [ext_resource type="PackedScene" uid="uid://cbv2fdlo75sbm" path="res://Panels/Message/scn_message_panel.tscn" id="1_ohmn3"]
 
 [node name="Main" type="Node"]
 
+[node name="ConfigurationManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("1_nmrey")
+
 [node name="WindowManager" type="Node" parent="."]
+unique_name_in_owner = true
 script = ExtResource("1_06c6e")
 
 [node name="MessagePanel" parent="." instance=ExtResource("1_ohmn3")]
