@@ -15,7 +15,7 @@ public partial class ConfigPanel : Control {
 
 	#endregion
 
-	public void PropogateConfigurationReference(ConfigurationManager.Configuration configuration) {
+	public void PropogateConfigurationReference(Configuration configuration) {
 
 		// Ready guard
 		if (!IsNodeReady()) {
