@@ -5,7 +5,7 @@ using System.Speech.Synthesis;
 using NAudio.CoreAudioApi;
 
 
-namespace Kodipher.TypeToSqaud.Modules;
+namespace Kodipher.TypeToSqaud.Modules.Speech;
 
 
 [System.Runtime.Versioning.SupportedOSPlatform("Windows")]

@@ -1,6 +1,6 @@
 using Godot;
 using System;
-using Kodipher.TypeToSqaud.Modules;
+using Kodipher.TypeToSqaud.Modules.Configuration;
 
 
 namespace Kodipher.TypeToSqaud.Panels.Config;

@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://Modules/MainController.cs" id="1_3ra4b"]
 [ext_resource type="Script" path="res://Modules/WindowManager.cs" id="1_06c6e"]
-[ext_resource type="Script" path="res://Modules/ConfigurationManager.cs" id="1_nmrey"]
+[ext_resource type="Script" path="res://Modules/Configuration/ConfigurationManager.cs" id="1_nmrey"]
 [ext_resource type="PackedScene" uid="uid://cbv2fdlo75sbm" path="res://Panels/Message/scn_message_panel.tscn" id="1_ohmn3"]
-[ext_resource type="Script" path="res://Modules/SpeechController.cs" id="2_d45tt"]
+[ext_resource type="Script" path="res://Modules/Speech/SpeechController.cs" id="2_d45tt"]
 
 [node name="MainController" type="Node"]
 script = ExtResource("1_3ra4b")
