@@ -22,8 +22,9 @@ public partial class ConfigPanel : Control {
 			throw new InvalidOperationException("Cannot propogate configuration: Node is not ready.");
 		}
 
-		//TODO
-		GD.Print($"[TODO] Propogating config reference");
+		// Give out field references
+		GetNode<ConfiguationFieldButton>("%VoiceSelection").SetFieldReference(configuration.Voice);
+		GetNode<ConfiguationFieldButton>("%DeviceSelection").SetFieldReference(configuration.Device);
 	}
 
 	public override void _Ready() {

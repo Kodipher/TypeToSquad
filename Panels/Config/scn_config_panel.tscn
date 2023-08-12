@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://uoy1x1fxjxu4"]
+[gd_scene load_steps=4 format=3 uid="uid://uoy1x1fxjxu4"]
 
 [ext_resource type="Theme" uid="uid://bivjfrxqw5eu3" path="res://assets/theme/main_theme.tres" id="1_gl3nq"]
 [ext_resource type="Script" path="res://Panels/Config/ConfigPanel.cs" id="2_rbxur"]
+[ext_resource type="Script" path="res://Panels/Config/ConfiguationFieldButton.cs" id="3_j1l8y"]
 
 [node name="ConfigPanel" type="PanelContainer"]
 anchors_preset = 15
@@ -23,21 +24,20 @@ size_flags_vertical = 3
 [node name="Output" type="ScrollContainer" parent="VBox/Tabs"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBox/Tabs/Output"]
+[node name="GridContainer" type="GridContainer" parent="VBox/Tabs/Output"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
 
-[node name="HBoxVoice" type="HBoxContainer" parent="VBox/Tabs/Output/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBox/Tabs/Output/VBoxContainer/HBoxVoice"]
+[node name="VoiceLabel" type="Label" parent="VBox/Tabs/Output/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 2
 tooltip_text = "Voice to use when synthesising text"
 mouse_filter = 1
 text = "Voice"
 
-[node name="VoiceSelection" type="OptionButton" parent="VBox/Tabs/Output/VBoxContainer/HBoxVoice"]
+[node name="VoiceSelection" type="OptionButton" parent="VBox/Tabs/Output/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -55,18 +55,16 @@ popup/item_3/text = "TestItem2"
 popup/item_3/id = 3
 popup/item_4/text = "TestItem3 That is a very long name"
 popup/item_4/id = 4
+script = ExtResource("3_j1l8y")
 
-[node name="HBoxDevice" type="HBoxContainer" parent="VBox/Tabs/Output/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBox/Tabs/Output/VBoxContainer/HBoxDevice"]
+[node name="DeviceLabel" type="Label" parent="VBox/Tabs/Output/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 2
 tooltip_text = "The device to forward synthesised voice to"
 mouse_filter = 1
 text = "Output Device"
 
-[node name="DeviceSelection" type="OptionButton" parent="VBox/Tabs/Output/VBoxContainer/HBoxDevice"]
+[node name="DeviceSelection" type="OptionButton" parent="VBox/Tabs/Output/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -84,6 +82,7 @@ popup/item_3/text = "TestItem2"
 popup/item_3/id = 3
 popup/item_4/text = "TestItem3 That is a very long name"
 popup/item_4/id = 4
+script = ExtResource("3_j1l8y")
 
 [node name="HBox" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
