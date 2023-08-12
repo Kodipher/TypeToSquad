@@ -107,7 +107,8 @@ public partial class WindowManager : Node {
 
 		// Create the window
 		Window newWindow = new() {
-			Name = infoRef.WindowName,
+			Name = infoRef.NodeName,
+			Title = infoRef.WindowName,
 			Size = infoRef.WindowSize,
 			MinSize = new Vector2I(160, 90),
 			InitialPosition = Window.WindowInitialPosition.CenterMainWindowScreen,
