@@ -15,7 +15,7 @@ public class Field<T> {
 
 	protected T value;
 
-	public virtual void Set(T value) => this.value = ValidateOrDefault(value);
+	public virtual void Set(T value) => this.value = ValueForceValid(value);
 	public virtual T Get() => value;
 	public T Value { get => Get(); set => Set(value); }
 
@@ -25,7 +25,11 @@ public class Field<T> {
 
 	public Func<T> GetDefault { get; protected set; }
 
-	protected T ValidateOrDefault(T value) => IsValid(value) ? value : GetDefault();
+	/// <summary>
+	/// Returns given value if it is valid.
+	/// Otherwise returns a different, usually default.
+	/// </summary>
+	public virtual T ValueForceValid(T value) => IsValid(value) ? value : GetDefault();
 
 	public virtual bool IsValid(T value) => true;
 

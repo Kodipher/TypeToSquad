@@ -17,6 +17,12 @@ public class FieldIntRange : Field<int> {
 		return MinInclusive <= value && value <= MaxInclusive;
 	}
 
+	public override int ValueForceValid(int value) {
+		if (value < MinInclusive) return MinInclusive;
+		if (value > MaxInclusive) return MaxInclusive;
+		return value;
+	}
+
 	public FieldIntRange(int minInclusive, int maxInclusive, Func<int> getDefault) : base(getDefault) {
 		MinInclusive = minInclusive;
 		MaxInclusive = maxInclusive;
