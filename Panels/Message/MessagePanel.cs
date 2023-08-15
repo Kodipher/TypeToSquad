@@ -57,6 +57,16 @@ public partial class MessagePanel : Control {
 		MessageEditNode.MergeOverlappingCarets();
 	}
 
+	/// <summary>Returns current message edit text (essentially same as .MessageEditNode.Text)</summary>
+	public string GetMessageText() {
+
+		// Make sure we are ready
+		if (!IsNodeReady()) return "";
+
+		// Get message
+		return MessageEditNode.Text;
+	}
+
 	#endregion
 
 	public override void _Ready() {
