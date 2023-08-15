@@ -34,7 +34,7 @@ public partial class MessagePanel : Control {
 
 	#region //// Message
 
-	public MessageEdit MessageEditNode { get; private set; }
+	public MessageEdit MessageEditNode { get; private set; } = null!;
 
 	void OnSpeakPress() {
 		EmitSignal(SignalName.SpeakRequested, MessageEditNode.Text);
@@ -70,9 +70,11 @@ public partial class MessagePanel : Control {
 	#endregion
 
 	public override void _Ready() {
-
-		// Find message and connect message edit
+		
+		// Find related nodes
 		MessageEditNode = GetNode<MessageEdit>("%MessageEdit");
+
+		// Connect message edit signals
 		MessageEditNode.SpeakRequested += OnSpeakPress;
 		MessageEditNode.ShutRequested += delegate { EmitSignal(SignalName.ShutRequested); };
 		MessageEditNode.ConfigRequested += delegate { EmitSignal(SignalName.ConfigRequested); };

@@ -8,9 +8,6 @@ namespace Kodipher.TypeToSqaud.Modules.Speech;
 
 
 // Source: https://stackoverflow.com/questions/51811901/speechsynthesizer-doesnt-get-all-installed-voices-3
-
-#nullable enable
-
 public static class SpeechApiReflectionHelper {
 
 	private const string PROP_VOICE_SYNTHESIZER = "VoiceSynthesizer";
@@ -105,5 +102,3 @@ public static class SpeechApiReflectionHelper {
 	}
 
 }
-
-#nullable restore

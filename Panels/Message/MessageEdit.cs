@@ -90,7 +90,7 @@ public partial class MessageEdit : TextEdit {
 		}
 
 		// Handle other buttons
-		if (keyToSignalMapping.TryGetValue(eventKey.Keycode, out StringName signalToEmit)) {
+		if (keyToSignalMapping.TryGetValue(eventKey.Keycode, out StringName? signalToEmit)) {
 			EmitSignal(signalToEmit);
 			AcceptEvent();
 			return;

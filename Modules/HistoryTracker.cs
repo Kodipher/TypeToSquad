@@ -9,8 +9,6 @@ using Kodipher.TypeToSqaud.Modules.Configuration;
 namespace Kodipher.TypeToSqaud.Modules;
 
 
-#nullable enable
-
 public partial class HistoryTracker : Node {
 
 	// Configuration
@@ -33,6 +31,11 @@ public partial class HistoryTracker : Node {
 	/// Keeps as many enteries as fit in the new storage.
 	/// </summary>
 	public void HistoryResizeIfRequired() {
+
+		// Ready guard
+		if (!IsNodeReady()) {
+			throw new InvalidOperationException("Cannot set history: Node is not ready.");
+		}
 
 		// Skip resizing is size matches
 		int historySlots = configManager.CurrentConfig.HistorySlots.Value;
@@ -186,5 +189,3 @@ public partial class HistoryTracker : Node {
 	}
 
 }
-
-#nullable disable

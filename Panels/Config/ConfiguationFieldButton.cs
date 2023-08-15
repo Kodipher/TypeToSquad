@@ -8,8 +8,6 @@ using Kodipher.TypeToSqaud.Modules.Configuration;
 namespace Kodipher.TypeToSqaud.Panels.Config;
 
 
-#nullable enable
-
 [GlobalClass]
 public partial class ConfiguationFieldButton : OptionButton {
 
@@ -77,5 +75,3 @@ public partial class ConfiguationFieldButton : OptionButton {
 	#endregion
 
 }
-
-#nullable disable

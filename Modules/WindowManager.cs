@@ -10,8 +10,6 @@ using Kodipher.TypeToSqaud.Utils;
 namespace Kodipher.TypeToSqaud.Modules;
 
 
-#nullable enable
-
 public partial class WindowManager : Node {
 
 	#region //// WindowInfo
@@ -24,10 +22,10 @@ public partial class WindowManager : Node {
 	public record WindowInfo {
 
 		// Info that does not change (all required)
-		public string NodeName { get; init; } = default!;
-		public string WindowName { get; init; } = default!;
-		public Vector2I WindowSize { get; init; } = default;
-		public string PanelPath { get; init; } = default!;
+		public string NodeName { get; init; } = default!;		//required
+		public string WindowName { get; init; } = default!;		//required
+		public Vector2I WindowSize { get; init; } = default;    //required
+		public string PanelPath { get; init; } = default!;      //required	
 
 		// Info that does change
 		public Action<Window, Node> InitMethod { get; set; } = delegate (Window windowRef, Node panelRef) { };
@@ -93,6 +91,11 @@ public partial class WindowManager : Node {
 	/// <param name="windowType"></param>
 	public void CreateWindow(Windows windowType) {
 
+		// Ready guard
+		if (!IsNodeReady()) {
+			throw new InvalidOperationException("Cannot create window: Node is not ready.");
+		}
+
 		WindowInfo infoRef = windowData[windowType];
 
 		// Do not create the same window twice
@@ -142,7 +145,7 @@ public partial class WindowManager : Node {
 
 	#endregion
 
-	ConfigurationManager configManager = default!;
+	ConfigurationManager configManager = null!;
 
 	public override void _Ready() {
 
@@ -155,5 +158,3 @@ public partial class WindowManager : Node {
 	}
 
 }
-
-#nullable restore

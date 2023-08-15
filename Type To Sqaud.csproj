@@ -3,6 +3,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>Kodipher.TypeToSqaud</RootNamespace>
+	<ImplicitUsings>disable</ImplicitUsings>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.1.0" />

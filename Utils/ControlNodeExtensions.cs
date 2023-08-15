@@ -4,8 +4,7 @@
 namespace Kodipher.TypeToSqaud.Utils;
 
 
-public static class ControlNodeExtensions
-{
+public static class ControlNodeExtensions {
 
     /// <summary>
     /// Sets caret position to end of the current text:
@@ -13,8 +12,8 @@ public static class ControlNodeExtensions
     /// </summary>
     /// <param name="textEditNode">Node to perform operation on</param>
     /// <remarks><b>Note:</b> Does not call <see cref="TextEdit.MergeOverlappingCarets"/></remarks>
-    public static void SetCaretPositionToEnd(this TextEdit textEditNode)
-    {
+    public static void SetCaretPositionToEnd(this TextEdit textEditNode) {
+
         var lastLineIndex = textEditNode.GetLineCount() - 1;
         textEditNode.SetCaretLine(lastLineIndex);
         textEditNode.SetCaretColumn(textEditNode.GetLine(lastLineIndex).Length);
