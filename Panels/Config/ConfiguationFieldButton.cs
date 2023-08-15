@@ -30,14 +30,13 @@ public partial class ConfiguationFieldButton : OptionButton {
 		// Set options
 		Clear();
 
-		// Add items
 		string[] options = FieldReference!.GetOptions().ToArray();
 		foreach (string option in options) {
 			AddItem(option);
 		}
 
 		// Select current
-		SelectFieldItem();
+		SelectFieldItem(options);
 	}
 
 	private void SelectFieldItem(string[] options) {
