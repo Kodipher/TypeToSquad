@@ -21,6 +21,7 @@ public partial class SpeechController : Godot.Node {
 		if (!OperatingSystem.IsOSPlatform("windows")) throw new PlatformNotSupportedException();
 		
 		using SpeechSynthesizer synthesizer = new();
+		SpeechApiReflectionHelper.InjectOneCoreVoices(synthesizer);
 		return
 			synthesizer
 			.GetInstalledVoices()
