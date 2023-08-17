@@ -9,7 +9,7 @@ namespace Kodipher.TypeToSqaud.Panels.Config;
 
 
 [GlobalClass]
-public partial class ConfiguationFieldButton : OptionButton {
+public partial class OptionFieldButton : OptionButton {
 
 	#region //// Field reference
 
@@ -58,10 +58,10 @@ public partial class ConfiguationFieldButton : OptionButton {
 
 	public override void _Ready() {
 		// Connect
-		ItemSelected += ConfiguationFieldButton_ItemSelected;
+		ItemSelected += OptionFieldButton_ItemSelected;
 	}
 
-	private void ConfiguationFieldButton_ItemSelected(long index) {
+	private void OptionFieldButton_ItemSelected(long index) {
 
 		// Don't do anythign without a reference
 		if (FieldReference is null) return;

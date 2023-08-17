@@ -23,8 +23,8 @@ public partial class ConfigPanel : Control {
 		}
 
 		// Give out field references
-		GetNode<ConfiguationFieldButton>("%VoiceSelection").SetFieldReference(configuration.Voice);
-		GetNode<ConfiguationFieldButton>("%DeviceSelection").SetFieldReference(configuration.Device);
+		GetNode<OptionFieldButton>("%VoiceSelection").SetFieldReference(configuration.Voice);
+		GetNode<OptionFieldButton>("%DeviceSelection").SetFieldReference(configuration.Device);
 	}
 
 	public override void _Ready() {
