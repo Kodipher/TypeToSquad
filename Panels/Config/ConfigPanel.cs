@@ -25,6 +25,8 @@ public partial class ConfigPanel : Control {
 		// Give out field references
 		GetNode<OptionFieldButton>("%VoiceSelection").SetFieldReference(configuration.Voice);
 		GetNode<OptionFieldButton>("%DeviceSelection").SetFieldReference(configuration.Device);
+		GetNode<IntRangeFieldLineEdit>("%MaxConcurrentInput").SetFieldReference(configuration.MaxConcurrentStreams);
+		GetNode<IntRangeFieldLineEdit>("%HistorySlotsInput").SetFieldReference(configuration.HistorySlots);
 	}
 
 	public override void _Ready() {
