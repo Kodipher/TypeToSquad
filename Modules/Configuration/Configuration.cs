@@ -20,7 +20,7 @@ public class Configuration {
 	);
 
 	/// <summary>The max number of tts outputs that are played at the same time</summary>
-	public readonly FieldIntRange MaxConcurentStreams = new(1, 64, defaultValue: 6);
+	public readonly FieldIntRange MaxConcurrentStreams = new(1, 64, defaultValue: 6);
 
 	/// <summary>The number of previous inputs held in memory</summary>
 	public readonly FieldIntRange HistorySlots = new(0, short.MaxValue, defaultValue: 32);

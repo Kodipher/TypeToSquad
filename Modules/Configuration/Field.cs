@@ -27,7 +27,7 @@ public class Field<T> {
 
 	/// <summary>
 	/// Returns given value if it is valid.
-	/// Otherwise returns a different, usually default.
+	/// Otherwise returns a different, usually default value.
 	/// </summary>
 	public virtual T ValueForceValid(T value) => IsValid(value) ? value : GetDefault();
 
