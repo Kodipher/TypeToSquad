@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 
 
-namespace Kodipher.TypeToSqaud.Panels.Message;
+namespace Kodipher.TypeToSquad.Panels.Message;
 
 
 public partial class MessageEdit : TextEdit {

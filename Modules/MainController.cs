@@ -1,9 +1,9 @@
 using Godot;
-using Kodipher.TypeToSqaud.Panels.Message;
+using Kodipher.TypeToSquad.Panels.Message;
 using System;
 
 
-namespace Kodipher.TypeToSqaud.Modules;
+namespace Kodipher.TypeToSquad.Modules;
 
 
 public partial class MainController : Node {

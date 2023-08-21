@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Kodipher.TypeToSqaud.Modules.Configuration;
+namespace Kodipher.TypeToSquad.Modules.Configuration;
 
 
 /// <summary>

@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 
 using Godot;
-using Kodipher.TypeToSqaud.Modules.Configuration;
-using Kodipher.TypeToSqaud.Panels.Config;
-using Kodipher.TypeToSqaud.Utils;
+using Kodipher.TypeToSquad.Modules.Configuration;
+using Kodipher.TypeToSquad.Panels.Config;
+using Kodipher.TypeToSquad.Utils;
 
 
-namespace Kodipher.TypeToSqaud.Modules;
+namespace Kodipher.TypeToSquad.Modules;
 
 
 public partial class WindowManager : Node {

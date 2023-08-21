@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Speech.Synthesis;
 
 
-namespace Kodipher.TypeToSqaud.Modules.Speech;
+namespace Kodipher.TypeToSquad.Modules.Speech;
 
 
 // Source: https://stackoverflow.com/questions/51811901/speechsynthesizer-doesnt-get-all-installed-voices-3

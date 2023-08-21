@@ -2,10 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kodipher.TypeToSqaud.Modules.Configuration;
+using Kodipher.TypeToSquad.Modules.Configuration;
 
 
-namespace Kodipher.TypeToSqaud.Panels.Config;
+namespace Kodipher.TypeToSquad.Panels.Config;
 
 
 [GlobalClass]

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
-    <RootNamespace>Kodipher.TypeToSqaud</RootNamespace>
+    <RootNamespace>Kodipher.TypeToSquad</RootNamespace>
 	<ImplicitUsings>disable</ImplicitUsings>
 	<Nullable>enable</Nullable>
   </PropertyGroup>

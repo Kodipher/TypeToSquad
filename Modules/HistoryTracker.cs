@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Godot;
-using Kodipher.TypeToSqaud.Modules.Configuration;
+using Kodipher.TypeToSquad.Modules.Configuration;
 
 
-namespace Kodipher.TypeToSqaud.Modules;
+namespace Kodipher.TypeToSquad.Modules;
 
 
 public partial class HistoryTracker : Node {

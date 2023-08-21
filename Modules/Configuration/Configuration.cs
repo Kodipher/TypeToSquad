@@ -1,8 +1,8 @@
 ﻿using System;
-using Kodipher.TypeToSqaud.Modules.Speech;
+using Kodipher.TypeToSquad.Modules.Speech;
 
 
-namespace Kodipher.TypeToSqaud.Modules.Configuration;
+namespace Kodipher.TypeToSquad.Modules.Configuration;
 
 
 public class Configuration {

@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Kodipher.TypeToSqaud.Modules.Configuration;
+namespace Kodipher.TypeToSquad.Modules.Configuration;
 
 
 /// <summary>

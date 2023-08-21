@@ -1,7 +1,7 @@
 ﻿using Godot;
 
 
-namespace Kodipher.TypeToSqaud.Utils;
+namespace Kodipher.TypeToSquad.Utils;
 
 
 public static class ControlNodeExtensions {

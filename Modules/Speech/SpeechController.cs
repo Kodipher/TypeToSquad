@@ -5,7 +5,7 @@ using System.Speech.Synthesis;
 using NAudio.CoreAudioApi;
 
 
-namespace Kodipher.TypeToSqaud.Modules.Speech;
+namespace Kodipher.TypeToSquad.Modules.Speech;
 
 
 public partial class SpeechController : Godot.Node {

@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Type To Sqaud"
+config/name="Type To Squad"
 run/main_scene="res://Modules/scn_main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Kodipher/Type To Squad"
@@ -29,7 +29,7 @@ window/stretch/aspect="ignore"
 
 [dotnet]
 
-project/assembly_name="Type To Sqaud"
+project/assembly_name="Type To Squad"
 
 [physics]
 

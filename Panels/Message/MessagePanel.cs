@@ -1,8 +1,8 @@
 using Godot;
-using Kodipher.TypeToSqaud.Utils;
+using Kodipher.TypeToSquad.Utils;
 
 
-namespace Kodipher.TypeToSqaud.Panels.Message;
+namespace Kodipher.TypeToSquad.Panels.Message;
 
 
 public partial class MessagePanel : Control {

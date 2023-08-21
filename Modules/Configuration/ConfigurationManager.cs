@@ -4,7 +4,7 @@ using System.IO;
 using Path = System.IO.Path;
 
 
-namespace Kodipher.TypeToSqaud.Modules.Configuration;
+namespace Kodipher.TypeToSquad.Modules.Configuration;
 
 
 public partial class ConfigurationManager : Node {
