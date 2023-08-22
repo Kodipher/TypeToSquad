@@ -16,11 +16,13 @@ public partial class ConfigurationManager : Node {
 
 	/// <summary>
 	/// Current configuration used by pretty much everything.
-	/// Any changed to the object are to be reflected on the spot.
+	/// Any changed to the object are to be reflected live.
 	/// Set only one time on init due to sharing by reference.
-	/// Saving the obejct to disk is separate. See <see cref="SaveCurrentConfig"/>
+	/// Saving the object to disk is separate. See <see cref="SaveCurrentConfig"/> and <see cref="LoadConfigToCurrent"/>
 	/// </summary>
-	public Configuration CurrentConfig { get; init; } = new Configuration();
+	public Configuration CurrentConfig { get; init; }
+
+	protected readonly IReadOnlyList<FieldInfo> CurrentConfigFields;
 
 	public ConfigurationManager() {
 		CurrentConfig = new Configuration();
@@ -35,13 +37,12 @@ public partial class ConfigurationManager : Node {
 
 	#region //// Saving / Loading
 
-	protected readonly IReadOnlyList<FieldInfo> CurrentConfigFields;
-
 	const string fieldGetVariantMethodName = "GetVariant";
 	const string fieldSetVariantMethodName = "SetVariant";
 
-	const string configFilepath = "config.json";
+	public const string configFilepath = "config.json";
 
+	/// <summary>Saves current configuration to disk</summary>
 	public void SaveCurrentConfig() {
 
 		// Find saveable data
@@ -70,6 +71,47 @@ public partial class ConfigurationManager : Node {
 		File.WriteAllText(configPath, configJson);
 
 	}
+
+	/// <summary>Loads configuration to disk into current configuration</summary>
+	/// <returns>True if the configuration was loaded</returns>
+	public bool LoadConfigToCurrent() {
+
+		// Load form disk
+		string configPath = Path.Combine(OS.GetUserDataDir(), configFilepath);
+		string configJson = File.ReadAllText(configPath);
+
+		Variant parsedJson = Json.ParseString(configJson);
+
+		if (parsedJson.VariantType == Variant.Type.Nil) {
+			// Error
+			GD.PushError($"Cannot load configuration: file is malformed");
+			return false;
+		} else if (parsedJson.VariantType != Variant.Type.Dictionary) {
+			// Error
+			GD.PushError("Cannot load configuration: root value is not an object");
+			return false;
+		}
+
+		Godot.Collections.Dictionary<string, Variant> configDict = parsedJson.AsGodotDictionary<string, Variant>();
+
+		// Apply data into current config
+		foreach (FieldInfo fieldInfo in CurrentConfigFields) {
+
+			if (!configDict.TryGetValue(fieldInfo.Name, out Variant saveValue)) {
+				GD.PushWarning($"Configuration field \"{fieldInfo.Name}\" is missing on disk. Skipping.");
+				continue;
+			}
+
+			fieldInfo
+			.FieldType
+			.GetMethod(fieldSetVariantMethodName)
+			?.Invoke(fieldInfo.GetValue(CurrentConfig), new object[] { saveValue });
+		}
+
+		return true;
+
+	}
+
 
 	#endregion
 

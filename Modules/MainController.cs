@@ -1,6 +1,6 @@
 using Godot;
+using Kodipher.TypeToSquad.Modules.Configuration;
 using Kodipher.TypeToSquad.Panels.Message;
-using System;
 
 
 namespace Kodipher.TypeToSquad.Modules;
@@ -11,6 +11,10 @@ public partial class MainController : Node {
 	public override void _Ready() {
 
 		var messagePanel = GetNode<MessagePanel>("%MessagePanel");
+
+		// Load config
+		var configManager = GetNode<ConfigurationManager>("%ConfigurationManager");
+		configManager.LoadConfigToCurrent();
 
 		// Connect history
 		var historyTracker = GetNode<HistoryTracker>("%HistoryTracker");
