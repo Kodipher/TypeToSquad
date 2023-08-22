@@ -25,4 +25,11 @@ public static class CollectionExtensions {
         return new ReadOnlyCollection<T>(array);
     }
 
+	/// <summary>
+	/// Calls a constructor of Godot.Collections.Dictionary using fluent syntax
+	/// </summary>
+	public static Godot.Collections.Dictionary<TKey, TValue> ToGodotDictionary<[Godot.MustBeVariant] TKey, [Godot.MustBeVariant] TValue>(this IDictionary<TKey, TValue> dict) {
+		return new Godot.Collections.Dictionary<TKey, TValue>(dict);
+	}
+
 }
