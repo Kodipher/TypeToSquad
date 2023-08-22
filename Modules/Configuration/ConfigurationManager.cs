@@ -45,7 +45,7 @@ public partial class ConfigurationManager : Node {
 	public void SaveCurrentConfig() {
 
 		// Find saveable data
-		Dictionary<string, Variant> configStrings = new();
+		Godot.Collections.Dictionary<string, Variant> configDict = new();
 
 		foreach (FieldInfo fieldInfo in CurrentConfigFields) {
 
@@ -61,11 +61,11 @@ public partial class ConfigurationManager : Node {
 				continue;
 			}
 
-			configStrings[fieldInfo.Name] = saveValue.Value;
+			configDict[fieldInfo.Name] = saveValue.Value;
 		}
 
 		// Save to disk
-		string configJson = Json.Stringify(configStrings.ToGodotDictionary(), indent:"\t");
+		string configJson = Json.Stringify(configDict, indent: "\t");
 		string configPath = Path.Combine(OS.GetUserDataDir(), configFilepath);
 		File.WriteAllText(configPath, configJson);
 
