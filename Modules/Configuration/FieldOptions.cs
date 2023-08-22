@@ -10,7 +10,7 @@ namespace Kodipher.TypeToSquad.Modules.Configuration;
 /// A storage, setter, getter and validator
 /// for a field that has options.
 /// </summary>
-public class FieldOptions<T> : Field<T> {
+public class FieldOptions<[Godot.MustBeVariant] T> : Field<T> {
 
 	public Func<IEnumerable<T>> GetOptions { get; protected set; }
 

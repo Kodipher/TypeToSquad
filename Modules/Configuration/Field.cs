@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Godot;
+using System;
 
 
 namespace Kodipher.TypeToSquad.Modules.Configuration;
@@ -9,7 +10,7 @@ namespace Kodipher.TypeToSquad.Modules.Configuration;
 /// If validation fails, sets the default value, which bypasses validation.
 /// Base class has no validation.
 /// </summary>
-public class Field<T> {
+public class Field<[MustBeVariant] T> {
 
 	#region //// Value
 
@@ -18,6 +19,13 @@ public class Field<T> {
 	public virtual void Set(T value) => this.value = ValueForceValid(value);
 	public virtual T Get() => value;
 	public T Value { get => Get(); set => Set(value); }
+
+	public Variant GetVariant() {
+		T value = Value;
+		return Variant.From(in value);
+	}
+
+	public void SetVariant(Variant value) => Set(value.As<T>());
 
 	#endregion
 
