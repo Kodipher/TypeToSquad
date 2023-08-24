@@ -30,19 +30,19 @@ public partial class SpeechController : Godot.Node {
 			.ToArray();
 	}
 
-	public const string defaultDeviceName = "Default";
+	public readonly static MMDeviceSelectionInfo defaultDevice = new() { Name = "Default", ID = "{}.{}" };
 
 	/// <summary>
-	/// Returns a list of usable output devices (FriendlyNames).
+	/// Returns a list of usable output devices (FriendlyNames and IDs).
 	/// Prepends "Default" as the first entry for default device selection.
 	/// </summary>
-	public static IEnumerable<string> GetOutputDevices() {
+	public static IEnumerable<MMDeviceSelectionInfo> GetOutputDevices() {
 		using MMDeviceEnumerator enumerator = new();
 		return
 			enumerator
 			.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active)
-			.Select(device => device.FriendlyName)
-			.Prepend(defaultDeviceName)
+			.Select(device => new MMDeviceSelectionInfo { Name = device.FriendlyName, ID = device.ID })
+			.Prepend(defaultDevice)
 			.ToArray();
 	}
 

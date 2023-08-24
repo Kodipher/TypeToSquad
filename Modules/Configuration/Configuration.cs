@@ -8,9 +8,9 @@ namespace Kodipher.TypeToSquad.Modules.Configuration;
 public class Configuration {
 
 	/// <summary>Name of the current output device</summary>
-	public readonly FieldOptions<string> Device = new(
+	public readonly FieldMMDevice Device = new(
 		SpeechController.GetOutputDevices,
-		defaultValue: SpeechController.defaultDeviceName
+		defaultDevice: SpeechController.defaultDevice
 	);
 
 	/// <summary>Name of the current tts voice</summary>
