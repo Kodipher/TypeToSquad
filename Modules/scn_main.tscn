@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://df5acmri3n8y2"]
 
 [ext_resource type="Script" path="res://Modules/MainController.cs" id="1_3ra4b"]
-[ext_resource type="Script" path="res://Modules/WindowManager.cs" id="1_06c6e"]
 [ext_resource type="Script" path="res://Modules/Configuration/ConfigurationManager.cs" id="1_nmrey"]
 [ext_resource type="PackedScene" uid="uid://cbv2fdlo75sbm" path="res://Panels/Message/scn_message_panel.tscn" id="1_ohmn3"]
 [ext_resource type="Script" path="res://Modules/Speech/SpeechController.cs" id="2_d45tt"]
 [ext_resource type="Script" path="res://Modules/HistoryTracker.cs" id="3_parh6"]
+[ext_resource type="Script" path="res://Panels/WindowManager.cs" id="5_r7flx"]
 
 [node name="MainController" type="Node"]
 script = ExtResource("1_3ra4b")
@@ -24,7 +24,7 @@ script = ExtResource("1_nmrey")
 
 [node name="WindowManager" type="Node" parent="."]
 unique_name_in_owner = true
-script = ExtResource("1_06c6e")
+script = ExtResource("5_r7flx")
 
 [node name="MessagePanel" parent="." instance=ExtResource("1_ohmn3")]
 unique_name_in_owner = true

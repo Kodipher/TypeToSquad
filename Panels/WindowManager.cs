@@ -7,7 +7,7 @@ using Kodipher.TypeToSquad.Panels.Config;
 using Kodipher.TypeToSquad.Utils;
 
 
-namespace Kodipher.TypeToSquad.Modules;
+namespace Kodipher.TypeToSquad.Panels;
 
 
 public partial class WindowManager : Node {

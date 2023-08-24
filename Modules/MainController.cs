@@ -1,5 +1,6 @@
 using Godot;
 using Kodipher.TypeToSquad.Modules.Configuration;
+using Kodipher.TypeToSquad.Panels;
 using Kodipher.TypeToSquad.Panels.Message;
 
 
