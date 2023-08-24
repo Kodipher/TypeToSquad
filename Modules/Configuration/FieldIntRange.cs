@@ -10,8 +10,8 @@ namespace Kodipher.TypeToSquad.Modules.Configuration;
 /// </summary>
 public class FieldIntRange : Field<int> {
 
-	public int MinInclusive { get; protected set; }
-	public int MaxInclusive { get; protected set; }
+	public int MinInclusive { get; private init; }
+	public int MaxInclusive { get; private init; }
 
 	public override bool IsValid(int value) {
 		return MinInclusive <= value && value <= MaxInclusive;

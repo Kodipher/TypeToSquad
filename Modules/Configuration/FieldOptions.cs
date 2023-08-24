@@ -12,7 +12,7 @@ namespace Kodipher.TypeToSquad.Modules.Configuration;
 /// </summary>
 public class FieldOptions<[Godot.MustBeVariant] T> : Field<T> {
 
-	public Func<IEnumerable<T>> GetOptions { get; protected set; }
+	public Func<IEnumerable<T>> GetOptions { get; private init; }
 
 	public override bool IsValid(T value) => GetOptions().Contains(value);
 

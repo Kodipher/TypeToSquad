@@ -31,7 +31,7 @@ public class Field<[MustBeVariant] T> {
 
 	#region //// Validation
 
-	public Func<T> GetDefault { get; protected set; }
+	public Func<T> GetDefault { get; private init; }
 
 	/// <summary>
 	/// Returns given value if it is valid.
