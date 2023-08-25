@@ -61,7 +61,7 @@ public partial class SpeechController : Node {
 	/// Perform speech synthesis.
 	/// </summary>
 	/// <param name="text">Text to speak</param>
-	public void PerformSyntehsis(string text) {
+	public void PerformSynthesis(string text) {
 
 		// System guard
 		if (!OperatingSystem.IsOSPlatform("windows")) throw new PlatformNotSupportedException();

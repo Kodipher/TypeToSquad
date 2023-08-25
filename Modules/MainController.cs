@@ -43,7 +43,7 @@ public partial class MainController : Node {
 		// Connect speech synthesis
 		if (System.OperatingSystem.IsOSPlatform("windows")) {
 			var speechController = GetNode<SpeechController>("%SpeechController");
-			messagePanel.SpeakRequested += speechController.PerformSyntehsis;
+			messagePanel.SpeakRequested += speechController.PerformSynthesis;
 			messagePanel.ShutRequested += speechController.Shut;
 		}
 
