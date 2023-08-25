@@ -1,4 +1,5 @@
 using Godot;
+using Kodipher.TypeToSquad.Modules.Speech;
 using Kodipher.TypeToSquad.Modules.Configuration;
 using Kodipher.TypeToSquad.Panels;
 using Kodipher.TypeToSquad.Panels.Message;
@@ -38,6 +39,13 @@ public partial class MainController : Node {
 		// Connect window creation
 		var windowManager = GetNode<WindowManager>("%WindowManager");
 		messagePanel.ConfigRequested += delegate () { windowManager.CreateWindow(WindowManager.Windows.Config); };
+
+		// Connect speech synthesis
+		if (System.OperatingSystem.IsOSPlatform("windows")) {
+			var speechController = GetNode<SpeechController>("%SpeechController");
+			messagePanel.SpeakRequested += speechController.PerformSyntehsis;
+			messagePanel.ShutRequested += speechController.Shut;
+		}
 
 	}
 

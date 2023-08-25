@@ -5,6 +5,8 @@ using Godot;
 using System.Speech.Synthesis;
 using NAudio.CoreAudioApi;
 
+using Kodipher.TypeToSquad.Modules.Configuration;
+
 
 namespace Kodipher.TypeToSquad.Modules.Speech;
 
@@ -38,6 +40,10 @@ public partial class SpeechController : Node {
 	/// Prepends "Default" as the first entry for default device selection.
 	/// </summary>
 	public static IEnumerable<MMDeviceSelectionInfo> GetOutputDevices() {
+
+		// System guard
+		if (!OperatingSystem.IsOSPlatform("windows")) throw new PlatformNotSupportedException();
+
 		using MMDeviceEnumerator enumerator = new();
 		return
 			enumerator
@@ -48,5 +54,38 @@ public partial class SpeechController : Node {
 	}
 
 	#endregion
+
+	#region //// Perform synthesis
+
+	/// <summary>
+	/// Perform speech synthesis.
+	/// </summary>
+	/// <param name="text">Text to speak</param>
+	public void PerformSyntehsis(string text) {
+
+		// System guard
+		if (!OperatingSystem.IsOSPlatform("windows")) throw new PlatformNotSupportedException();
+
+		GD.Print($"Speaking \"{text}\"");
+
+	}
+
+	/// <summary>
+	/// Removes all currently playing speeches.
+	/// </summary>
+	public void Shut() {
+		GD.Print("Shutting up");
+	}
+
+	#endregion
+
+	ConfigurationManager configManager = null!;
+
+	public override void _Ready() {
+
+		// Find related nodes
+		configManager = GetNode<ConfigurationManager>("%ConfigurationManager");
+
+	}
 
 }
