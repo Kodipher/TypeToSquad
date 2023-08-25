@@ -8,10 +8,13 @@ namespace Kodipher.TypeToSquad.Modules.Configuration;
 public class Configuration {
 
 	/// <summary>Name of the current output device</summary>
-	public readonly FieldMMDevice Device = new(
-		SpeechController.GetOutputDevices,
-		defaultDevice: SpeechController.defaultDevice
-	);
+	public readonly FieldMMDevice Device =
+		OperatingSystem.IsOSPlatform("windows") ?
+		new(
+			SpeechController.GetOutputDevices, defaultDevice: SpeechController.defaultDevice
+		) : new(
+			() => Array.Empty<MMDeviceSelectionInfo>(), new MMDeviceSelectionInfo() { ID="", Name="" }
+		);
 
 	/// <summary>Name of the current tts voice</summary>
 	public readonly FieldOptions<string> Voice = new(

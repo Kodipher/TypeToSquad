@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using System.Speech.Synthesis;
 using NAudio.CoreAudioApi;
 
@@ -8,14 +9,14 @@ using NAudio.CoreAudioApi;
 namespace Kodipher.TypeToSquad.Modules.Speech;
 
 
-public partial class SpeechController : Godot.Node {
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+public partial class SpeechController : Node {
 
 	#region //// Config options
 
 	/// <summary>
 	/// Returns a list of usable TTS voice names
 	/// </summary>
-	[System.Runtime.Versioning.SupportedOSPlatform("windows")]
 	public static IEnumerable<string> GetVoices() {
 
 		if (!OperatingSystem.IsOSPlatform("windows")) throw new PlatformNotSupportedException();
