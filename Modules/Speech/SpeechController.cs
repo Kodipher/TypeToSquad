@@ -102,7 +102,7 @@ public partial class SpeechController : Node {
 
 		// If exists: shut
 		streamToEnd.Shut();
-		activeStreams.RemoveFirst();
+		activeStreams.Remove(streamToEnd);
 		shutStreams.AddLast(streamToEnd);
 	}
 
@@ -112,7 +112,7 @@ public partial class SpeechController : Node {
 
 		// Check every active speech if it is ready for disposal
 		currentNode = activeStreams.First;
-		while(currentNode is not null) {
+		while (currentNode is not null) {
 			if (currentNode.Value.IsReadyForDisposal) {
 				// If it is - dispose
 				LinkedListNode<ActiveSpeech>? nextNode = currentNode.Next;
@@ -130,7 +130,7 @@ public partial class SpeechController : Node {
 			if (currentNode.Value.IsReadyForDisposal) {
 				// If it is - dispose
 				LinkedListNode<ActiveSpeech>? nextNode = currentNode.Next;
-				activeStreams.Remove(currentNode);
+				shutStreams.Remove(currentNode);
 				currentNode.Value.Dispose();
 				currentNode = nextNode;
 			} else {
