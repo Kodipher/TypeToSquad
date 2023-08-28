@@ -21,6 +21,8 @@ public class ActiveSpeech : IDisposable {
 	public MMDevice OutputDevice { get; private set; }
 	public WasapiOut OutputPlayer { get; private set; }
 	public SpeechSynthesizer Synthesizer { get; private set; }
+	public MemoryStream AudioStream { get; private set; }
+	public RawSourceWaveStream? OutputAudioProvider { get; private set; }
 
 	[System.Runtime.Versioning.SupportedOSPlatform("windows")]
 	public ActiveSpeech(MMDevice device) {
@@ -30,22 +32,40 @@ public class ActiveSpeech : IDisposable {
 
 		Synthesizer = new SpeechSynthesizer();
 		SpeechApiReflectionHelper.InjectOneCoreVoices(Synthesizer);
+
+		AudioStream = new MemoryStream();
 	}
 
 	#endregion
 
 	#region //// Playing and stopping
 
-	public void Speak() {
+	public void Speak(string text) {
 
 		// Link events
 		OutputPlayer.PlaybackStopped += (object? _sender, StoppedEventArgs _args) => { IsReadyForDisposal = true; };
 
-		// Link synthesier to output player
-		// todo
+		// Setup format
+		int _samplesPerSecond = 44100;
+		int _channelCount = 1;
+		int _bitsPerSample = 16; // 8 or 16, errors on 24, 32 or anything else
 
-		// Perfom speech
-		// todo
+		int _blockAlign = _channelCount * (_bitsPerSample / 8);			// Copied from the constructor
+		int _averageBytesPerSecond = _samplesPerSecond * _blockAlign;
+
+		var speechFormat = new SpeechAudioFormatInfo(EncodingFormat.Pcm, _samplesPerSecond, _bitsPerSample, _channelCount, _averageBytesPerSecond, _blockAlign, null);
+		var audioProviderFormat = new WaveFormat(_samplesPerSecond, _bitsPerSample, _channelCount);
+
+		// Syntehsize speech into a stream
+		Synthesizer.SetOutputToAudioStream(AudioStream, speechFormat);
+		Synthesizer.Speak(text);
+		AudioStream.Flush();
+		AudioStream.Seek(0, SeekOrigin.Begin);
+
+		// Play the stream
+		OutputAudioProvider = new RawSourceWaveStream(AudioStream, audioProviderFormat);
+		OutputPlayer.Init(OutputAudioProvider!);
+		OutputPlayer.Play();
 
 	}
 
@@ -79,11 +99,15 @@ public class ActiveSpeech : IDisposable {
 			OutputDevice.Dispose();
 			OutputPlayer.Dispose();
 			Synthesizer.Dispose();
+			AudioStream.Dispose();
+			OutputAudioProvider?.Dispose();
 		}
 
 		OutputDevice = null!;
 		OutputPlayer = null!;
 		Synthesizer = null!;
+		AudioStream = null!;
+		OutputAudioProvider = null;
 
 		hasDisposed = true;
 	}

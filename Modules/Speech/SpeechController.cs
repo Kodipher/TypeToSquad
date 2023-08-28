@@ -176,9 +176,8 @@ public partial class SpeechController : Node {
 		ActiveSpeech speech = new(device);
 
 		// Play
-		// todo
-		//outputDevice.Init(audioFile);
-		//outputDevice.Play();
+		speech.Synthesizer.SelectVoice(configManager.CurrentConfig.Voice.Value);
+		speech.Speak(text);
 
 		// Add active speech to storage
 		AddActiveSpeech(speech);
