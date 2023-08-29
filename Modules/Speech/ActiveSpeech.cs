@@ -18,22 +18,19 @@ public class ActiveSpeech : IDisposable {
 
 	#region //// Ownership
 
-	public MMDevice OutputDevice { get; private set; }
-	public WasapiOut OutputPlayer { get; private set; }
+	public MMDevice OutputDeviceInfo { get; private set; }
+	public WasapiOut OutputDevice { get; private set; }
 	public SpeechSynthesizer Synthesizer { get; private set; }
-	public MemoryStream AudioStream { get; private set; }
-	public RawSourceWaveStream? OutputAudioProvider { get; private set; }
+	public MemoryStream? SpeechStream { get; private set; }
+	public RawSourceWaveStream? OutputWaveProvider { get; private set; }
 
 	[System.Runtime.Versioning.SupportedOSPlatform("windows")]
 	public ActiveSpeech(MMDevice device) {
-		OutputDevice = device;
-
-		OutputPlayer = new(OutputDevice, AudioClientShareMode.Shared, true, 200);
+		OutputDeviceInfo = device;
+		OutputDevice = new(OutputDeviceInfo, AudioClientShareMode.Shared, true, 200);
 
 		Synthesizer = new SpeechSynthesizer();
 		SpeechApiReflectionHelper.InjectOneCoreVoices(Synthesizer);
-
-		AudioStream = new MemoryStream();
 	}
 
 	#endregion
@@ -43,7 +40,7 @@ public class ActiveSpeech : IDisposable {
 	public void Speak(string text) {
 
 		// Link events
-		OutputPlayer.PlaybackStopped += (object? _sender, StoppedEventArgs _args) => { IsReadyForDisposal = true; };
+		OutputDevice.PlaybackStopped += (object? _sender, StoppedEventArgs _args) => { IsReadyForDisposal = true; };
 
 		// Setup format
 		int _samplesPerSecond = 44100;
@@ -57,20 +54,21 @@ public class ActiveSpeech : IDisposable {
 		var audioProviderFormat = new WaveFormat(_samplesPerSecond, _bitsPerSample, _channelCount);
 
 		// Syntehsize speech into a stream
-		Synthesizer.SetOutputToAudioStream(AudioStream, speechFormat);
+		SpeechStream = new MemoryStream();
+		Synthesizer.SetOutputToAudioStream(SpeechStream, speechFormat);
 		Synthesizer.Speak(text);
-		AudioStream.Flush();
-		AudioStream.Seek(0, SeekOrigin.Begin);
+		SpeechStream.Flush();
+		SpeechStream.Seek(0, SeekOrigin.Begin);
 
 		// Play the stream
-		OutputAudioProvider = new RawSourceWaveStream(AudioStream, audioProviderFormat);
-		OutputPlayer.Init(OutputAudioProvider!);
-		OutputPlayer.Play();
+		OutputWaveProvider = new RawSourceWaveStream(SpeechStream, audioProviderFormat);
+		OutputDevice.Init(OutputWaveProvider);
+		OutputDevice.Play();
 
 	}
 
 	public void Shut() {
-		if (!readyForDisposal) OutputPlayer.Stop();
+		if (!readyForDisposal) OutputDevice.Stop();
 	}
 
 	#endregion
@@ -96,18 +94,18 @@ public class ActiveSpeech : IDisposable {
 		if (hasDisposed) return;
 
 		if (disposeManaged) {
+			OutputDeviceInfo.Dispose();
 			OutputDevice.Dispose();
-			OutputPlayer.Dispose();
 			Synthesizer.Dispose();
-			AudioStream.Dispose();
-			OutputAudioProvider?.Dispose();
+			SpeechStream?.Dispose();
+			OutputWaveProvider?.Dispose();
 		}
 
+		OutputDeviceInfo = null!;
 		OutputDevice = null!;
-		OutputPlayer = null!;
 		Synthesizer = null!;
-		AudioStream = null!;
-		OutputAudioProvider = null;
+		SpeechStream = null;
+		OutputWaveProvider = null;
 
 		hasDisposed = true;
 	}
