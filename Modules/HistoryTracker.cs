@@ -21,7 +21,7 @@ public partial class HistoryTracker : Node {
 	/// Use <see cref="historySlotsInUse"/> and <see cref="currentLastHistoryIndex"/>
 	/// when addressing the buffer directly.
 	/// </summary>
-	string?[] history = Array.Empty<string>();
+	string[] history = Array.Empty<string>();
 
 	int historySlotsInUse = 0;
 	int currentLastHistoryIndex = -1;
@@ -45,7 +45,7 @@ public partial class HistoryTracker : Node {
 		IList<string> oldHistory = GetOrderedHistory();
 		
 		// Create a new buffer
-		history = new string?[historySlots];
+		history = new string[historySlots];
 
 		// Store all possible old history in order of oldest to newest at the start of the buffer
 		int oldHistoryIndexesToCopy = Mathf.Min(historySlots, oldHistory.Count);
@@ -75,7 +75,7 @@ public partial class HistoryTracker : Node {
 			throw new IndexOutOfRangeException(nameof(index));
 		}
 
-		return history[Mathf.PosMod(currentLastHistoryIndex - index, history.Length)]!;
+		return history[Mathf.PosMod(currentLastHistoryIndex - index, history.Length)];
 
 	}
 
