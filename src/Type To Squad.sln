@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Type To Squad", "scripts/Type To Squad.csproj", "{4FB88EEC-A64A-4322-BD12-278F8C0FCEDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Type To Squad", "Type To Squad.csproj", "{4FB88EEC-A64A-4322-BD12-278F8C0FCEDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
