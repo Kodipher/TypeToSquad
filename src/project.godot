@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Type To Squad"
+config/description="An app that uses Window's speech synthesis and fowards it into select audio devices"
 config/version="v0.0.0-alpha.0.dev"
 run/enable_alt_space_menu=true
 config/use_custom_user_dir=true
@@ -19,7 +20,6 @@ run/max_fps=60
 run/low_processor_mode=true
 boot_splash/show_image=false
 boot_splash/fullsize=false
-config/description="An app that uses Window's speech synthesis and fowards it into select audio devices"
 
 [display]
 
