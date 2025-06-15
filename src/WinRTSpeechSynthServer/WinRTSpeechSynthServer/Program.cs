@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.IO;
+using System.IO.Pipes;
 using System.Threading.Tasks;
-using Windows.Media.SpeechSynthesis;
 
 
 namespace WinRTSpeechSynthServer;
