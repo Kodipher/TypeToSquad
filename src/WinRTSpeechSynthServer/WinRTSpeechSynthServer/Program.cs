@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading.Tasks;
+using WinRTSpeechSynthServer.Protocol;
 
 
 namespace WinRTSpeechSynthServer;
@@ -18,7 +18,12 @@ public class Program {
 			return;
 		}
 
+		// Setup data and syntehsizer 
 		string pipeName = args[0];
+		// todo
+
+		// Setup request mapper
+		var requestHandler = new RequestMapper()
 
 		// Pipe
 		try {
@@ -32,8 +37,8 @@ public class Program {
 													PipeOptions.CurrentUserOnly | PipeOptions.Asynchronous
 												);
 
-			using StreamReader reader = new StreamReader(pipeServer);
-			using StreamWriter writer = new StreamWriter(pipeServer);
+			using BinaryReader reader = new BinaryReader(pipeServer);
+			using BinaryWriter writer = new BinaryWriter(pipeServer);
 
 			Console.WriteLine($"Serving pipe \"{pipeName}\" with buffer sizes in={pipeServer.InBufferSize} out={pipeServer.OutBufferSize} (0:=allocated as needed)");
 			while (true) {
@@ -42,9 +47,8 @@ public class Program {
 				await pipeServer.WaitForConnectionAsync();
 
 				Console.WriteLine("Connected. Processing...");
-				var line = await reader.ReadLineAsync() ?? "";
-				await writer.WriteLineAsync(string.Join("", line.Reverse())); //TEMP DEBUG
-				await writer.FlushAsync();
+				await Task.Run(() => requestHandler.HandleSingleRequest(reader, writer));
+				writer.Flush();
 
 				Console.WriteLine("Disconnecting...");
 				if (pipeServer.IsConnected) pipeServer.Disconnect();
