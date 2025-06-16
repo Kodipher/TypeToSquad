@@ -9,6 +9,8 @@ namespace WinRTSpeechSynthServer.Protocol;
 
 public enum ResponceType : byte {
 	Unknown = 0x00,
+	TerminationAccepted = 0x2F,
+	HeartbeatEcho = 0x30,
 	UnknwonRequestType = 0xFF,
 }
 
@@ -29,3 +31,27 @@ public record class UnknwonRequestResponce : Responce {
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 }
 
+
+public record class TerminateAcceptedResponce : Responce {
+
+	public override ResponceType Type => ResponceType.TerminationAccepted;
+
+	public override void ReadContents(BinaryReader payloadReader) { }
+	public override void WriteContents(BinaryWriter payloadWriter) { }
+}
+
+
+public record class HeartbeatEchoResponce : Responce {
+
+	public override ResponceType Type => ResponceType.HeartbeatEcho;
+
+	public byte EchoByte { get; set; }
+
+	public override void WriteContents(BinaryWriter payloadWriter) {
+		payloadWriter.Write(EchoByte);
+	}
+
+	public override void ReadContents(BinaryReader payloadReader) {
+		EchoByte = payloadReader.ReadByte();
+	}
+}
