@@ -10,12 +10,22 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_52fb6")
 
-[node name="Button" type="Button" parent="."]
+[node name="ButtonTerminate" type="Button" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "test"
+text = "Terminate"
 
-[node name="Label" type="TextEdit" parent="."]
+[node name="ButtonHeartbeat" type="Button" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "TEXT EXCHANGE"
+text = "Heartbeat"
+
+[node name="LabelHeart" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Heatbeat req"
+
+[node name="LabelResponse" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Responce"
