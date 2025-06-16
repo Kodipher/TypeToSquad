@@ -24,18 +24,14 @@ public abstract record class Responce : Message {
 
 
 public record class UnknwonRequestResponce : Responce {
-
 	public override ResponceType Type => ResponceType.UnknwonRequestType;
-
 	public override void ReadContents(BinaryReader payloadReader) { }
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 }
 
 
 public record class TerminateAcceptedResponce : Responce {
-
 	public override ResponceType Type => ResponceType.TerminationAccepted;
-
 	public override void ReadContents(BinaryReader payloadReader) { }
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 }

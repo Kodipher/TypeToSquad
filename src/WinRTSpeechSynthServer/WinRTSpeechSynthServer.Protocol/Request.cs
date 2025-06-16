@@ -23,9 +23,7 @@ public abstract record class Request : Message {
 
 
 public record class TerminateRequest : Request {
-
 	public override RequestType Type => RequestType.Terminate;
-
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 	public override void ReadContents(BinaryReader payloadReader) { }
 }
