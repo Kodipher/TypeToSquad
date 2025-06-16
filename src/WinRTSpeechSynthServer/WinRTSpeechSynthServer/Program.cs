@@ -20,13 +20,13 @@ public class Program {
 
 		// Setup data and syntehsizer 
 		string pipeName = args[0];
-		bool terminateRquestFlag = false;
+		bool terminateRequestFlag = false;
 		// todo
 
 		// Setup request mapper
 		var requestHandler = new RequestMapper()
-			.Register<TerminateRequest>((_) => { terminateRquestFlag = true; return new TerminateAcceptedResponse(); })
-			.Register<HeartbeatRequest>((req) => new HeartbeatEchoResponse() { EchoByte = req.EchoByte });
+			.Register<TerminateRequest>(_ => { terminateRequestFlag = true; return new TerminateAcceptedResponse(); })
+			.Register<HeartbeatRequest>(req => new HeartbeatEchoResponse() { EchoByte = req.EchoByte });
 
 		// Pipe
 		try {
@@ -44,7 +44,7 @@ public class Program {
 			using BinaryWriter writer = new BinaryWriter(pipeServer);
 
 			Console.WriteLine($"Serving pipe \"{pipeName}\" with buffer sizes in={pipeServer.InBufferSize} out={pipeServer.OutBufferSize} (0:=allocated as needed)");
-			while (!terminateRquestFlag) {
+			while (!terminateRequestFlag) {
 
 				Console.WriteLine("Waiting for request...");
 				await pipeServer.WaitForConnectionAsync();
