@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<RootNamespace>WinRTSpeechSynthServer.Protocol</RootNamespace>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Title>WinRTSpeechSynthServer.Protocol</Title>
+    <Authors>Kodipher</Authors>
+    <Version>0.0.0-alpha.0.dev</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+</Project>
