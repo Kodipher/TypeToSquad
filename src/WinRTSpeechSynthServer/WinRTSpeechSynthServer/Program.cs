@@ -25,8 +25,8 @@ public class Program {
 
 		// Setup request mapper
 		var requestHandler = new RequestMapper()
-			.Register<TerminateRequest>((_) => { terminateRquestFlag = true; return new TerminateAcceptedResponce(); })
-			.Register<HeartbeatRequest>((req) => new HeartbeatEchoResponce() { EchoByte = req.EchoByte });
+			.Register<TerminateRequest>((_) => { terminateRquestFlag = true; return new TerminateAcceptedResponse(); })
+			.Register<HeartbeatRequest>((req) => new HeartbeatEchoResponse() { EchoByte = req.EchoByte });
 
 		// Pipe
 		try {

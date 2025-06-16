@@ -22,35 +22,35 @@ public class RequestMapper {
 	/// Borrows the reader and a writer.
 	/// Does <b>not</b> flush the writer.
 	/// </summary>
-	public void HandleSingleRequest(BinaryReader requestReader, BinaryWriter responceWriter) {
+	public void HandleSingleRequest(BinaryReader requestReader, BinaryWriter responseWriter) {
 
 		RequestType requestType = (RequestType)requestReader.ReadByte();
-		Responce responce;
+		Response response;
 
 		if (registeredReaderWithHandler.TryGetValue(requestType, out var handler)) {
 			// Handle request if known
-			responce = handler(requestReader);
+			response = handler(requestReader);
 		} else {
-			// Default responce if unknown
-			responce = new UnknwonRequestResponce();
+			// Default response if unknown
+			response = new UnknwonRequestResponse();
 		}
 
-		// Write responce
-		responceWriter.Write((byte)responce.Type);
-		responce.WriteContents(responceWriter);
+		// Write response
+		responseWriter.Write((byte)response.Type);
+		response.WriteContents(responseWriter);
 
 	}
 
 	/// <summary>
 	/// A storage of all readers with handlers.
 	/// Each delegate here reads the stream to construct a <see cref="Request"/>> object,
-	/// invokes the inner registerd handler and returns a responce.
+	/// invokes the inner registerd handler and returns a response.
 	/// </summary>
-	readonly Dictionary<RequestType, Func<BinaryReader, Responce>> registeredReaderWithHandler = new();
+	readonly Dictionary<RequestType, Func<BinaryReader, Response>> registeredReaderWithHandler = new();
 
 	/// <summary>Register a handler for a particular type of <see cref="Request"/>.</summary>
 	/// <returns>this</returns>
-	public RequestMapper Register<TRequest>(Func<TRequest, Responce> handle) where TRequest : Request, new() {
+	public RequestMapper Register<TRequest>(Func<TRequest, Response> handle) where TRequest : Request, new() {
 		RequestType keyByte = new TRequest().Type;
 
 		var readerWithHandler = (BinaryReader requestReader) => {
@@ -59,10 +59,10 @@ public class RequestMapper {
 			requestObject.ReadContents(requestReader);
 
 			// Call the handler
-			Responce responce = handle(requestObject);
+			Response response = handle(requestObject);
 
-			// Return responce
-			return responce;
+			// Return response
+			return response;
 		};
 
 		registeredReaderWithHandler[keyByte] = readerWithHandler;
