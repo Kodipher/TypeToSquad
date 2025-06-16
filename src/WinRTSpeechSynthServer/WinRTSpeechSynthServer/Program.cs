@@ -46,14 +46,17 @@ public class Program {
 			Console.WriteLine($"Serving pipe \"{pipeName}\" with buffer sizes in={pipeServer.InBufferSize} out={pipeServer.OutBufferSize} (0:=allocated as needed)");
 			while (!terminateRquestFlag) {
 
-				Console.WriteLine("Waiting...");
+				Console.WriteLine("Waiting for request...");
 				await pipeServer.WaitForConnectionAsync();
 
 				Console.WriteLine("Connected. Processing...");
 				await Task.Run(() => requestHandler.HandleSingleRequest(reader, writer));
 				writer.Flush();
 
-				Console.WriteLine("Disconnecting...");
+				Console.WriteLine("Reponse sent. Waiting for drain.");
+				pipeServer.WaitForPipeDrain();
+
+				Console.WriteLine("Pipe drained. Disconnecting.");
 				if (pipeServer.IsConnected) pipeServer.Disconnect();
 			}
 
