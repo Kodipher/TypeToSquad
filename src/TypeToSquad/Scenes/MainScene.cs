@@ -13,15 +13,25 @@ namespace TypeToSquad.Scenes;
 
 public partial class MainScene : HBoxContainer {
 
-	Label labelHeart;
-	Label labelResponse;
+	Label labelHeart = null!;
+	Label labelResponse = null!;
+	TextEdit textEdit = null!;
+
+	AudioStreamPlayer streamPlayer = null!;
+	AudioStreamWav currentStream = null!;
+
+	ResponseReader responseReader = new();
 
 	public override void _Ready() {
 		var terminateButton = GetNode<Button>("ButtonTerminate");
 		var heatbeatButton = GetNode<Button>("ButtonHeartbeat");
+		var speakButton = GetNode<Button>("ButtonSpeak");
 
 		labelHeart = GetNode<Label>("LabelHeart");
 		labelResponse = GetNode<Label>("LabelResponse");
+		textEdit = GetNode<TextEdit>("TextEdit");
+
+		streamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
 
 		terminateButton.Pressed += () => SendRequest(new TerminateRequest());
 		heatbeatButton.Pressed += () => {
@@ -29,8 +39,11 @@ public partial class MainScene : HBoxContainer {
 			labelHeart.Text = value.ToString("X");
 			SendRequest(new HeartbeatRequest() { EchoByte = value });
 		};
+		speakButton.Pressed += () => {
+			SendRequest(new SyntesizeTextRequest() { InputString = textEdit.Text });
+		};
 
-		
+		responseReader.RegisterAll();
 	}
 
 
@@ -50,10 +63,31 @@ public partial class MainScene : HBoxContainer {
 		writer.Flush();
 
 
-		byte responseType = reader.ReadByte();
-		labelResponse.Text = responseType.ToString("X");
-		if (responseType == (byte)ResponseType.HeartbeatEcho) {
-			labelResponse.Text += " " + reader.ReadByte().ToString("X");
+		Response response = responseReader.ReadResponce(reader);
+
+		if (response is HeartbeatEchoResponse echoResponce) {
+			labelResponse.Text = "HeartbeatEcho:" + echoResponce.EchoByte.ToString("X");
+		} else if (response is TerminateAcceptedResponse) {
+			labelResponse.Text = "Terminated";
+		} else if (response is SyntesisResultResponse speechResponce) {
+			labelResponse.Text = "Speech,len=" + speechResponce.SynthesizedData.Length.ToString();
+
+			const int wavImportCompressModePcm = 0;
+			const int wavImportLoopModeDisabled = 1;
+
+			currentStream = AudioStreamWav.LoadFromBuffer(
+				speechResponce.SynthesizedData,
+				new Godot.Collections.Dictionary {
+					["compress/mode"] = wavImportCompressModePcm,
+					["edit/loop_mode"] = wavImportLoopModeDisabled,
+				}
+			);
+
+			streamPlayer.Stream = currentStream;
+			streamPlayer.Play();
+
+		} else {
+			labelResponse.Text = response.Type.ToString();
 		}
 		
 	}

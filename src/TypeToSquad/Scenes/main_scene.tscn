@@ -12,12 +12,12 @@ script = ExtResource("1_52fb6")
 
 [node name="ButtonTerminate" type="Button" parent="."]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 text = "Terminate"
 
 [node name="ButtonHeartbeat" type="Button" parent="."]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 text = "Heartbeat"
 
 [node name="LabelHeart" type="Label" parent="."]
@@ -27,5 +27,16 @@ text = "Heatbeat req"
 
 [node name="LabelResponse" type="Label" parent="."]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 text = "Responce"
+
+[node name="TextEdit" type="TextEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonSpeak" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "speak"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
