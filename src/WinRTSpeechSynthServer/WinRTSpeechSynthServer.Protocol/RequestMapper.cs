@@ -45,9 +45,7 @@ public class RequestMapper {
 		}
 
 		// Write response
-		responseWriter.Write((byte)response.Type);
-		response.WriteContents(responseWriter);
-
+		responseWriter.Write(response);
 	}
 
 	/// <summary>
