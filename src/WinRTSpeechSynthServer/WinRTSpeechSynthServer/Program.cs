@@ -21,7 +21,8 @@ public class Program {
 		// Setup data and syntehsizer 
 		string pipeName = args[0];
 		bool terminateRequestFlag = false;
-		// todo
+
+		using SpeechSynthesisWrapper speechSynth = new();
 
 		// Setup request mapper
 		var requestHandler = new RequestMapper()
