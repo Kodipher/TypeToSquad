@@ -15,6 +15,54 @@ public class SpeechSynthesisWrapper : IDisposable {
 
 	readonly SpeechSynthesizer synth = new();
 
+	#region //// Voices
+
+	/// <summary>
+	/// Sets a voice by their <see cref="VoiceInformation.DisplayName"/>.
+	/// If any voice matches then it is set and <see langword="true"/> is returned.
+	/// Returns <see langword="false"/> if no voice matches.
+	/// </summary>
+	public bool SetVoice(string name) {
+
+		VoiceInformation? voice = SpeechSynthesizer
+									.AllVoices
+									.Where(voice => voice.DisplayName.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+									.FirstOrDefault((VoiceInformation?)null);
+
+		if (voice is null) return false;
+
+		synth.Voice = voice;
+		return true;
+	}
+
+	/// <summary>Returns all installed voices.</summary>
+	public static Protocol.VoiceInfo[] GetVoices() {
+		return SpeechSynthesizer.AllVoices.Select(ConvertVoiceInfo).ToArray();
+	}
+
+	/// <summary>
+	/// Converts a <see cref="VoiceInformation"/> from the windows runtime
+	/// to a <see cref="Protocol.VoiceInfo"/> usable to transmit data
+	/// </summary>
+	public static Protocol.VoiceInfo ConvertVoiceInfo(VoiceInformation info) {
+
+		var convertedGender = info.Gender switch {
+			VoiceGender.Male => Protocol.VoiceGender.Male,
+			VoiceGender.Female => Protocol.VoiceGender.Female,
+			_ => Protocol.VoiceGender.Unknown,
+		};
+
+		return new Protocol.VoiceInfo() {
+			Id = info.Id,
+			Name = info.DisplayName,
+			Language = info.Language,
+			Gender = convertedGender
+		};
+	}
+
+	#endregion
+
+	#region //// Syntehsis
 
 	public async Task<byte[]> SynthesizeTextAsync(string input) {
 		using SpeechSynthesisStream stream = await synth.SynthesizeTextToStreamAsync(input);
@@ -51,6 +99,7 @@ public class SpeechSynthesisWrapper : IDisposable {
 		return dataReader.ReadBuffer(streamSize).ToArray();
 	}
 
+	#endregion
 
 	#region //// Disposable
 
