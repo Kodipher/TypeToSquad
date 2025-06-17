@@ -26,6 +26,7 @@ public class ResponseReader {
 	/// Registers a type so that a <see cref="Response"/> of that type can
 	/// be read by this reader.
 	/// </summary>
+	/// <returns>this</returns>
 	public ResponseReader Register<TResponse>() where TResponse : Response, new() {
 		ResponseType keyByte = new TResponse().Type;
 

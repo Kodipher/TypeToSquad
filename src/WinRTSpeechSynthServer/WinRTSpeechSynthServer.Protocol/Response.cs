@@ -9,6 +9,7 @@ namespace WinRTSpeechSynthServer.Protocol;
 
 public enum ResponseType : byte {
 	Unknown = 0x00,
+	SyntesisResult = 0x21,
 	TerminationAccepted = 0x2F,
 	HeartbeatEcho = 0x30,
 	UnknwonRequestType = 0xFF,
@@ -20,6 +21,25 @@ public abstract record class Response : Message {
 	public sealed override bool IsRequest => false;
 	public sealed override byte MessageType => (byte)Type;
 	public abstract ResponseType Type { get; }
+}
+
+
+public record class SyntesisResultResponse : Response {
+
+	public override ResponseType Type => ResponseType.SyntesisResult;
+
+	public byte[] SynthesizedData { get; set; } = Array.Empty<byte>();
+
+	public override void WriteContents(BinaryWriter payloadWriter) {
+		payloadWriter.Write((int)SynthesizedData.Length);
+		payloadWriter.Write(SynthesizedData);
+	}
+
+	public override void ReadContents(BinaryReader payloadReader) {
+		int inputByteLength = payloadReader.ReadInt32();
+		SynthesizedData = new byte[inputByteLength];
+		payloadReader.Read(SynthesizedData);
+	}
 }
 
 

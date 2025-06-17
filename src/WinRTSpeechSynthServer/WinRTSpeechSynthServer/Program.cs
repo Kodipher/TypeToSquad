@@ -26,6 +26,7 @@ public class Program {
 
 		// Setup request mapper
 		var requestHandler = new RequestMapper()
+			.Register<SyntesizeTextRequest>(req => new SyntesisResultResponse() { SynthesizedData = speechSynth.SynthesizeText(req.InputString) })
 			.Register<TerminateRequest>(_ => { terminateRequestFlag = true; return new TerminateAcceptedResponse(); })
 			.Register<HeartbeatRequest>(req => new HeartbeatEchoResponse() { EchoByte = req.EchoByte });
 
