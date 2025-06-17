@@ -33,6 +33,7 @@ public static class BinaryReadWriteExtensions {
 	/// <summary>
 	/// Reads <see cref="Array.Length"/> as <see cref="int"/> 
 	/// then the reads a buffer of that length.
+	/// Advances stream position.
 	/// </summary>
 	public static byte[] ReadBufferWithLength(this BinaryReader reader) {
 		int inputByteLength = reader.ReadInt32();
@@ -54,6 +55,7 @@ public static class BinaryReadWriteExtensions {
 	/// <summary>
 	/// Reads an integer byte length and then the utf8 string of that length
 	/// using <see cref="ReadBufferWithLength(BinaryReader)"/>
+	/// Advances stream position.
 	/// </summary>
 	public static string ReadUtf8WithLength(this BinaryReader reader) {
 		return Encoding.UTF8.GetString(reader.ReadBufferWithLength());
