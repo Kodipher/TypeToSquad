@@ -4,7 +4,7 @@ using System.Linq;
 using System.IO;
 
 
-namespace WinRTSpeechSynthServer.Protocol;
+namespace WinRTSpeechSynthServer.Protocol.Messages;
 
 
 public enum ResponseType : byte {

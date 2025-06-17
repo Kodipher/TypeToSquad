@@ -4,12 +4,15 @@ using System.Linq;
 using System.IO;
 
 
-namespace WinRTSpeechSynthServer.Protocol;
+namespace WinRTSpeechSynthServer.Protocol.Messages;
 
 
 public enum RequestType : byte {
 	Unknown = 0x00,
 	SynthesizeText = 0x01,
+	SynthesizeSsml = 0x02,
+	//GetVoices = 0x09,
+	//SetMainVoice = 0x0A,
 	Heartbeat = 0xE0,
 	Terminate = 0xFD
 }

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 
-namespace WinRTSpeechSynthServer.Protocol;
+namespace WinRTSpeechSynthServer.Protocol.Messages;
 
 
 /// <summary>Base class for all structures passed during communication.</summary>

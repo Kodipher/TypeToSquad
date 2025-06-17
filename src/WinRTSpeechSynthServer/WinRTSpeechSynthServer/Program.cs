@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading.Tasks;
 using WinRTSpeechSynthServer.Protocol;
+using WinRTSpeechSynthServer.Protocol.Messages;
 
 
 namespace WinRTSpeechSynthServer;
