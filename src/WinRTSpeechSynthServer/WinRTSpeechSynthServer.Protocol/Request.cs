@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Text;
 
 
 namespace WinRTSpeechSynthServer.Protocol;
@@ -31,16 +30,11 @@ public record class SyntesizeTextRequest : Request {
 	public string InputString { get; set; } = "";
 
 	public override void WriteContents(BinaryWriter payloadWriter) {
-		byte[] inputAsBytes = Encoding.UTF8.GetBytes(InputString);
-		payloadWriter.Write((int)inputAsBytes.Length);
-		payloadWriter.Write(inputAsBytes);
+		payloadWriter.WriteUtf8WithLength(InputString);
 	}
 
 	public override void ReadContents(BinaryReader payloadReader) {
-		int inputByteLength = payloadReader.ReadInt32();
-		byte[] inputAsBytes = new byte[inputByteLength];
-		payloadReader.Read(inputAsBytes);
-		InputString = Encoding.UTF8.GetString(inputAsBytes);
+		InputString = payloadReader.ReadUtf8WithLength();
 	}
 
 }

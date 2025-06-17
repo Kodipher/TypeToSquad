@@ -31,14 +31,11 @@ public record class SyntesisResultResponse : Response {
 	public byte[] SynthesizedData { get; set; } = Array.Empty<byte>();
 
 	public override void WriteContents(BinaryWriter payloadWriter) {
-		payloadWriter.Write((int)SynthesizedData.Length);
-		payloadWriter.Write(SynthesizedData);
+		payloadWriter.WriteBufferWithLength(SynthesizedData);
 	}
 
 	public override void ReadContents(BinaryReader payloadReader) {
-		int inputByteLength = payloadReader.ReadInt32();
-		SynthesizedData = new byte[inputByteLength];
-		payloadReader.Read(SynthesizedData);
+		SynthesizedData = payloadReader.ReadBufferWithLength();
 	}
 }
 
