@@ -30,6 +30,8 @@ public class Program {
 			.Register<TerminateRequest>(_ => { terminateRequestFlag = true; return new TerminateAcceptedResponse(); })
 			.Register<HeartbeatRequest>(req => new HeartbeatEchoResponse() { EchoByte = req.EchoByte });
 
+		requestHandler.OnRequestReadStart += reqType => Console.WriteLine($"Processing request of type {reqType}.");
+
 		// Pipe
 		try {
 			Console.WriteLine($"Creating pipe \"{pipeName}\"...");
@@ -51,7 +53,7 @@ public class Program {
 				Console.WriteLine("Waiting for request...");
 				await pipeServer.WaitForConnectionAsync();
 
-				Console.WriteLine("Connected. Processing...");
+				Console.WriteLine("Connected.");
 				await Task.Run(() => requestHandler.HandleSingleRequest(reader, writer));
 				writer.Flush();
 

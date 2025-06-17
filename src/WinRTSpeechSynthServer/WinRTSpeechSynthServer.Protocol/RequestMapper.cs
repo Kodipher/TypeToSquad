@@ -18,6 +18,12 @@ namespace WinRTSpeechSynthServer.Protocol;
 public class RequestMapper {
 
 	/// <summary>
+	/// Invoked when the <see cref="Request.Type"/> has been read.
+	/// The rest of the request is read imedeatly after.
+	/// </summary>
+	public event Action<RequestType> OnRequestReadStart = delegate { };
+
+	/// <summary>
 	/// Reads one request from the input stream and writes one response to the output stream.
 	/// Borrows the reader and a writer.
 	/// Does <b>not</b> flush the writer.
@@ -26,6 +32,8 @@ public class RequestMapper {
 
 		RequestType requestType = (RequestType)requestReader.ReadByte();
 		Response response;
+
+		OnRequestReadStart(requestType);
 
 		if (registeredReaderWithHandler.TryGetValue(requestType, out var handler)) {
 			// Handle request if known
