@@ -9,7 +9,7 @@ namespace WinRTSpeechSynthServer.Protocol;
 
 public enum RequestType : byte {
 	Unknown = 0x00,
-	SyntesizeText = 0x01,
+	SynthesizeText = 0x01,
 	Heartbeat = 0xE0,
 	Terminate = 0xFD
 }
@@ -23,9 +23,9 @@ public abstract record class Request : Message {
 }
 
 
-public record class SyntesizeTextRequest : Request {
+public record class SynthesizeTextRequest : Request {
 
-	public override RequestType Type => RequestType.SyntesizeText;
+	public override RequestType Type => RequestType.SynthesizeText;
 
 	public string InputString { get; set; } = "";
 
