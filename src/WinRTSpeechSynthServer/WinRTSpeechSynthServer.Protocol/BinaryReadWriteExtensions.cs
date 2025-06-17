@@ -61,4 +61,54 @@ public static class BinaryReadWriteExtensions {
 		return Encoding.UTF8.GetString(reader.ReadBufferWithLength());
 	}
 
+
+	/// <summary>
+	/// Writes a <see cref="VoiceInfo"/> in a format
+	/// <see cref="ReadVoiceInfo"/> can understand and advances stream position.
+	/// </summary>
+	public static void Write(this BinaryWriter writer, VoiceInfo voice) {
+		writer.WriteUtf8WithLength(voice.Id);
+		writer.WriteUtf8WithLength(voice.Name);
+		writer.WriteUtf8WithLength(voice.Language);
+		writer.Write((byte)voice.Gender);
+	}
+
+	/// <summary>
+	/// Reads a <see cref="VoiceInfo"/> that was written by
+	/// <see cref="Write(BinaryWriter, VoiceInfo)"/> and advances stream position.
+	/// </summary>
+	public static VoiceInfo ReadVoiceInfo(this BinaryReader reader) {
+		return new VoiceInfo() {
+			Id = reader.ReadUtf8WithLength(),
+			Name = reader.ReadUtf8WithLength(),
+			Language = reader.ReadUtf8WithLength(),
+			Gender = (VoiceGender)reader.ReadByte(),
+		};
+	}
+
+
+	/// <summary>
+	/// Writes an array of <see cref="VoiceInfo"/>s in a format
+	/// <see cref="ReadVoiceInfoArray"/> can understand and advances stream position.
+	/// </summary>
+	public static void Write(this BinaryWriter writer, VoiceInfo[] voices) {
+		writer.Write((int)voices.Length);
+		for (int i = 0; i < voices.Length; i++) {
+			writer.Write(voices[i]);
+		}
+	}
+
+	/// <summary>
+	/// Reads an array of <see cref="VoiceInfo[]"/>s that was written by
+	/// <see cref="Write(BinaryWriter, VoiceInfo[])"/> and advances stream position.
+	/// </summary>
+	public static VoiceInfo[] ReadVoiceInfoArray(this BinaryReader reader) {
+		int length = reader.ReadInt32();
+		VoiceInfo[] voices = new VoiceInfo[length];
+		for (int i = 0; i < length; i++) {
+			voices[i] = reader.ReadVoiceInfo();
+		}
+		return voices;
+	}
+
 }
