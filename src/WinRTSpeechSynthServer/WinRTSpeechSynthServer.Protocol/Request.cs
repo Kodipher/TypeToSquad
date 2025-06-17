@@ -40,6 +40,23 @@ public record class SynthesizeTextRequest : Request {
 }
 
 
+public record class SynthesizeSsmlRequest : Request {
+
+	public override RequestType Type => RequestType.SynthesizeSsml;
+
+	public string InputString { get; set; } = "";
+
+	public override void WriteContents(BinaryWriter payloadWriter) {
+		payloadWriter.WriteUtf8WithLength(InputString);
+	}
+
+	public override void ReadContents(BinaryReader payloadReader) {
+		InputString = payloadReader.ReadUtf8WithLength();
+	}
+
+}
+
+
 public record class TerminateRequest : Request {
 	public override RequestType Type => RequestType.Terminate;
 	public override void WriteContents(BinaryWriter payloadWriter) { }
