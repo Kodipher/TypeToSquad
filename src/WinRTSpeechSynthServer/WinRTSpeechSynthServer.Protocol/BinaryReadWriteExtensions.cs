@@ -36,8 +36,8 @@ public static class BinaryReadWriteExtensions {
 	/// Advances stream position.
 	/// </summary>
 	public static byte[] ReadBufferWithLength(this BinaryReader reader) {
-		int inputByteLength = reader.ReadInt32();
-		byte[] buffer = new byte[inputByteLength];
+		int length = reader.ReadInt32();
+		byte[] buffer = new byte[length];
 		reader.Read(buffer);
 		return buffer;
 	}

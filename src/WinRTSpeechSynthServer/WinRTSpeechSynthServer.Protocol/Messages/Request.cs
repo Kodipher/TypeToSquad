@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 
 
@@ -11,8 +9,9 @@ public enum RequestType : byte {
 	Unknown = 0x00,
 	SynthesizeText = 0x01,
 	SynthesizeSsml = 0x02,
-	//GetVoices = 0x09,
-	//SetMainVoice = 0x0A,
+	GetVoices = 0x10,
+	SetVoice = 0x11,
+	SetVoiceToDefault = 0x12,
 	Heartbeat = 0xE0,
 	Terminate = 0xFD
 }
@@ -25,6 +24,8 @@ public abstract record class Request : Message {
 	public abstract RequestType Type { get; }
 }
 
+
+#region //// Synthesis
 
 public record class SynthesizeTextRequest : Request {
 
@@ -58,6 +59,43 @@ public record class SynthesizeSsmlRequest : Request {
 	}
 
 }
+
+#endregion
+
+
+#region //// Voices
+
+public record class GetVoicesRequest : Request {
+	public override RequestType Type => RequestType.GetVoices;
+	public override void WriteContents(BinaryWriter payloadWriter) { }
+	public override void ReadContents(BinaryReader payloadReader) { }
+}
+
+
+public record class SetVoiceRequest : Request {
+
+	public override RequestType Type => RequestType.SetVoice;
+
+	public string VoiceName { get; set; } = "";
+
+	public override void WriteContents(BinaryWriter payloadWriter) {
+		payloadWriter.WriteUtf8WithLength(VoiceName);
+	}
+
+	public override void ReadContents(BinaryReader payloadReader) {
+		VoiceName = payloadReader.ReadUtf8WithLength();
+	}
+
+}
+
+
+public record class SetVoiceToDefaultRequest : Request {
+	public override RequestType Type => RequestType.SetVoiceToDefault;
+	public override void WriteContents(BinaryWriter payloadWriter) { }
+	public override void ReadContents(BinaryReader payloadReader) { }
+}
+
+#endregion
 
 
 public record class TerminateRequest : Request {
