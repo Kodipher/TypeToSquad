@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using WinRTSpeechSynthServer.Protocol;
+using WinRTSpeechSynthServer.Protocol.Messages;
 
 
 namespace TypeToSquad.Scenes;
@@ -40,7 +41,7 @@ public partial class MainScene : HBoxContainer {
 			SendRequest(new HeartbeatRequest() { EchoByte = value });
 		};
 		speakButton.Pressed += () => {
-			SendRequest(new SyntesizeTextRequest() { InputString = textEdit.Text });
+			SendRequest(new SynthesizeTextRequest() { InputString = textEdit.Text });
 		};
 
 		responseReader.RegisterAll();
