@@ -35,6 +35,13 @@ public class SpeechSynthesisWrapper : IDisposable {
 		return true;
 	}
 
+	/// <summary>Sets the voice to default and returns the default voice.</summary>
+	public Protocol.VoiceInfo SetVoiceToDefault() {
+		var defaultVoice = SpeechSynthesizer.DefaultVoice;
+		synth.Voice = defaultVoice;
+		return ConvertVoiceInfo(defaultVoice);
+	}
+
 	/// <summary>Returns all installed voices.</summary>
 	public static Protocol.VoiceInfo[] GetVoices() {
 		return SpeechSynthesizer.AllVoices.Select(ConvertVoiceInfo).ToArray();
