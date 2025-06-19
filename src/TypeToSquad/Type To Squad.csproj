@@ -9,7 +9,7 @@
 	
   <ItemGroup>
     <Reference Include="WinRTSpeechSynthServer.Protocol">
-      <HintPath>..\WinRTSpeechSynthServer\WinRTSpeechSynthServer.Protocol\bin\Debug\net8.0\WinRTSpeechSynthServer.Protocol.dll</HintPath>
+      <HintPath>WinRTSpeechDaemon\WinRTSpeechSynthServer.Protocol.dll</HintPath>
     </Reference>
   </ItemGroup>
 
