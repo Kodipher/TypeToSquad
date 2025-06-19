@@ -16,11 +16,16 @@ config/version="v0.0.0-alpha.0.dev"
 run/main_scene="uid://dpw8i3w48kujw"
 run/enable_alt_space_menu=true
 config/use_custom_user_dir=true
+config/custom_user_dir_name="Kodipher/TypeToSquad"
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
 run/max_fps=60
 run/low_processor_mode=true
 boot_splash/show_image=false
 boot_splash/fullsize=false
+
+[copy_files_on_export]
+
+files=Array[PackedStringArray]([PackedStringArray("res://WinRTSpeechDaemon", "WinRTSpeechDaemon", "windows")])
 
 [display]
 
@@ -30,6 +35,10 @@ window/subwindows/embed_subwindows=false
 [dotnet]
 
 project/assembly_name="Type To Squad"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/copy_files_on_export/plugin.cfg")
 
 [rendering]
 
