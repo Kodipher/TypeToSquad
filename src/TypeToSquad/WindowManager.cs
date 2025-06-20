@@ -32,6 +32,10 @@ public partial class WindowManager : Node, IRefrencesCore {
 	/// Provides the <see cref="TypeToSquad.CoreNode"/> reference
 	/// to the root node of the window, if its <see cref="IRefrencesCore"/>.
 	/// </summary>
+	/// <remarks>
+	/// <see cref="Node._Ready"/> is not called by this method,
+	/// as this method does not add the <see cref="Window"/> into the scene tree.
+	/// </remarks>
 	Window InstantiateWindowScene(WindowType windowType) {
 
 		// Get window
@@ -62,6 +66,8 @@ public partial class WindowManager : Node, IRefrencesCore {
 	/// <summary>
 	/// Creates a window of type <paramref name="windowType"/>
 	/// and unpacks the contents into <paramref name="unpackDestination"/>.
+	/// The child of the window will be the child of the destination node.
+	/// No window properties are copied.
 	/// </summary>
 	/// <remarks>
 	/// Only script-less windows are supported.
@@ -90,6 +96,31 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 		// Cleanup
 		window.Free();
+	}
+
+
+	readonly Dictionary<WindowType, Window> currentChildrenByType = new();
+
+	/// <summary>
+	/// Creates a new window of type <paramref name="windowType"/>
+	/// and makes it a child of the manager.
+	/// If the window already exists then focuses it instead.
+	/// </summary>
+	/// <returns>The created or focused window.</returns>
+	public Window CreateWindowAtSelfUnique(WindowType windowType) {
+
+		// Return existing
+		if (currentChildrenByType.TryGetValue(windowType, out Window? existingWindow)) {
+			existingWindow.GrabFocus();
+			return existingWindow;
+		}
+
+		// Create new
+		Window newWindow = InstantiateWindowScene(windowType);
+		currentChildrenByType.Add(windowType, newWindow);
+		newWindow.TreeExiting += () => currentChildrenByType.Remove(windowType);
+
+		return newWindow;
 	}
 
 }
