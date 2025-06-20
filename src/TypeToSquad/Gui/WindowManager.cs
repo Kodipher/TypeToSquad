@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace TypeToSquad;
+namespace TypeToSquad.Gui;
 
 
 public enum WindowType {

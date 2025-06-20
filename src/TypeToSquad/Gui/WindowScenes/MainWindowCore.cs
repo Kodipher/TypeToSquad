@@ -9,7 +9,7 @@ using WinRTSpeechSynthServer.Protocol;
 using WinRTSpeechSynthServer.Protocol.Messages;
 
 
-namespace TypeToSquad.WindowScenes;
+namespace TypeToSquad.Gui.WindowScenes;
 
 
 /// <remarks>

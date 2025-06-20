@@ -1,5 +1,4 @@
 TODO:
-- Move all resources to a subfolder to clear up root project folder
 - Basically everything else
 - Daemon + Protocol
 -- Add markers to ssml output
