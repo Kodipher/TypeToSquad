@@ -12,7 +12,11 @@ using WinRTSpeechSynthServer.Protocol.Messages;
 namespace TypeToSquad.WindowScenes;
 
 
-public partial class MainScene : Node {
+/// <remarks>
+/// This contents of this window are to be unpacked,
+/// thefore the main window has its programing in an immediate single child.
+/// </remarks>
+public partial class MainWindowCore : Node {
 
 	Label labelHeart = null!;
 	Label labelResponse = null!;
