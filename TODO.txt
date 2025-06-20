@@ -1,0 +1,14 @@
+TODO:
+- Move all resources to a subfolder to clear up root project folder
+- Window manager: Add CreateWindowAtSelfUnique
+- Basically everything else
+- Daemon + Protocol
+-- Add markers to ssml output
+-- set version to 1.0.0-rc.1
+
+TO TEST:
+- Daemon + Protocol
+-- getting voices
+-- voice changing
+-- voice setting and then synthesizing
+-- synthesizing with ssml
