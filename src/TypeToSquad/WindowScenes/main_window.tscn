@@ -4,7 +4,7 @@
 
 [node name="MainWindow" type="Window"]
 initial_position = 1
-size = Vector2i(1600, 900)
+size = Vector2i(500, 200)
 script = ExtResource("1_3e08y")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
