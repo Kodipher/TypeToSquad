@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://dpw8i3w48kujw"]
+
+[ext_resource type="Script" uid="uid://cs4fnbr75v2fj" path="res://WindowScenes/MainWindow.cs" id="1_3e08y"]
+
+[node name="MainWindow" type="Window"]
+initial_position = 1
+size = Vector2i(1600, 900)
+script = ExtResource("1_3e08y")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ButtonTerminate" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Terminate"
+
+[node name="ButtonHeartbeat" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Heartbeat"
+
+[node name="LabelHeart" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Heatbeat req"
+
+[node name="LabelResponse" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Responce"
+
+[node name="TextEdit" type="TextEdit" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonSpeak" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "speak"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="HBoxContainer"]

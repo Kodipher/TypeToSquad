@@ -9,10 +9,10 @@ using WinRTSpeechSynthServer.Protocol;
 using WinRTSpeechSynthServer.Protocol.Messages;
 
 
-namespace TypeToSquad.Scenes;
+namespace TypeToSquad.WindowScenes;
 
 
-public partial class MainScene : HBoxContainer {
+public partial class MainScene : Node {
 
 	Label labelHeart = null!;
 	Label labelResponse = null!;
