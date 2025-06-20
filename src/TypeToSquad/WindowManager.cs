@@ -59,4 +59,37 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 	#endregion
 
+	/// <summary>
+	/// Creates a window of type <paramref name="windowType"/>
+	/// and unpacks the contents into <paramref name="unpackDestination"/>.
+	/// </summary>
+	/// <remarks>
+	/// Only script-less windows are supported.
+	/// Only windows with 1 child node are supported.
+	/// </remarks>
+	public void CreateWindowUnpacked(WindowType windowType, Node unpackDestination) {
+		Window window = InstantiateWindowScene(windowType);
+
+		// Guards
+		ArgumentNullException.ThrowIfNull(unpackDestination);
+
+		if (window.GetChildCount() != 1) {
+			throw new NotSupportedException("Only windows with 1 child can be unpacked.");
+		}
+
+		if (window.GetScript().VariantType != Variant.Type.Nil) {
+			throw new NotSupportedException("Only windows without a script can be unpacked.");
+		}
+
+		// Unpack
+		Node child = window.GetChild(0);
+		window.RemoveChild(child);
+		child.Owner = null;
+
+		unpackDestination.AddChild(child);
+
+		// Cleanup
+		window.Free();
+	}
+
 }
