@@ -1,3 +1,16 @@
-[gd_scene format=3 uid="uid://cdeue8fjdyebt"]
+[gd_scene load_steps=4 format=3 uid="uid://cdeue8fjdyebt"]
 
-[node name="MainScene" type="Node"]
+[ext_resource type="Script" uid="uid://hqpbx6wldkno" path="res://WindowManager.cs" id="1_0f027"]
+[ext_resource type="Script" uid="uid://dbfqyxp6c48ce" path="res://CoreNode.cs" id="1_2c62f"]
+[ext_resource type="PackedScene" uid="uid://dpw8i3w48kujw" path="res://WindowScenes/main_window.tscn" id="3_gyfs4"]
+
+[node name="CoreNode" type="Node"]
+script = ExtResource("1_2c62f")
+
+[node name="WindowManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("1_0f027")
+WindowScenes = Dictionary[int, PackedScene]({
+1: ExtResource("3_gyfs4")
+})
+
