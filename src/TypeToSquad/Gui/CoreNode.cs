@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using TypeToSquad.Utils;
 
 
 namespace TypeToSquad.Gui;
@@ -17,13 +18,13 @@ public partial class CoreNode : Node {
 		base._Ready();
 
 		// Find Children
-		WindowManager = GetNode<WindowManager>("%WindowManager");
+		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
 
 		// Give core
 		WindowManager.RecieveCoreReference(this);
 
 		// Instantiate main window
-		Node mainWindowCoreParent = GetNode<Node>("%MainWindowUnpackParent");
+		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");
 		WindowManager.CreateWindowUnpacked(WindowType.Main, mainWindowCoreParent);
 		MainWindow = mainWindowCoreParent.GetChild<WindowScenes.MainWindowCore>(0);
 	}
