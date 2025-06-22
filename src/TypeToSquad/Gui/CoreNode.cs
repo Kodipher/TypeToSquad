@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+
+using TypeToSquad.Model;
 using TypeToSquad.Utils;
 
 
@@ -17,10 +19,11 @@ public partial class CoreNode : Node {
 	public override void _Ready() {
 		base._Ready();
 
-		// Find Children
+		// Init Model
+		SpeechDaemon = new SpeechDaemon();
+		// Find and init Children
 		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
 
-		// Give core
 		WindowManager.RecieveCoreReference(this);
 
 		// Instantiate main window
@@ -30,11 +33,18 @@ public partial class CoreNode : Node {
 	}
 
 	protected virtual void OnPreDelete() {
+		SpeechDaemon.Dispose();
 	}
 
 	public override void _Notification(int what) {
 		if (what == NotificationPredelete) OnPreDelete();
 	}
+
+	#region //// Model
+
+	public SpeechDaemon SpeechDaemon { get; private set; } = null!; // Set in _Ready
+
+	#endregion
 
 	#region //// Children
 
