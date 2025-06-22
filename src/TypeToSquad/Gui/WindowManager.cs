@@ -109,6 +109,8 @@ public partial class WindowManager : Node, IRefrencesCore {
 	/// <returns>The created or focused window.</returns>
 	public Window CreateWindowAtSelfUnique(WindowType windowType) {
 
+		GD.Print($"Window {windowType} requested.");
+
 		// Return existing
 		if (currentChildrenByType.TryGetValue(windowType, out Window? existingWindow)) {
 			existingWindow.GrabFocus();
