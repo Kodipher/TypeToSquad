@@ -62,7 +62,7 @@ public class Program {
 				await Task.Run(() => requestHandler.HandleSingleRequest(reader, writer));
 				writer.Flush();
 
-				Console.WriteLine("Reponse sent. Waiting for drain.");
+				Console.WriteLine("Response sent. Waiting for drain.");
 				pipeServer.WaitForPipeDrain();
 
 				Console.WriteLine("Pipe drained. Disconnecting.");
