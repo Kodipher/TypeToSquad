@@ -80,8 +80,8 @@ public class Program {
 				ex is ObjectDisposedException ||
 				ex is InvalidOperationException
 			) {
-				Console.Out.WriteLine("An exception has occured. See stderr.");
-				Console.Error.WriteLine($"Exception occured:\n{ex}");
+				Console.Out.WriteLine("An exception has occurred. See stderr.");
+				Console.Error.WriteLine($"Exception occurred:{Console.Error.NewLine}{ex}");
 			} else throw;
 		}
 
