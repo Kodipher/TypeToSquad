@@ -29,6 +29,13 @@ public partial class CoreNode : Node {
 		MainWindow = mainWindowCoreParent.GetChild<WindowScenes.MainWindowCore>(0);
 	}
 
+	protected virtual void OnPreDelete() {
+	}
+
+	public override void _Notification(int what) {
+		if (what == NotificationPredelete) OnPreDelete();
+	}
+
 	#region //// Children
 
 	public WindowManager WindowManager { get; private set; } = null!; // Set in _Ready
