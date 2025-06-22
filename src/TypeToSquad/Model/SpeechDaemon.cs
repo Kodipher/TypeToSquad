@@ -10,6 +10,25 @@ namespace TypeToSquad.Model;
 
 
 public class SpeechDaemon : IDisposable {
+
+	#region //// Daemon Process
+
+	const string relativeExecutablePath = @"WinRTSpeechDaemon\WinRTSpeechSynthServer.exe";
+
+	static string GetDaemonExecutablePath() {
+
+		string projectRootPath;
+		if (OS.HasFeature("editor")) {
+			projectRootPath = ProjectSettings.GlobalizePath(@"res://");
+		} else {
+			projectRootPath = Path.GetDirectoryName(OS.GetExecutablePath()) ?? "";
+		}
+
+		return Path.Combine(projectRootPath, relativeExecutablePath);
+	}
+
+	#endregion
+
 	#region //// Disposable
 
 	private bool isDisposed;
