@@ -1,8 +1,7 @@
 TODO:
-- Basically everything else
+- Basically everything ui and model
 - Daemon + Protocol
 -- Add markers to ssml output
--- set version to 1.0.0-rc.1
 
 TO TEST:
 - Window manager: CreateWindowAtSelfUnique (both creating new and focusing existing)
