@@ -5,6 +5,9 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
+using Rephidock.GeneralUtilities.Randomness;
+
+
 
 namespace TypeToSquad.Model;
 
@@ -13,7 +16,11 @@ public class SpeechDaemon : IDisposable {
 
 	#region //// Daemon Process
 
+	Process? daemonProcess = null;
+	string currentPipeName = "";
+
 	const string relativeExecutablePath = @"WinRTSpeechDaemon\WinRTSpeechSynthServer.exe";
+	const string pipeNameFormat = @"TTSSpeechDaemon_{0:x8}";
 
 	static string GetDaemonExecutablePath() {
 
@@ -27,19 +34,23 @@ public class SpeechDaemon : IDisposable {
 		return Path.Combine(projectRootPath, relativeExecutablePath);
 	}
 
-	Process? daemonProcess = null;
+	static string CreateUniquePipeName() {
+		int disambiguator = Random.Shared.NextUInt31();
+		return string.Format(pipeNameFormat, disambiguator);
+	}
 
-	public void StartDaemon(string pipeName) {
+	public void StartDaemon() {
 
 		ObjectDisposedException.ThrowIf(isDisposed, this);
 
-
+		string pipeName = CreateUniquePipeName();
 		GD.Print($"Starting/restarting the daemon with pipe {pipeName}.");
 
 		// Kill existing
 		daemonProcess?.Kill();
 		daemonProcess?.Dispose();
 		daemonProcess = null;
+		currentPipeName = "";
 
 		// Try start new
 		var daemonStartInfo = new ProcessStartInfo(GetDaemonExecutablePath(), [pipeName]) {
@@ -50,11 +61,17 @@ public class SpeechDaemon : IDisposable {
 		};
 
 		daemonProcess = Process.Start(daemonStartInfo);
+		currentPipeName = pipeName;
+
 		if (daemonProcess is null) {
 			GD.PushError("Daemon could not be started.");
+			currentPipeName = "";
 			return;
 		} else if (daemonProcess.HasExited) {
-			GD.PushError("Daemon processes instantly exited.");
+			GD.PushError("Daemon processes unexpectedly instantly exited.");
+			daemonProcess.Dispose();
+			daemonProcess = null;
+			currentPipeName = "";
 			return;
 		}
 

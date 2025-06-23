@@ -21,6 +21,8 @@ public partial class CoreNode : Node {
 
 		// Init Model
 		SpeechDaemon = new SpeechDaemon();
+		SpeechDaemon.StartDaemon();
+		
 		// Find and init Children
 		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
 
