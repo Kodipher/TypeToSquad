@@ -139,7 +139,7 @@ public class SpeechDaemon : IDisposable {
 	/*
 		Request are sent and processed asynchronously,
 		but the callbacks need to run on the main thread,
-		so callbacks are bound with the reponses and are queued.
+		so callbacks are bound with the reponses and queued.
 	*/
 
 	readonly static TimeSpan requestTimeout = TimeSpan.FromSeconds(5);
@@ -198,7 +198,7 @@ public class SpeechDaemon : IDisposable {
 			else throw;
 		}
 
-		GD.Print($"Sending request {req.Type}");
+		GD.Print($"Sending request of type {req.Type}");
 
 		writer.Write(req.MessageType);
 		req.WriteContents(writer);
