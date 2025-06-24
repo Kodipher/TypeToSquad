@@ -1,11 +1,6 @@
 using Godot;
 using System;
-using System.IO;
-using System.IO.Pipes;
-using System.Threading;
-using System.Threading.Tasks;
 
-using WinRTSpeechSynthServer.Protocol;
 using WinRTSpeechSynthServer.Protocol.Messages;
 
 
@@ -34,8 +29,6 @@ public partial class MainWindowCore : Node, IRefrencesCore {
 	AudioStreamPlayer streamPlayer = null!;
 	AudioStreamWav currentStream = null!;
 
-	ResponseReader responseReader = new();
-
 	public override void _Ready() {
 		var terminateButton = GetNode<Button>("ButtonTerminate");
 		var heatbeatButton = GetNode<Button>("ButtonHeartbeat");
@@ -47,37 +40,22 @@ public partial class MainWindowCore : Node, IRefrencesCore {
 
 		streamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
 
-		terminateButton.Pressed += () => SendRequest(new TerminateRequest());
+		terminateButton.Pressed += () => CoreNode?.SpeechDaemon.DispatchRequest(new TerminateRequest(), HandleResponse);
 		heatbeatButton.Pressed += () => {
 			byte value = (byte)Random.Shared.Next(0x100);
 			labelHeart.Text = value.ToString("X");
-			SendRequest(new HeartbeatRequest() { EchoByte = value });
+			CoreNode?.SpeechDaemon.DispatchRequest(new HeartbeatRequest() { EchoByte = value }, HandleResponse);
 		};
 		speakButton.Pressed += () => {
-			SendRequest(new SynthesizeTextRequest() { InputString = textEdit.Text });
+			CoreNode?.SpeechDaemon.DispatchRequest(new SynthesizeTextRequest() { InputString = textEdit.Text }, HandleResponse);
 		};
-
-		responseReader.RegisterAll();
 	}
 
 
 	public override void _Process(double delta) {
 	}
 
-	public void SendRequest(Request req) {
-
-		using NamedPipeClientStream pipeClientStream = new NamedPipeClientStream(".", "TESTPIPE", PipeDirection.InOut, PipeOptions.Asynchronous);
-		using BinaryReader reader = new BinaryReader(pipeClientStream);
-		using BinaryWriter writer = new BinaryWriter(pipeClientStream);
-
-		pipeClientStream.Connect(5000);
-
-		writer.Write(req.MessageType);
-		req.WriteContents(writer);
-		writer.Flush();
-
-
-		Response response = responseReader.ReadResponce(reader);
+	public void HandleResponse(Response response) {
 
 		if (response is HeartbeatEchoResponse echoResponce) {
 			labelResponse.Text = "HeartbeatEcho:" + echoResponce.EchoByte.ToString("X");
