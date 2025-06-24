@@ -147,6 +147,10 @@ public class SpeechDaemon : IDisposable {
 	readonly ResponseReader responseReader = new();
 	readonly ConcurrentQueue<Action> responseConsumptionCallbackQueue = new();
 
+	/// <summary>
+	/// Sends a request and queues the callback with the response
+	/// into the <see cref="responseConsumptionCallbackQueue"/>.
+	/// </summary>
 	public void DispatchRequest(Request request, Action<Response> callback) {
 		ObjectDisposedException.ThrowIf(isDisposed, this);
 
@@ -194,6 +198,8 @@ public class SpeechDaemon : IDisposable {
 			else throw;
 		}
 
+		GD.Print($"Sending request {req.Type}");
+
 		writer.Write(req.MessageType);
 		req.WriteContents(writer);
 		writer.Flush();
@@ -202,6 +208,11 @@ public class SpeechDaemon : IDisposable {
 		return responce;
 	}
 
+	/// <summary>
+	/// Executes all queued callbacks in
+	/// <see cref="responseConsumptionCallbackQueue"/>.
+	/// (Consumes the whole queue).
+	/// </summary>
 	public void ConsumeResponses() {
 		// Guards
 		ObjectDisposedException.ThrowIf(isDisposed, this);
