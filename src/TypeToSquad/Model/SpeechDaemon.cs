@@ -1,18 +1,27 @@
 using Godot;
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Text;
 using System.Threading.Tasks;
 
 using Rephidock.GeneralUtilities.Randomness;
 
+using WinRTSpeechSynthServer.Protocol;
+using WinRTSpeechSynthServer.Protocol.Messages;
 
 
 namespace TypeToSquad.Model;
 
 
 public class SpeechDaemon : IDisposable {
+
+	public SpeechDaemon() {
+		responseReader.RegisterAll();
+	}
+
 
 	#region //// Daemon Process
 
@@ -121,6 +130,87 @@ public class SpeechDaemon : IDisposable {
 		if (daemonProcess is null) return false;
 		if (daemonProcess.HasExited) return false;
 		return true;
+	}
+
+	#endregion
+
+	#region //// Communication
+
+	/*
+		Request are sent and processed asynchronously,
+		but the callbacks need to run on the main thread,
+		so callbacks are bound with the reponses and are queued.
+	*/
+
+	readonly static TimeSpan requestTimeout = TimeSpan.FromSeconds(5);
+
+	readonly ResponseReader responseReader = new();
+	readonly ConcurrentQueue<Action> responseConsumptionCallbackQueue = new();
+
+	public void DispatchRequest(Request request, Action<Response> callback) {
+		ObjectDisposedException.ThrowIf(isDisposed, this);
+
+		Task.Run(() => {
+			// Send request
+			Response? response = null;
+			response = SendRequest(request);
+			
+			// Enqueue response (as consumption callback)
+			if (response is null) return;
+			responseConsumptionCallbackQueue.Enqueue(() => callback(response));
+
+		}).ContinueWith((task) => {
+			if (task.Exception is not null) {
+				GD.PushError($"Exception(s) occurred during a request dispatch.\n{task.Exception}");
+			}
+		});
+		
+	}
+
+	/// <summary>
+	/// Sends a single <see cref="Request"/> <paramref name="req"/>
+	/// and returns a response.
+	/// </summary>
+	Response SendRequest(Request req) {
+
+		// Guards
+		ObjectDisposedException.ThrowIf(isDisposed, this);
+		
+		if (!IsDaemonAliveNoHeartbeat()) {
+			throw new InvalidOperationException("Daemon is not alive to make a request. Aborting request.");
+		}
+
+		// Perform request
+		using NamedPipeClientStream pipeClientStream = new NamedPipeClientStream(".", currentPipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
+		using BinaryReader reader = new BinaryReader(pipeClientStream);
+		using BinaryWriter writer = new BinaryWriter(pipeClientStream);
+
+		try {
+			pipeClientStream.Connect(requestTimeout);
+		} catch (Exception ex) {
+			if (ex is TimeoutException || ex is IOException) {
+				throw new IOException("Could not connect to the daemon", ex);
+			}
+			else throw;
+		}
+
+		writer.Write(req.MessageType);
+		req.WriteContents(writer);
+		writer.Flush();
+
+		Response responce = responseReader.ReadResponce(reader);
+		return responce;
+	}
+
+	public void ConsumeResponses() {
+		// Guards
+		ObjectDisposedException.ThrowIf(isDisposed, this);
+		// Consume
+		while (!responseConsumptionCallbackQueue.IsEmpty) {
+			if (responseConsumptionCallbackQueue.TryDequeue(out Action? callback)) {
+				callback();
+			}
+		}
 	}
 
 	#endregion

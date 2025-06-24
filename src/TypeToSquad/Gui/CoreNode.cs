@@ -34,6 +34,10 @@ public partial class CoreNode : Node {
 		MainWindow = mainWindowCoreParent.GetChild<WindowScenes.MainWindowCore>(0);
 	}
 
+	public override void _Process(double delta) {
+		SpeechDaemon?.ConsumeResponses();
+	}
+
 	protected virtual void OnPreDelete() {
 		SpeechDaemon.Dispose();
 	}
