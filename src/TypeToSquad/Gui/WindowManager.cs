@@ -31,6 +31,7 @@ public partial class WindowManager : Node, IRefrencesCore {
 	/// Creates an instance of one of the window scenes.
 	/// Provides the <see cref="TypeToSquad.CoreNode"/> reference
 	/// to the root node of the window, if its <see cref="IRefrencesCore"/>.
+	/// Only the root node is checked.
 	/// </summary>
 	/// <remarks>
 	/// <see cref="Node._Ready"/> is not called by this method,

@@ -16,7 +16,16 @@ namespace TypeToSquad.Gui.WindowScenes;
 /// This contents of this window are to be unpacked,
 /// thefore the main window has its programing in an immediate single child.
 /// </remarks>
-public partial class MainWindowCore : Node {
+public partial class MainWindowCore : Node, IRefrencesCore {
+
+	#region //// Core Node
+
+	public CoreNode? CoreNode { get; set; } = null;
+
+	public void RecieveCoreReference(CoreNode core) => CoreNode = core;
+
+	#endregion
+
 
 	Label labelHeart = null!;
 	Label labelResponse = null!;
