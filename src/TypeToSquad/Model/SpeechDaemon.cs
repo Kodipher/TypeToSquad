@@ -110,6 +110,19 @@ public class SpeechDaemon : IDisposable {
 		_ = ReadProcessStandardErrorBatched(daemonProcess);
 	}
 
+	/// <summary>
+	/// Checks if <see cref="daemonProcess"/> is alive.
+	/// The check is simple and does not involve a <see cref="HeartbeatRequest"/>.
+	/// </summary>
+	public bool IsDaemonAliveNoHeartbeat() {
+
+		ObjectDisposedException.ThrowIf(isDisposed, this);
+
+		if (daemonProcess is null) return false;
+		if (daemonProcess.HasExited) return false;
+		return true;
+	}
+
 	#endregion
 
 	#region //// Disposable
