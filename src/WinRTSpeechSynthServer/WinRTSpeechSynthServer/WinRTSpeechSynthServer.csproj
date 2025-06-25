@@ -11,7 +11,7 @@
   <PropertyGroup>
     <Title>WinRTSpeechSynthServer</Title>
     <Authors>Kodipher</Authors>
-    <Version>1.0.0-rc.1</Version>
+    <Version>1.0.0-rc.2</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Description>A server / bridge that allows calling WinRT's Speech Synthesis API</Description>
   </PropertyGroup>

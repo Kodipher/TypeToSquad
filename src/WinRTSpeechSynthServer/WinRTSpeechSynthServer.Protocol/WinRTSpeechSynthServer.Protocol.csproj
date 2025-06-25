@@ -10,7 +10,7 @@
   <PropertyGroup>
     <Title>WinRTSpeechSynthServer.Protocol</Title>
     <Authors>Kodipher</Authors>
-    <Version>1.0.0-rc.1</Version>
+    <Version>1.0.0-rc.2</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
