@@ -16,33 +16,66 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_3e08y")
 
-[node name="ButtonTerminate" type="Button" parent="MainWindowCore"]
+[node name="VBox" type="VBoxContainer" parent="MainWindowCore"]
 layout_mode = 2
 size_flags_horizontal = 0
+
+[node name="ButtonTerminate" type="Button" parent="MainWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
 text = "Terminate"
 
-[node name="ButtonHeartbeat" type="Button" parent="MainWindowCore"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainWindowCore/VBox"]
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="ButtonHeartbeat" type="Button" parent="MainWindowCore/VBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Heartbeat"
 
-[node name="LabelHeart" type="Label" parent="MainWindowCore"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Heatbeat req"
-
-[node name="LabelResponse" type="Label" parent="MainWindowCore"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Responce"
-
-[node name="TextEdit" type="TextEdit" parent="MainWindowCore"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ButtonSpeak" type="Button" parent="MainWindowCore"]
+[node name="LabelHeart" type="Label" parent="MainWindowCore/VBox/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
-text = "speak"
+text = "??"
+
+[node name="ButtonGetVoices" type="Button" parent="MainWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Get Voices"
+
+[node name="ButtonSetVoice" type="Button" parent="MainWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Set Voice"
+
+[node name="ButtonSetDefaultVoice" type="Button" parent="MainWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Set Default Voice"
+
+[node name="ButtonSpeak" type="Button" parent="MainWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Speak"
+
+[node name="TextEditInput" type="TextEdit" parent="MainWindowCore"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LabelResponse" type="Label" parent="MainWindowCore"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Responce"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MainWindowCore"]
+unique_name_in_owner = true

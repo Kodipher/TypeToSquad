@@ -5,8 +5,4 @@ TODO:
 
 TO TEST:
 - Window manager: CreateWindowAtSelfUnique (both creating new and focusing existing)
-- Daemon + Protocol
--- getting voices
--- voice changing
--- voice setting and then synthesizing
--- synthesizing with ssml
+- Daemon + Protocol: synthesizing with ssml
