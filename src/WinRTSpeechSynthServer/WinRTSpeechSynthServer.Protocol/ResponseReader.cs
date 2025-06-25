@@ -68,6 +68,16 @@ public class ResponseReader {
 	}
 
 	/// <summary>
+	/// Creates a <see cref="ResponseReader"/> with 
+	/// <see cref="RegisterAll"/> having been called.
+	/// </summary>
+	public static ResponseReader CreateWithStanardRegistered() {
+		ResponseReader reader = new();
+		reader.RegisterAll();
+		return reader;
+	}
+
+	/// <summary>
 	/// Reads a single <see cref="Response"/> from the borrowed stream.
 	/// Throws <see cref="InvalidOperationException"/> if <see cref="ResponseType"/>
 	/// is not recognized.

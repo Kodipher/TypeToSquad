@@ -18,11 +18,6 @@ namespace TypeToSquad.Model;
 
 public class SpeechDaemon : IDisposable {
 
-	public SpeechDaemon() {
-		responseReader.RegisterAll();
-	}
-
-
 	#region //// Daemon Process
 
 	Process? daemonProcess = null;
@@ -179,7 +174,7 @@ public class SpeechDaemon : IDisposable {
 
 	readonly static TimeSpan requestTimeout = TimeSpan.FromSeconds(5);
 
-	readonly ResponseReader responseReader = new();
+	readonly ResponseReader responseReader = ResponseReader.CreateWithStanardRegistered();
 	readonly ConcurrentQueue<Action> responseConsumptionCallbackQueue = new();
 
 	/// <summary>
