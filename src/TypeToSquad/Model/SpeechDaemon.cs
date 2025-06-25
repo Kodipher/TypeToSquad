@@ -81,6 +81,8 @@ public class SpeechDaemon : IDisposable {
 			return;
 		}
 
+		GD.Print("Daemon started.");
+
 		// Hook output and error
 		static void HandleProcessStandardOutput(object _, DataReceivedEventArgs eventArgs) {
 			if (eventArgs.Data is not null) GD.Print($"[DAEMON] {eventArgs.Data}");
@@ -207,7 +209,7 @@ public class SpeechDaemon : IDisposable {
 		ObjectDisposedException.ThrowIf(isDisposed, this);
 		
 		if (!IsDaemonAliveNoHeartbeat()) {
-			throw new InvalidOperationException("Daemon is not alive to make a request. Aborting request.");
+			throw new InvalidOperationException("Daemon is not alive. Aborting request.");
 		}
 
 		// Perform request
@@ -216,6 +218,7 @@ public class SpeechDaemon : IDisposable {
 		using BinaryWriter writer = new BinaryWriter(pipeClientStream);
 
 		try {
+			GD.Print("Connecting...");
 			pipeClientStream.Connect(requestTimeout);
 		} catch (Exception ex) {
 			if (ex is TimeoutException || ex is IOException) {
