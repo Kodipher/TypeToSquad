@@ -31,6 +31,8 @@ public class SpeechDaemon : IDisposable {
 	const string relativeExecutablePath = @"WinRTSpeechDaemon\WinRTSpeechSynthServer.exe";
 	const string pipeNameFormat = @"TTSSpeechDaemon_{0:x8}";
 
+	readonly static TimeSpan daemonKillTimeout = TimeSpan.FromSeconds(1);
+
 	static string GetDaemonExecutablePath() {
 
 		string projectRootPath;
@@ -56,10 +58,7 @@ public class SpeechDaemon : IDisposable {
 		GD.Print($"Starting/restarting the daemon with pipe {pipeName}.");
 
 		// Kill existing
-		daemonProcess?.Kill();
-		daemonProcess?.Dispose();
-		daemonProcess = null;
-		currentPipeName = "";
+		CloseAndDisposeDaemon();
 
 		// Try start new
 		var daemonStartInfo = new ProcessStartInfo(GetDaemonExecutablePath(), [pipeName]) {
@@ -78,9 +77,7 @@ public class SpeechDaemon : IDisposable {
 			return;
 		} else if (daemonProcess.HasExited) {
 			GD.PushError("Daemon processes unexpectedly instantly exited.");
-			daemonProcess.Dispose();
-			daemonProcess = null;
-			currentPipeName = "";
+			CloseAndDisposeDaemon();
 			return;
 		}
 
@@ -130,6 +127,35 @@ public class SpeechDaemon : IDisposable {
 		if (daemonProcess is null) return false;
 		if (daemonProcess.HasExited) return false;
 		return true;
+	}
+
+	/// <summary>
+	/// Safely closes and disposes of the daemon process.
+	/// Does nothing if <see cref="daemonProcess"/> is already <see langword="null"/>.
+	/// </summary>
+	void CloseAndDisposeDaemon() {
+
+		if (daemonProcess is null) return;
+
+		// Try asking nicely
+		if (!daemonProcess.HasExited) {
+			if (daemonProcess.CloseMainWindow()) {
+				daemonProcess.WaitForExit(daemonKillTimeout);
+			}
+		}
+
+		// Force exit
+		if (!daemonProcess.HasExited) {
+			daemonProcess.Kill();
+			daemonProcess.WaitForExit(daemonKillTimeout);
+		}
+
+		if (!daemonProcess.HasExited) GD.PushError("Could not close daemon process.");
+
+		// Dispose
+		daemonProcess.Dispose();
+		daemonProcess = null;
+		currentPipeName = "";
 	}
 
 	#endregion
@@ -236,7 +262,7 @@ public class SpeechDaemon : IDisposable {
 
 		if (disposingManaged) {
 			// Dispose managed
-			daemonProcess?.Kill();
+			CloseAndDisposeDaemon();
 			daemonProcess?.Dispose();
 		}
 
