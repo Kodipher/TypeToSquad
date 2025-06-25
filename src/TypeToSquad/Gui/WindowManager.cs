@@ -92,9 +92,10 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 		// Unpack
 		Node child = window.GetChild(0);
-		window.RemoveChild(child);
-		child.Owner = null;
+		foreach (var deepChild in child.FindChildren("*")) deepChild.Owner = child;
 
+		child.Owner = null;
+		window.RemoveChild(child);
 		unpackDestination.AddChild(child);
 
 		// Provide core
