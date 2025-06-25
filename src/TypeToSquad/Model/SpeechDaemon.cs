@@ -227,13 +227,15 @@ public class SpeechDaemon : IDisposable {
 			else throw;
 		}
 
-		GD.Print($"Sending request of type {req.Type}");
+		GD.Print($"Connected. Sending request of type {req.Type}.");
 
 		writer.Write(req.MessageType);
 		req.WriteContents(writer);
 		writer.Flush();
 
+		GD.Print($"Waiting for response.");
 		Response responce = responseReader.ReadResponce(reader);
+		GD.Print($"Got response of type {responce.Type}.");
 		return responce;
 	}
 
