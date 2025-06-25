@@ -25,7 +25,7 @@ public abstract record class Response : Message {
 }
 
 
-public record class SyntesisResultResponse : Response {
+public sealed record class SyntesisResultResponse : Response {
 
 	public override ResponseType Type => ResponseType.SyntesisResult;
 
@@ -44,7 +44,7 @@ public record class SyntesisResultResponse : Response {
 #region //// Voices
 
 
-public record class AllVoicesResponse : Response {
+public sealed record class AllVoicesResponse : Response {
 
 	public override ResponseType Type => ResponseType.AllVoices;
 
@@ -61,7 +61,7 @@ public record class AllVoicesResponse : Response {
 }
 
 
-public record class VoiceSetResponse : Response {
+public sealed record class VoiceSetResponse : Response {
 
 	public override ResponseType Type => ResponseType.VoiceSetConfirmation;
 
@@ -77,7 +77,7 @@ public record class VoiceSetResponse : Response {
 }
 
 
-public record class DefaultVoiceSetResponse : Response {
+public sealed record class DefaultVoiceSetResponse : Response {
 
 	public override ResponseType Type => ResponseType.DefaultVoiceSetConfirmation;
 
@@ -101,21 +101,21 @@ public record class DefaultVoiceSetResponse : Response {
 #endregion
 
 
-public record class UnknwonRequestResponse : Response {
+public sealed record class UnknwonRequestResponse : Response {
 	public override ResponseType Type => ResponseType.UnknwonRequestType;
 	public override void ReadContents(BinaryReader payloadReader) { }
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 }
 
 
-public record class TerminateAcceptedResponse : Response {
+public sealed record class TerminateAcceptedResponse : Response {
 	public override ResponseType Type => ResponseType.TerminationAccepted;
 	public override void ReadContents(BinaryReader payloadReader) { }
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 }
 
 
-public record class HeartbeatEchoResponse : Response {
+public sealed record class HeartbeatEchoResponse : Response {
 
 	public override ResponseType Type => ResponseType.HeartbeatEcho;
 

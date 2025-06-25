@@ -27,7 +27,7 @@ public abstract record class Request : Message {
 
 #region //// Synthesis
 
-public record class SynthesizeTextRequest : Request {
+public sealed record class SynthesizeTextRequest : Request {
 
 	public override RequestType Type => RequestType.SynthesizeText;
 
@@ -44,7 +44,7 @@ public record class SynthesizeTextRequest : Request {
 }
 
 
-public record class SynthesizeSsmlRequest : Request {
+public sealed record class SynthesizeSsmlRequest : Request {
 
 	public override RequestType Type => RequestType.SynthesizeSsml;
 
@@ -65,14 +65,14 @@ public record class SynthesizeSsmlRequest : Request {
 
 #region //// Voices
 
-public record class GetVoicesRequest : Request {
+public sealed record class GetVoicesRequest : Request {
 	public override RequestType Type => RequestType.GetVoices;
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 	public override void ReadContents(BinaryReader payloadReader) { }
 }
 
 
-public record class SetVoiceRequest : Request {
+public sealed record class SetVoiceRequest : Request {
 
 	public override RequestType Type => RequestType.SetVoice;
 
@@ -89,7 +89,7 @@ public record class SetVoiceRequest : Request {
 }
 
 
-public record class SetVoiceToDefaultRequest : Request {
+public sealed record class SetVoiceToDefaultRequest : Request {
 	public override RequestType Type => RequestType.SetVoiceToDefault;
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 	public override void ReadContents(BinaryReader payloadReader) { }
@@ -98,14 +98,14 @@ public record class SetVoiceToDefaultRequest : Request {
 #endregion
 
 
-public record class TerminateRequest : Request {
+public sealed record class TerminateRequest : Request {
 	public override RequestType Type => RequestType.Terminate;
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 	public override void ReadContents(BinaryReader payloadReader) { }
 }
 
 
-public record class HeartbeatRequest : Request {
+public sealed record class HeartbeatRequest : Request {
 
 	public override RequestType Type => RequestType.Heartbeat;
 
