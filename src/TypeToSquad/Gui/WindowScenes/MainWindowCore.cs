@@ -65,6 +65,11 @@ public partial class MainWindowCore : Node, IRefrencesCore {
 			CoreNode?.SpeechDaemon.DispatchRequest(new SynthesizeTextRequest() { InputString = textEditInput.Text }, HandleResponse);
 		};
 
+		var speakSsmlButton = this.GetNodeNotNull<Button>("%ButtonSpeakSsml");
+		speakSsmlButton.Pressed += () => {
+			CoreNode?.SpeechDaemon.DispatchRequest(new SynthesizeSsmlRequest() { InputString = textEditInput.Text }, HandleResponse);
+		};
+
 	}
 
 
@@ -74,7 +79,7 @@ public partial class MainWindowCore : Node, IRefrencesCore {
 	public void HandleResponse(Response response) {
 
 		if (response is HeartbeatEchoResponse echoResponce) {
-			labelResponse.Text = "HeartbeatEcho:" + echoResponce.EchoByte.ToString("X");
+			labelResponse.Text = "HeartbeatEcho:" + echoResponce.EchoByte.ToString("X2");
 		} else if (response is TerminateAcceptedResponse) {
 			labelResponse.Text = "Terminated";
 		} else if (response is AllVoicesResponse allVoicesResponse) {
