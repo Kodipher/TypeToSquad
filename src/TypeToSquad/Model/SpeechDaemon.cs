@@ -241,7 +241,7 @@ public class SpeechDaemon : IDisposable {
 		writer.Flush();
 
 		GD.Print($"Waiting for response.");
-		Response responce = responseReader.ReadResponce(reader);
+		Response responce = responseReader.ReadResponse(reader);
 		GD.Print($"Got response of type {responce.Type}.");
 		return responce;
 	}

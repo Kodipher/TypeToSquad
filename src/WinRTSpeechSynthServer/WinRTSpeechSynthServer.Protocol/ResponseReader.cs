@@ -73,7 +73,7 @@ public class ResponseReader {
 	/// is not recognized.
 	/// </summary>
 	/// <exception cref="InvalidOperationException">No registerd type has a matching <see cref="ResponseType"/>.</exception>
-	public Response ReadResponce(BinaryReader responseReader) {
+	public Response ReadResponse(BinaryReader responseReader) {
 
 		ResponseType responseType = (ResponseType)responseReader.ReadByte();
 	
