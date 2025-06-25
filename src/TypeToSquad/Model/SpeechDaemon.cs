@@ -116,6 +116,13 @@ public class SpeechDaemon : IDisposable {
 		daemonProcess.BeginOutputReadLine();
 
 		_ = ReadProcessStandardErrorBatched(daemonProcess);
+		/*
+			.ContinueWith((task) => {
+				if (task.Exception is not null) {
+					GD.PushError($"Exception(s) occurred during daemon error reading.\n{task.Exception}");
+				}
+			});
+		*/
 	}
 
 	/// <summary>
