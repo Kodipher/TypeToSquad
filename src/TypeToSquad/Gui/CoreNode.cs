@@ -10,7 +10,7 @@ namespace TypeToSquad.Gui;
 
 
 public interface IRefrencesCore {
-	public void RecieveCoreReference(CoreNode core);
+	public void RecieveCoreReference(CoreNode? core);
 }
 
 

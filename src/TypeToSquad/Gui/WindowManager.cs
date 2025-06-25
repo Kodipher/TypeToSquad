@@ -18,7 +18,7 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 	public CoreNode? CoreNode { get; set; } = null;
 
-	public void RecieveCoreReference(CoreNode core) => CoreNode = core;
+	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
 
 	#endregion
 
