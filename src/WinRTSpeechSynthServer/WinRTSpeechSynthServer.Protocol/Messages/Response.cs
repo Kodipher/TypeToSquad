@@ -5,6 +5,9 @@ using System.IO;
 namespace WinRTSpeechSynthServer.Protocol.Messages;
 
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+
 public enum ResponseType : byte {
 	Unknown = 0x00,
 	SyntesisResult = 0x21,
@@ -129,3 +132,6 @@ public sealed record class HeartbeatEchoResponse : Response {
 		EchoByte = payloadReader.ReadByte();
 	}
 }
+
+
+#pragma warning restore CS1591

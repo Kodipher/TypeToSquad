@@ -7,6 +7,10 @@ using WinRTSpeechSynthServer.Protocol.Messages;
 namespace WinRTSpeechSynthServer.Protocol;
 
 
+/// <summary>
+/// Extensions for <see cref="BinaryWriter"/> and <see cref="BinaryReader"/>
+/// to abstract away reading and writing exact bytes of some classes/structs.
+/// </summary>
 public static class BinaryReadWriteExtensions {
 
 	/// <summary>
@@ -99,7 +103,7 @@ public static class BinaryReadWriteExtensions {
 	}
 
 	/// <summary>
-	/// Reads an array of <see cref="VoiceInfo[]"/>s that was written by
+	/// Reads an array of <see cref="VoiceInfo"/>s that was written by
 	/// <see cref="Write(BinaryWriter, VoiceInfo[])"/> and advances stream position.
 	/// </summary>
 	public static VoiceInfo[] ReadVoiceInfoArray(this BinaryReader reader) {

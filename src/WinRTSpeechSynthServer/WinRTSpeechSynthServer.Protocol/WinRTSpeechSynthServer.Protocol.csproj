@@ -12,6 +12,7 @@
     <Authors>Kodipher</Authors>
     <Version>1.0.0-rc.1</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 </Project>

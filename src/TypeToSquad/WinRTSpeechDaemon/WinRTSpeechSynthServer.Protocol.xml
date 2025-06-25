@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WinRTSpeechSynthServer.Protocol</name>
+    </assembly>
+    <members>
+        <member name="T:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions">
+            <summary>
+            Extensions for <see cref="T:System.IO.BinaryWriter"/> and <see cref="T:System.IO.BinaryReader"/>
+            to abstract away reading and writing exact bytes of some classes/structs.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.Write(System.IO.BinaryWriter,WinRTSpeechSynthServer.Protocol.Messages.Message)">
+            <summary>
+            Writes a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Message"/> to the steam
+            and advances stream position.
+            Does <b>not</b> distinguish <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Message.MessageType"/>
+            and does not write it to the stream.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.WriteBufferWithLength(System.IO.BinaryWriter,System.Byte[])">
+            <summary>
+            Writes the buffer's <see cref="P:System.Array.Length"/> as <see cref="T:System.Int32"/>, 
+            then the buffer itself and also advances stream position.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.ReadBufferWithLength(System.IO.BinaryReader)">
+            <summary>
+            Reads <see cref="P:System.Array.Length"/> as <see cref="T:System.Int32"/> 
+            then the reads a buffer of that length.
+            Advances stream position.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.WriteUtf8WithLength(System.IO.BinaryWriter,System.String)">
+            <summary>
+            Writes a string as a utf8 buffer using <see cref="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.WriteBufferWithLength(System.IO.BinaryWriter,System.Byte[])"/>
+            and advances stream position.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.ReadUtf8WithLength(System.IO.BinaryReader)">
+            <summary>
+            Reads an integer byte length and then the utf8 string of that length
+            using <see cref="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.ReadBufferWithLength(System.IO.BinaryReader)"/>
+            Advances stream position.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.Write(System.IO.BinaryWriter,WinRTSpeechSynthServer.Protocol.VoiceInfo)">
+            <summary>
+            Writes a <see cref="T:WinRTSpeechSynthServer.Protocol.VoiceInfo"/> in a format
+            <see cref="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.ReadVoiceInfo(System.IO.BinaryReader)"/> can understand and advances stream position.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.ReadVoiceInfo(System.IO.BinaryReader)">
+            <summary>
+            Reads a <see cref="T:WinRTSpeechSynthServer.Protocol.VoiceInfo"/> that was written by
+            <see cref="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.Write(System.IO.BinaryWriter,WinRTSpeechSynthServer.Protocol.VoiceInfo)"/> and advances stream position.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.Write(System.IO.BinaryWriter,WinRTSpeechSynthServer.Protocol.VoiceInfo[])">
+            <summary>
+            Writes an array of <see cref="T:WinRTSpeechSynthServer.Protocol.VoiceInfo"/>s in a format
+            <see cref="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.ReadVoiceInfoArray(System.IO.BinaryReader)"/> can understand and advances stream position.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.ReadVoiceInfoArray(System.IO.BinaryReader)">
+            <summary>
+            Reads an array of <see cref="T:WinRTSpeechSynthServer.Protocol.VoiceInfo"/>s that was written by
+            <see cref="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.Write(System.IO.BinaryWriter,WinRTSpeechSynthServer.Protocol.VoiceInfo[])"/> and advances stream position.
+            </summary>
+        </member>
+        <member name="T:WinRTSpeechSynthServer.Protocol.Messages.Message">
+            <summary>Base class for all structures passed during communication.</summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.Message.IsRequest">
+            <summary>
+            Wether this message is a request or a responce. 
+            Affects what <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Message.MessageType"/> means.
+            </summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.Message.MessageType">
+            <summary>The identification of this request/responce object.</summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.Messages.Message.WriteContents(System.IO.BinaryWriter)">
+            <summary>
+            Writes the contents (payload) of this object using a borrowed writer,
+            so that this object can be reconstructed using 
+            <see cref="M:WinRTSpeechSynthServer.Protocol.Messages.Message.ReadContents(System.IO.BinaryReader)"/> of the current class.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.Messages.Message.ReadContents(System.IO.BinaryReader)">
+            <summary>
+            Reads the contents (payload) using a borrowed reader into this object,
+            i.e. reconstructs this object from data written using 
+            <see cref="M:WinRTSpeechSynthServer.Protocol.Messages.Message.WriteContents(System.IO.BinaryWriter)"/> of the current class.
+            </summary>
+        </member>
+        <member name="T:WinRTSpeechSynthServer.Protocol.Messages.Request">
+            <summary>Base class for all request messages passed during communication.</summary>
+        </member>
+        <member name="T:WinRTSpeechSynthServer.Protocol.Messages.Response">
+            <summary>Base class for all responce messages passed during communication.</summary>
+        </member>
+        <member name="T:WinRTSpeechSynthServer.Protocol.RequestMapper">
+            <summary>
+            Maps incoming requsts to registed delegates.
+            </summary>
+            <remarks>
+            Each <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Request"/> has a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.RequestType"/> under <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Request.Type"/> 
+            which is to be written to the stream first.
+            That <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.RequestType"/> is read to then construct a particular
+            <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Request"/> decendant and call a delegate corresponding to it.
+            </remarks>
+        </member>
+        <member name="E:WinRTSpeechSynthServer.Protocol.RequestMapper.OnRequestReadStart">
+            <summary>
+            Invoked when the <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Request.Type"/> has been read.
+            The rest of the request is read imedeatly after.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.RequestMapper.HandleSingleRequest(System.IO.BinaryReader,System.IO.BinaryWriter)">
+            <summary>
+            Reads one request from the input stream and writes one response to the output stream.
+            Borrows the reader and a writer.
+            Does <b>not</b> flush the writer.
+            </summary>
+        </member>
+        <member name="F:WinRTSpeechSynthServer.Protocol.RequestMapper.registeredReaderWithHandler">
+            <summary>
+            A storage of all readers with handlers.
+            Each delegate here reads the stream to construct a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Request"/>> object,
+            invokes the inner registerd handler and returns a response.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.RequestMapper.Register``1(System.Func{``0,WinRTSpeechSynthServer.Protocol.Messages.Response})">
+            <summary>Register a handler for a particular type of <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Request"/>.</summary>
+            <returns>this</returns>
+        </member>
+        <member name="T:WinRTSpeechSynthServer.Protocol.ResponseReader">
+            <summary>
+            Reads incoming responses as objects.
+            </summary>
+            <remarks>
+            Each <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/> has a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/> under <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Response.Type"/> 
+            which is to be written to the stream first.
+            That <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/> is read to pick a particular
+            <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/> decendant and construct and fill.
+            </remarks>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.ResponseReader.Register``1">
+            <summary>
+            Registers a type so that a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/> of that type can
+            be read by this reader.
+            </summary>
+            <returns>this</returns>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.ResponseReader.RegisterAll">
+            <summary>
+            Runs <see cref="M:WinRTSpeechSynthServer.Protocol.ResponseReader.Register``1"/> for each standard type (subclass)
+            of <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/>.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.ResponseReader.CreateWithStanardRegistered">
+            <summary>
+            Creates a <see cref="T:WinRTSpeechSynthServer.Protocol.ResponseReader"/> with 
+            <see cref="M:WinRTSpeechSynthServer.Protocol.ResponseReader.RegisterAll"/> having been called.
+            </summary>
+        </member>
+        <member name="M:WinRTSpeechSynthServer.Protocol.ResponseReader.ReadResponse(System.IO.BinaryReader)">
+            <summary>
+            Reads a single <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/> from the borrowed stream.
+            Throws <see cref="T:System.InvalidOperationException"/> if <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/>
+            is not recognized.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">No registerd type has a matching <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/>.</exception>
+        </member>
+        <member name="T:WinRTSpeechSynthServer.Protocol.VoiceInfo">
+            <summary>Information about a voice (synthesis engine) installed on the system.</summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.VoiceInfo.Id">
+            <summary>The unique id of the synthesis engine (voice).</summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.VoiceInfo.Name">
+            <summary>The display name of the synthesis engine (voice).</summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.VoiceInfo.Language">
+            <summary>The BCP-47 language tag of the synthesis engine (voice).</summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.VoiceInfo.Gender">
+            <summary>The gender of the synthesis engine (voice).</summary>
+        </member>
+    </members>
+</doc>
