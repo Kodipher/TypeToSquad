@@ -32,7 +32,6 @@ public partial class CoreNode : Node {
 		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");
 		WindowManager.CreateWindowUnpacked(WindowType.Main, mainWindowCoreParent);
 		MainWindow = mainWindowCoreParent.GetChild<WindowScenes.MainWindowCore>(0);
-		MainWindow.RecieveCoreReference(this);
 	}
 
 	public override void _Process(double delta) {

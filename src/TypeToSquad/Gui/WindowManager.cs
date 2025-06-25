@@ -30,7 +30,7 @@ public partial class WindowManager : Node, IRefrencesCore {
 	/// <summary>
 	/// Creates an instance of one of the window scenes.
 	/// Provides the <see cref="TypeToSquad.CoreNode"/> reference
-	/// to the root node of the window, if its <see cref="IRefrencesCore"/>.
+	/// to the root node of the window, if it's <see cref="IRefrencesCore"/>.
 	/// Only the root node is checked.
 	/// </summary>
 	/// <remarks>
@@ -69,6 +69,8 @@ public partial class WindowManager : Node, IRefrencesCore {
 	/// and unpacks the contents into <paramref name="unpackDestination"/>.
 	/// The child of the window will be the child of the destination node.
 	/// No window properties are copied.
+	/// Also provides the <see cref="TypeToSquad.CoreNode"/> reference
+	/// to the child of the root node if it's <see cref="IRefrencesCore"/>.
 	/// </summary>
 	/// <remarks>
 	/// Only script-less windows are supported.
@@ -94,6 +96,9 @@ public partial class WindowManager : Node, IRefrencesCore {
 		child.Owner = null;
 
 		unpackDestination.AddChild(child);
+
+		// Provide core
+		if (child is IRefrencesCore childWithCode) childWithCode.RecieveCoreReference(CoreNode);
 
 		// Cleanup
 		window.Free();
