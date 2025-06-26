@@ -16,6 +16,7 @@ using WinRTSpeechSynthServer.Protocol.Messages;
 namespace TypeToSquad.Model;
 
 
+//[System.Runtime.Versioning.SupportedOSPlatform("windows")]
 public class SpeechDaemon : IDisposable {
 
 	#region //// Daemon Process
