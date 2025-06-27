@@ -7,6 +7,7 @@ namespace TypeToSquad.Model.Settings;
 
 /// <summary>
 /// A storage for a value, together with a validator.
+/// The stored value should always be valid.
 /// </summary>
 /// <remarks>
 /// <para>Default <see cref="ValueAsSavable"/> looses information for more complex times.</para>
