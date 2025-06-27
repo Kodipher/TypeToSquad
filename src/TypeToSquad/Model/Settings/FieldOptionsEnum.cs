@@ -5,26 +5,36 @@ using System;
 namespace TypeToSquad.Model.Settings;
 
 
-/// <summary>
-/// A <see cref="Field{T}"/> that stores ahead-of-time known enum values.
-/// Values are stored as strings internally.
-/// </summary>
-public class FieldOptionsEnum<[MustBeVariant] TEnum> : Field<string> where TEnum : struct, Enum {
+/// <summary>A <see cref="Field{T}"/> that stores ahead-of-time known enum values.</summary>
+public class FieldOptionsEnum<[MustBeVariant] TEnum> : Field<TEnum> where TEnum : struct, Enum {
 
-	public TEnum ValueAsEnum {
-		get {
+	public override Variant ValueAsSavable { 
+		get => this.value.ToString(); 
+		set {
+			
+			if (value.VariantType == Variant.Type.String) {
 
-			if (Enum.TryParse(Value, out TEnum enumValue)) return enumValue;
+				if (Enum.TryParse(value.AsString(), out TEnum enumValue)) {
+					Value = enumValue;
+					return;
+				}
 
-			this.value = DefaultValue;
-			GD.PushWarning($"Value stored in {nameof(FieldOptionsEnum<TEnum>)} was invalid. Resetting value to default.");
-			return Enum.Parse<TEnum>(Value);
+				this.value = DefaultValue;
+				return;
+
+			} 
+			
+			if (value.VariantType == Variant.Type.Int) {
+				Value = value.As<TEnum>();
+				return;
+			}
+
+			Value = DefaultValue;
 		}
-		set => Value = value.ToString();
 	}
 
-	public override bool IsValid(string value) => Enum.IsDefined(typeof(TEnum), value);
+	public override bool IsValid(TEnum value) => Enum.IsDefined(typeof(TEnum), value);
 
-	public FieldOptionsEnum(TEnum defaultValue) : base(defaultValue.ToString()) { }
+	public FieldOptionsEnum(TEnum defaultValue) : base(defaultValue) { }
 
 }

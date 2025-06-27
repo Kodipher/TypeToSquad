@@ -31,10 +31,13 @@ public class Field<[MustBeVariant] T> where T : notnull {
 		set => this.value = ValueForceValid(value);
 	}
 
-	/// <summary>Gets or sets <see cref="Value"/> as if it was <see cref="Variant"/>.</summary>
-	public Variant ValueAsVariant { 
-		get => Variant.From(in this.value); 
-		set => Value = value.As<T>(); 
+	/// <summary>
+	/// Gets or sets <see cref="Value"/> as if it was <see cref="Variant"/>.
+	/// Used for saving and loading.
+	/// </summary>
+	public virtual Variant ValueAsSavable {
+		get => Variant.From(in this.value);
+		set => Value = value.As<T>();
 	}
 
 	#endregion
