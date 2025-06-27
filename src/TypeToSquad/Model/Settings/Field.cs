@@ -6,9 +6,12 @@ namespace TypeToSquad.Model.Settings;
 
 
 /// <summary>
-/// A storage, setter, getter and (when implemented) validator.
-/// If validation fails, sets the default value, which bypasses validation.
+/// A storage for a value, together with a validator.
 /// </summary>
+/// <remarks>
+/// <para>Default <see cref="ValueAsSavable"/> looses information for more complex times.</para>
+/// <para>Default validation check only blocks <see langword="null"/>.</para>
+/// </remarks>
 public class Field<[MustBeVariant] T> where T : notnull {
 
 	#region //// Value
@@ -21,7 +24,7 @@ public class Field<[MustBeVariant] T> where T : notnull {
 
 	/// <summary>
 	/// Gets or sets the value of this <see cref="Field{T}"/>.
-	/// When setting, values are forced to be valid if aren't.
+	/// When setting, values are forced to become valid if aren't.
 	/// </summary>
 	public T Value { 
 		get => this.value;
@@ -42,14 +45,11 @@ public class Field<[MustBeVariant] T> where T : notnull {
 
 	/// <summary>
 	/// Returns given value if it is valid.
-	/// Otherwise returns a different, usually default value.
+	/// Otherwise returns some valid value, usually the default.
 	/// </summary>
 	public virtual T ValueForceValid(T value) => IsValid(value) ? value : DefaultValue;
 
-	public virtual bool IsValid(T value) {
-		if (typeof(T).IsValueType) return true;
-		return value is not null;
-	}
+	public virtual bool IsValid(T value) => value is not null;
 
 	#endregion
 
