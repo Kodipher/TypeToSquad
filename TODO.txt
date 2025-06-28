@@ -9,3 +9,4 @@ TODO:
 TO TEST:
 - Window manager: CreateWindowAtSelfUnique (both creating new and focusing existing)
 - History Navigation
+- AudioManager: Max concurrent streams
