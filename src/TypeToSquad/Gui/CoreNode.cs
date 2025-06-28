@@ -22,7 +22,7 @@ public partial class CoreNode : Node {
 
 		// Init Model
 		SpeechDaemon = new SpeechDaemon();
-		UserSettings = UserSettingsReadWriter.Load();
+		UserSettings = UserSettingsLoader.Load();
 
 		SpeechDaemon.StartDaemon();
 		

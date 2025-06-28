@@ -11,7 +11,7 @@ using Rephidock.GeneralUtilities.Reflection;
 namespace TypeToSquad.Model.Settings;
 
 
-public static class UserSettingsReadWriter {
+public static class UserSettingsLoader {
 
 	public const string settingsFilepath = "user_settings.json";
 
@@ -88,7 +88,7 @@ public static class UserSettingsReadWriter {
 	}
 
 
-	static UserSettingsReadWriter() {
+	static UserSettingsLoader() {
 
 		// (debug) check if there are properties
 		if (
@@ -97,7 +97,7 @@ public static class UserSettingsReadWriter {
 			.Where(pi => pi.PropertyType.IsSubclassOrSelfOf(typeof(Field<>)))
 			.Any()
 		) {
-			GD.PushWarning($"{nameof(UserSettings)} has a Field storing property. Properties are not supported by {nameof(UserSettingsReadWriter)}");
+			GD.PushWarning($"{nameof(UserSettings)} has a Field storing property. Properties are not supported by {nameof(UserSettingsLoader)}");
 		}
 	}
 
