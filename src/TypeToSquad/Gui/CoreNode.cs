@@ -21,8 +21,8 @@ public partial class CoreNode : Node {
 		base._Ready();
 
 		// Init Model
-		SpeechDaemon = new SpeechDaemon();
 		UserSettings = UserSettingsLoader.Load();
+		SpeechDaemon = new SpeechDaemon();
 		LogMonitor = new LogMonitor();
 
 		SpeechDaemon.StartDaemon();
@@ -33,6 +33,8 @@ public partial class CoreNode : Node {
 
 		WindowManager.RecieveCoreReference(this);
 		AudioManager.RecieveCoreReference(this);
+
+		AudioManager.InitOutputDeviceOptions();
 
 		// Instantiate main window
 		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");
