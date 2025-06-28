@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 
 using TypeToSquad.Model;
+using TypeToSquad.Model.Settings;
 using TypeToSquad.Utils;
 
 
@@ -21,6 +22,8 @@ public partial class CoreNode : Node {
 
 		// Init Model
 		SpeechDaemon = new SpeechDaemon();
+		UserSettings = UserSettingsReadWriter.Load();
+
 		SpeechDaemon.StartDaemon();
 		
 		// Find and init Children
@@ -48,6 +51,7 @@ public partial class CoreNode : Node {
 
 	#region //// Model
 
+	public UserSettings UserSettings { get; private set; } = null!; // Set in _Ready
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!; // Set in _Ready
 
 	#endregion

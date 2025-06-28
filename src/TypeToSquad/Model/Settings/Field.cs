@@ -5,6 +5,12 @@ using System;
 namespace TypeToSquad.Model.Settings;
 
 
+interface IVariantSavable {
+	// To avoid getting properties via reflection
+	public Variant ValueAsSavable { get; set; }
+}
+
+
 /// <summary>
 /// A storage for a value, together with a validator.
 /// The stored value should always be valid.
@@ -13,7 +19,7 @@ namespace TypeToSquad.Model.Settings;
 /// <para>Default <see cref="ValueAsSavable"/> looses information for more complex times.</para>
 /// <para>Default validation check only blocks <see langword="null"/>.</para>
 /// </remarks>
-public class Field<[MustBeVariant] T> where T : notnull {
+public class Field<[MustBeVariant] T> : IVariantSavable where T : notnull {
 
 	#region //// Value
 
@@ -61,14 +67,8 @@ public class Field<[MustBeVariant] T> where T : notnull {
 	/// <paramref name="defaultValue"/> must be valid. Checked using <see cref="IsValid(T)"/>.
 	/// </remarks>
 	public Field(T defaultValue) {
-
 		DefaultValue = defaultValue;
 		value = DefaultValue;
-
-		if (!IsValid(defaultValue)) {
-			throw new ArgumentException($"Default value {defaultValue} is not valid", nameof(defaultValue));
-		}
-
 	}
 
 }
