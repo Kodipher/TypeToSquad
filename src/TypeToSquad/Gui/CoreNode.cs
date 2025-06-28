@@ -28,8 +28,10 @@ public partial class CoreNode : Node {
 		
 		// Find and init Children
 		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
+		AudioManager = this.GetNodeNotNull<AudioManager>("%AudioManager");
 
 		WindowManager.RecieveCoreReference(this);
+		AudioManager.RecieveCoreReference(this);
 
 		// Instantiate main window
 		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");
@@ -51,6 +53,9 @@ public partial class CoreNode : Node {
 
 	#region //// Model
 
+	// Assume to be { get; private init; }
+	// Need to be private set; because they are set in _Ready
+
 	public UserSettings UserSettings { get; private set; } = null!; // Set in _Ready
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!; // Set in _Ready
 
@@ -60,6 +65,7 @@ public partial class CoreNode : Node {
 
 	public WindowManager WindowManager { get; private set; } = null!; // Set in _Ready
 	public WindowScenes.MainWindowCore MainWindow { get; private set; } = null!; // Set in _Ready
+	public AudioManager AudioManager { get; private set; } = null!; // Set in _Ready
 
 	#endregion
 

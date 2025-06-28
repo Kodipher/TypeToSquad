@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cdeue8fjdyebt"]
+[gd_scene load_steps=5 format=3 uid="uid://cdeue8fjdyebt"]
 
 [ext_resource type="Script" uid="uid://hqpbx6wldkno" path="res://Gui/WindowManager.cs" id="1_0f027"]
 [ext_resource type="Script" uid="uid://dbfqyxp6c48ce" path="res://Gui/CoreNode.cs" id="1_2c62f"]
 [ext_resource type="PackedScene" uid="uid://dpw8i3w48kujw" path="res://Gui/WindowScenes/main_window.tscn" id="3_gyfs4"]
+[ext_resource type="Script" uid="uid://blybn6brq0fk8" path="res://Gui/AudioManager.cs" id="4_digqv"]
 
 [node name="CoreNode" type="Node"]
 script = ExtResource("1_2c62f")
@@ -22,3 +23,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="AudioManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_digqv")
