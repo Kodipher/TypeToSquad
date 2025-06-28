@@ -29,14 +29,10 @@ public partial class MainWindowCore : Node, IRefrencesCore {
 	Label labelResponse = null!;
 	TextEdit textEditInput = null!;
 
-	AudioStreamPlayer streamPlayer = null!;
-	AudioStreamWav currentStream = null!;
-
 	public override void _Ready() {
 
 		labelResponse = this.GetNodeNotNull<Label>("%LabelResponse");
 		textEditInput = this.GetNodeNotNull<TextEdit>("%TextEditInput");
-		streamPlayer = this.GetNodeNotNull<AudioStreamPlayer>("%AudioStreamPlayer");
 
 		var terminateButton = this.GetNodeNotNull<Button>("%ButtonTerminate");
 		terminateButton.Pressed += () => CoreNode?.SpeechDaemon.DispatchRequest(new TerminateRequest(), HandleResponse);
@@ -90,27 +86,7 @@ public partial class MainWindowCore : Node, IRefrencesCore {
 			labelResponse.Text = "Default: " + defaultVoiceResponse.DefaultVoice.Name;
 		} else if (response is SyntesisResultResponse speechResponce) {
 			labelResponse.Text = "Speech,len=" + speechResponce.SynthesizedData.Length.ToString();
-
-			const int wavImportCompressModePcm = 0;
-			const int wavImportLoopModeDisabled = 1;
-
-			if (currentStream is not null) {
-				streamPlayer.Stop();
-				streamPlayer.Stream = null;
-				currentStream.Dispose();
-			}
-
-			currentStream = AudioStreamWav.LoadFromBuffer(
-				speechResponce.SynthesizedData,
-				new Godot.Collections.Dictionary {
-					["compress/mode"] = wavImportCompressModePcm,
-					["edit/loop_mode"] = wavImportLoopModeDisabled,
-				}
-			);
-
-			streamPlayer.Stream = currentStream;
-			streamPlayer.Play();
-
+			CoreNode?.AudioManager?.PlayNew(speechResponce.SynthesizedData);
 		} else {
 			labelResponse.Text = response.Type.ToString();
 		}
