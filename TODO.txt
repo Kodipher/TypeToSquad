@@ -1,6 +1,4 @@
 TODO:
-- Settings: FieldOptions for options gotten at runtime
-- Settings: Reading and writing options
 - Basically everything ui and model
 - Monitor log file for errors
 -- Use "debug/file_logging/log_path" project setting and https://stackoverflow.com/questions/9759697/reading-a-file-used-by-another-process
@@ -10,4 +8,3 @@ TODO:
 
 TO TEST:
 - Window manager: CreateWindowAtSelfUnique (both creating new and focusing existing)
-- Settings: Field and subclasses
