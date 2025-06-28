@@ -43,12 +43,7 @@ public partial class AudioManager : Node, IRefrencesCore {
 		player.Play();
 
 		// Check max
-		int maxChildren = CoreNode is null ? 1 : CoreNode.UserSettings.MaxConcurrentStreams;
-		while (this.GetChildCount() > maxChildren) {
-			var oldestNode = this.GetChild<AudioStreamPlayer>(0);
-			oldestNode.Stop();
-			OnPlaybackFinished(oldestNode);
-		}
+		EnsureConcurrentNodeMax();
 	}
 
 	/// <summary>Stops all currently playing audio.</summary>
@@ -78,6 +73,20 @@ public partial class AudioManager : Node, IRefrencesCore {
 		// Remove the node
 		this.RemoveChild(playbackNode);
 		playbackNode.QueueFree();
+	}
+
+
+	/// <summary>
+	/// Checks and insure the number of currently playing streams
+	/// is within limits.
+	/// </summary>
+	public void EnsureConcurrentNodeMax() {
+		int maxChildren = CoreNode is null ? 1 : CoreNode.UserSettings.MaxConcurrentStreams;
+		while (this.GetChildCount() > maxChildren) {
+			var oldestNode = this.GetChild<AudioStreamPlayer>(0);
+			oldestNode.Stop();
+			OnPlaybackFinished(oldestNode);
+		}
 	}
 
 }
