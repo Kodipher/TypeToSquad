@@ -1,8 +1,6 @@
 TODO:
 - Basically everything ui and model
 - Monitor log file for errors
--- Use "debug/file_logging/log_path" project setting and https://stackoverflow.com/questions/9759697/reading-a-file-used-by-another-process
--- Check for exceptions in the monitor itself
 - Daemon + Protocol
 -- Add markers to ssml output
 

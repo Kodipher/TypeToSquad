@@ -23,6 +23,7 @@ public partial class CoreNode : Node {
 		// Init Model
 		SpeechDaemon = new SpeechDaemon();
 		UserSettings = UserSettingsLoader.Load();
+		LogMonitor = new LogMonitor();
 
 		SpeechDaemon.StartDaemon();
 		
@@ -58,6 +59,7 @@ public partial class CoreNode : Node {
 
 	public UserSettings UserSettings { get; private set; } = null!; // Set in _Ready
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!; // Set in _Ready
+	public LogMonitor LogMonitor { get; private set; } = null!; // Set in _Ready
 
 	#endregion
 
