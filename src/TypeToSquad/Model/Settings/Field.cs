@@ -47,6 +47,9 @@ public class Field<[MustBeVariant] T> : IVariantSavable where T : notnull {
 		set => Value = value.As<T>();
 	}
 
+
+	public static implicit operator T(Field<T> field) => field.Value;
+
 	#endregion
 
 	#region //// Validation
