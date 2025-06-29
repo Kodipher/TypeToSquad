@@ -26,6 +26,7 @@ public partial class CoreNode : Node {
 		LogMonitor = new LogMonitor();
 
 		SpeechDaemon.StartDaemon();
+		UserSettingsLoader.Save(UserSettings);
 		
 		// Find and init Children
 		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
