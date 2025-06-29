@@ -1,10 +1,17 @@
 TODO:
-- Basically everything ui and model
-- Monitor log file for errors
-- Daemon + Protocol
--- Add markers to ssml output
+- change current main window to be debug window
+- ui window: main
+- ui window: settings
+- feature: sfml
+-- IPA replacements
+-- language changes
+-- tone
+-- sounds
+- feature: direct hardware shortcuts (like DCSB)
+- Daemon + Protocol: Add markers to ssml output
 
 TO TEST:
 - Window manager: CreateWindowAtSelfUnique (both creating new and focusing existing)
 - History Navigation
 - AudioManager: Max concurrent streams
+- Monitor log
