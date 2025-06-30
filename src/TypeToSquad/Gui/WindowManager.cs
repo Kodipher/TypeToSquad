@@ -122,7 +122,12 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 		// Return existing
 		if (currentChildrenByType.TryGetValue(windowType, out Window? existingWindow)) {
+			// Focus requested window
+			if (existingWindow.Mode == Window.ModeEnum.Minimized) {
+				existingWindow.Mode = Window.ModeEnum.Windowed;
+			}
 			existingWindow.GrabFocus();
+
 			return existingWindow;
 		}
 
@@ -130,6 +135,8 @@ public partial class WindowManager : Node, IRefrencesCore {
 		Window newWindow = InstantiateWindowScene(windowType);
 		currentChildrenByType.Add(windowType, newWindow);
 		newWindow.TreeExiting += () => currentChildrenByType.Remove(windowType);
+
+		this.AddChild(newWindow);
 
 		return newWindow;
 	}

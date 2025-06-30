@@ -10,7 +10,6 @@ TODO:
 - Daemon + Protocol: Add markers to ssml output
 
 TO TEST:
-- Window manager: CreateWindowAtSelfUnique (both creating new and focusing existing)
 - History Navigation
 - AudioManager: Max concurrent streams
 - Monitor log
