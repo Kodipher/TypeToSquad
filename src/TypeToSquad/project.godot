@@ -30,7 +30,7 @@ files=Array[PackedStringArray]([PackedStringArray("res://WinRTSpeechDaemon", "Wi
 [display]
 
 window/size/viewport_width=500
-window/size/viewport_height=200
+window/size/viewport_height=150
 window/energy_saving/keep_screen_on=false
 window/subwindows/embed_subwindows=false
 
