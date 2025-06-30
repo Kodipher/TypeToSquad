@@ -1,5 +1,4 @@
 TODO:
-- change current main window to be debug window
 - ui window: main
 - ui window: settings
 - feature: sfml

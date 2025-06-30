@@ -20,5 +20,36 @@ public partial class MainWindowCore : Control, IRefrencesCore {
 
 	#endregion
 
+	#region //// Nodes
+
+	// All set in FindNodes, which is called in _Ready
+	BaseButton speakButton = null!;
+	BaseButton shutButton = null!;
+	TextEdit messageTextEdit = null!;
+
+	BaseButton settingsButton = null!;
+
+	BaseButton errorIndicator = null!;
+
+	void FindNodes() {
+		speakButton = this.GetNodeNotNull<BaseButton>("%SpeakButton");
+		shutButton = this.GetNodeNotNull<BaseButton>("%ShutButton");
+		messageTextEdit = this.GetNodeNotNull<TextEdit>("%MessageTextEdit");
+
+		settingsButton = this.GetNodeNotNull<BaseButton>("%SettingsButton");
+
+		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
+	}
+
+	#endregion
+
+	public override void _Ready() {
+		
+		FindNodes();
+		errorIndicator.Hide();
+
+		settingsButton.Pressed += () => { CoreNode?.WindowManager.CreateWindowAtSelfUnique(WindowType.Settings); };
+
+	}
 
 }

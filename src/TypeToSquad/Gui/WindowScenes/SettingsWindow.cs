@@ -20,5 +20,13 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 	#endregion
 
+	public override void _Ready() {
+		this.CloseRequested += OnClose;
+	}
+
+	public void OnClose() {
+		GD.Print("Closing settings");
+		this.QueueFree();
+	}
 
 }
