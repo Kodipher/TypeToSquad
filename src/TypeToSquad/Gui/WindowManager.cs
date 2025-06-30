@@ -8,7 +8,8 @@ namespace TypeToSquad.Gui;
 
 public enum WindowType {
 	Unknown,
-	Main
+	Main,
+	Debug,
 }
 
 

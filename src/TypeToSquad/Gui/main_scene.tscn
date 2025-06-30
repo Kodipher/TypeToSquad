@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" uid="uid://hqpbx6wldkno" path="res://Gui/WindowManager.cs" id="1_0f027"]
 [ext_resource type="Script" uid="uid://dbfqyxp6c48ce" path="res://Gui/CoreNode.cs" id="1_2c62f"]
-[ext_resource type="PackedScene" uid="uid://dpw8i3w48kujw" path="res://Gui/WindowScenes/main_window.tscn" id="3_gyfs4"]
+[ext_resource type="PackedScene" uid="uid://dpw8i3w48kujw" path="res://Gui/WindowScenes/debug_window.tscn" id="3_gyfs4"]
+[ext_resource type="PackedScene" uid="uid://0w4yxg65pc57" path="res://Gui/WindowScenes/main_window.tscn" id="3_wco81"]
 [ext_resource type="Script" uid="uid://blybn6brq0fk8" path="res://Gui/AudioManager.cs" id="4_digqv"]
 
 [node name="CoreNode" type="Node"]
@@ -12,7 +13,8 @@ script = ExtResource("1_2c62f")
 unique_name_in_owner = true
 script = ExtResource("1_0f027")
 WindowScenes = Dictionary[int, PackedScene]({
-1: ExtResource("3_gyfs4")
+1: ExtResource("3_wco81"),
+2: ExtResource("3_gyfs4"),
 })
 
 [node name="MainWindowUnpackParent" type="Control" parent="."]

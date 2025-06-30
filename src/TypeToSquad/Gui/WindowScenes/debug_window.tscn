@@ -1,0 +1,85 @@
+[gd_scene load_steps=2 format=3 uid="uid://dpw8i3w48kujw"]
+
+[ext_resource type="Script" uid="uid://cs4fnbr75v2fj" path="res://Gui/WindowScenes/DebugWindowCore.cs" id="1_t0pcv"]
+
+[node name="DebugWindow" type="Window"]
+initial_position = 1
+size = Vector2i(500, 300)
+
+[node name="DebugWindowCore" type="HBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_t0pcv")
+
+[node name="VBox" type="VBoxContainer" parent="DebugWindowCore"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="ButtonTerminate" type="Button" parent="DebugWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Terminate"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DebugWindowCore/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ButtonHeartbeat" type="Button" parent="DebugWindowCore/VBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Heartbeat"
+
+[node name="LabelHeart" type="Label" parent="DebugWindowCore/VBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+text = "??"
+
+[node name="ButtonGetVoices" type="Button" parent="DebugWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Get Voices"
+
+[node name="ButtonSetVoice" type="Button" parent="DebugWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Set Voice"
+
+[node name="ButtonSetDefaultVoice" type="Button" parent="DebugWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Set Default Voice"
+
+[node name="ButtonSpeak" type="Button" parent="DebugWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Speak"
+
+[node name="ButtonSpeakSsml" type="Button" parent="DebugWindowCore/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "Speak SSML"
+
+[node name="TextEditInput" type="TextEdit" parent="DebugWindowCore"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+wrap_mode = 1
+
+[node name="LabelResponse" type="Label" parent="DebugWindowCore"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Responce"

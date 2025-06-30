@@ -1,12 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://dpw8i3w48kujw"]
+[gd_scene load_steps=2 format=3 uid="uid://0w4yxg65pc57"]
 
-[ext_resource type="Script" uid="uid://cs4fnbr75v2fj" path="res://Gui/WindowScenes/MainWindowCore.cs" id="1_3e08y"]
+[ext_resource type="Script" uid="uid://b2gyqbxewtq7x" path="res://Gui/WindowScenes/MainWindowCore.cs" id="1_3e08y"]
 
 [node name="MainWindow" type="Window"]
 initial_position = 1
-size = Vector2i(500, 200)
+size = Vector2i(500, 150)
 
-[node name="MainWindowCore" type="HBoxContainer" parent="."]
+[node name="MainWindowCore" type="Control" parent="."]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,70 +17,71 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_3e08y")
 
-[node name="VBox" type="VBoxContainer" parent="MainWindowCore"]
+[node name="HBox" type="HBoxContainer" parent="MainWindowCore"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxLeft" type="VBoxContainer" parent="MainWindowCore/HBox"]
 layout_mode = 2
 size_flags_horizontal = 0
+alignment = 1
 
-[node name="ButtonTerminate" type="Button" parent="MainWindowCore/VBox"]
+[node name="SettingsButton" type="Button" parent="MainWindowCore/HBox/VBoxLeft"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
-text = "Terminate"
+text = "Settings"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainWindowCore/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ButtonHeartbeat" type="Button" parent="MainWindowCore/VBox/HBoxContainer"]
-unique_name_in_owner = true
+[node name="VBoxMiddle" type="VBoxContainer" parent="MainWindowCore/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Heartbeat"
 
-[node name="LabelHeart" type="Label" parent="MainWindowCore/VBox/HBoxContainer"]
+[node name="MessageText" type="TextEdit" parent="MainWindowCore/HBox/VBoxMiddle"]
 unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "(Message)"
+emoji_menu_enabled = false
+wrap_mode = 1
+scroll_smooth = true
+scroll_fit_content_width = true
+caret_blink = true
+caret_move_on_right_click = false
+
+[node name="VBoxRight" type="VBoxContainer" parent="MainWindowCore/HBox"]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "??"
+alignment = 1
 
-[node name="ButtonGetVoices" type="Button" parent="MainWindowCore/VBox"]
+[node name="SpeakButton" type="Button" parent="MainWindowCore/HBox/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
-text = "Get Voices"
-
-[node name="ButtonSetVoice" type="Button" parent="MainWindowCore/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-text = "Set Voice"
-
-[node name="ButtonSetDefaultVoice" type="Button" parent="MainWindowCore/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-text = "Set Default Voice"
-
-[node name="ButtonSpeak" type="Button" parent="MainWindowCore/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 3
+size_flags_vertical = 0
 text = "Speak"
 
-[node name="ButtonSpeakSsml" type="Button" parent="MainWindowCore/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-text = "Speak SSML"
-
-[node name="TextEditInput" type="TextEdit" parent="MainWindowCore"]
+[node name="ShutButton" type="Button" parent="MainWindowCore/HBox/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-wrap_mode = 1
+size_flags_vertical = 0
+text = "Shut"
 
-[node name="LabelResponse" type="Label" parent="MainWindowCore"]
+[node name="OpenLogButton" type="Button" parent="MainWindowCore"]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -31.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
 size_flags_horizontal = 3
-text = "Responce"
+size_flags_vertical = 8
+text = "Err"
