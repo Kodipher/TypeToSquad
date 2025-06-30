@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://d6m05kgpahi8" path="res://Gui/WindowScenes/SettingsWindow.cs" id="1_e6at4"]
 
 [node name="SettingsWindow" type="Window"]
+title = "Settings"
 initial_position = 1
 size = Vector2i(600, 300)
 script = ExtResource("1_e6at4")

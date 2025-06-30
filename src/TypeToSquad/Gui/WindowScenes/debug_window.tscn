@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cs4fnbr75v2fj" path="res://Gui/WindowScenes/DebugWindowCore.cs" id="1_t0pcv"]
 
 [node name="DebugWindow" type="Window"]
+title = "Protocol Debug"
 initial_position = 1
 size = Vector2i(500, 300)
 
