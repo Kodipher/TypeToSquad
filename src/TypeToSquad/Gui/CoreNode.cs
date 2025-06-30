@@ -36,6 +36,7 @@ public partial class CoreNode : Node {
 		AudioManager.RecieveCoreReference(this);
 
 		AudioManager.InitOutputDeviceOptions();
+		AudioManager.SetOutputDeviceFromSettings();
 
 		// Instantiate main window
 		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");

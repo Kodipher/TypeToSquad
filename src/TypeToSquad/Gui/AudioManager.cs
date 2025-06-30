@@ -22,7 +22,6 @@ public partial class AudioManager : Node, IRefrencesCore {
 	public void InitOutputDeviceOptions() {
 		if (CoreNode is null) return;
 		CoreNode.UserSettings.Device.SetOptions(AudioServer.GetOutputDeviceList());
-		SetOutputDeviceFromSettings();
 	}
 
 	public void SetOutputDeviceFromSettings() {
