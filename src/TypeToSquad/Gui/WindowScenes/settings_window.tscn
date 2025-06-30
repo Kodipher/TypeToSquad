@@ -25,12 +25,12 @@ layout_mode = 2
 columns = 2
 metadata/_tab_index = 0
 
-[node name="DefaultVoiceLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
+[node name="MainVoiceLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
 layout_mode = 2
 size_flags_horizontal = 0
-text = "Default Voice"
+text = "Main Voice"
 
-[node name="DefaultVoiceInput" type="OptionButton" parent="VBoxContainer/TabContainer/General"]
+[node name="MainVoiceInput" type="OptionButton" parent="VBoxContainer/TabContainer/General"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -59,12 +59,18 @@ size_flags_horizontal = 3
 emoji_menu_enabled = false
 virtual_keyboard_type = 2
 
-[node name="MaxConcurentLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
+[node name="Advanced" type="GridContainer" parent="VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+columns = 2
+metadata/_tab_index = 1
+
+[node name="MaxConcurentLabel" type="Label" parent="VBoxContainer/TabContainer/Advanced"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Max Concurent Outputs"
 
-[node name="MaxConcurentInput" type="LineEdit" parent="VBoxContainer/TabContainer/General"]
+[node name="MaxConcurentInput" type="LineEdit" parent="VBoxContainer/TabContainer/Advanced"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -76,10 +82,12 @@ layout_mode = 2
 size_flags_vertical = 8
 alignment = 1
 
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="SaveButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Save"
+size_flags_horizontal = 6
+text = "Apply & Save"
 
-[node name="Button2" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="CancelButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 6
 text = "Cancel"
