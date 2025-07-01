@@ -84,12 +84,7 @@ public sealed record class DefaultVoiceSetResponse : Response {
 
 	public override ResponseType Type => ResponseType.DefaultVoiceSetConfirmation;
 
-	public VoiceInfo DefaultVoice { get; set; } = new VoiceInfo() {
-		Id = "",
-		Name = "Empty Voice",
-		Language = "",
-		Gender = VoiceGender.Unknown
-	};
+	public VoiceInfo DefaultVoice { get; set; } = VoiceInfo.Empty;
 
 	public override void ReadContents(BinaryReader payloadReader) {
 		DefaultVoice = payloadReader.ReadVoiceInfo();

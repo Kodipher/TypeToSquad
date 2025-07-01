@@ -27,4 +27,12 @@ public record VoiceInfo {
 	/// <summary>The gender of the synthesis engine (voice).</summary>
 	public required VoiceGender Gender { get; init; }
 
+	/// <summary>Empty voice to be used as place holder.</summary>
+	public static VoiceInfo Empty { get; } = new VoiceInfo() {
+		Id = "",
+		Name = "Empty Voice",
+		Language = "",
+		Gender = VoiceGender.Unknown
+	};
+
 }
