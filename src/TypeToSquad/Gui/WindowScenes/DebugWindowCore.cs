@@ -31,6 +31,13 @@ public partial class DebugWindowCore : Control, IRefrencesCore {
 
 	public override void _Ready() {
 
+		// Check if actually in a subwindow
+		Node? parent = this.GetParent();
+		if (parent is Window parentWindow) {
+			parentWindow.CloseRequested += () => parentWindow.QueueFree();
+		}
+
+		// Set up test bench
 		labelResponse = this.GetNodeNotNull<Label>("%LabelResponse");
 		textEditInput = this.GetNodeNotNull<TextEdit>("%TextEditInput");
 
@@ -68,9 +75,6 @@ public partial class DebugWindowCore : Control, IRefrencesCore {
 
 	}
 
-
-	public override void _Process(double delta) {
-	}
 
 	public void HandleResponse(Response response) {
 
