@@ -23,18 +23,22 @@ public class FieldOptionsRuntime : Field<string> {
 	/// </summary>
 	public string? DefaultOption { get; private set; } = null;
 
-	public void SetOptions(string[] options, int defaultOptionIndex = 0) {
+	/// <remarks>Options are copied.</remarks>
+	public void SetOptions(IEnumerable<string> options, int defaultOptionIndex = 0) {
+
+		// Convert options
+		string[] optionsArr = options.ToArray();
 
 		// Guards
-		if (options.Length < 1) {
+		if (optionsArr.Length < 1) {
 			throw new ArgumentException("There must be at least 1 option.", nameof(options));
 		}
 
 		ArgumentOutOfRangeException.ThrowIfLessThan(defaultOptionIndex, 0);
-		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(defaultOptionIndex, options.Length);
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(defaultOptionIndex, optionsArr.Length);
 
 		// Set options
-		Options = options.ToArray().AsReadOnly();
+		Options = optionsArr.AsReadOnly();
 		DefaultOption = Options[defaultOptionIndex];
 
 		// Force validity under the new condition
