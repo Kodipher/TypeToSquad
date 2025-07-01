@@ -18,25 +18,18 @@ public interface IRefrencesCore {
 public partial class CoreNode : Node {
 
 	public override void _Ready() {
-		base._Ready();
 
-		// Init Model
-		UserSettings = UserSettingsLoader.Load();
-		SpeechDaemon = new SpeechDaemon();
-		LogMonitor = new LogMonitor();
+		// Find children
+		CreateModel();
+		FindNodes();
 
+		// Init
 		SpeechDaemon.StartDaemon();
-		UserSettingsLoader.Save(UserSettings);
-		
-		// Find and init Children
-		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
-		AudioManager = this.GetNodeNotNull<AudioManager>("%AudioManager");
-
-		WindowManager.RecieveCoreReference(this);
-		AudioManager.RecieveCoreReference(this);
 
 		AudioManager.InitOutputDeviceOptions();
 		AudioManager.SetOutputDeviceFromSettings();
+
+		UserSettingsLoader.Save(UserSettings);
 
 		// Instantiate main window
 		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");
@@ -65,6 +58,12 @@ public partial class CoreNode : Node {
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!; // Set in _Ready
 	public LogMonitor LogMonitor { get; private set; } = null!; // Set in _Ready
 
+	void CreateModel() {
+		UserSettings = UserSettingsLoader.Load();
+		SpeechDaemon = new SpeechDaemon();
+		LogMonitor = new LogMonitor();
+	}
+
 	#endregion
 
 	#region //// Children
@@ -72,6 +71,14 @@ public partial class CoreNode : Node {
 	public WindowManager WindowManager { get; private set; } = null!; // Set in _Ready
 	public WindowScenes.MainWindowCore MainWindow { get; private set; } = null!; // Set in _Ready
 	public AudioManager AudioManager { get; private set; } = null!; // Set in _Ready
+
+	void FindNodes() {
+		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
+		AudioManager = this.GetNodeNotNull<AudioManager>("%AudioManager");
+
+		WindowManager.RecieveCoreReference(this);
+		AudioManager.RecieveCoreReference(this);
+	}
 
 	#endregion
 
