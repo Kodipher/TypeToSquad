@@ -47,6 +47,9 @@ public class SpeechSynthesisWrapper : IDisposable {
 		return SpeechSynthesizer.AllVoices.Select(ConvertVoiceInfo).ToArray();
 	}
 
+	/// <summary>Returns the default voice.</summary>
+	public static Protocol.VoiceInfo GetDefaultVoice() => ConvertVoiceInfo(SpeechSynthesizer.DefaultVoice);
+
 	/// <summary>
 	/// Converts a <see cref="VoiceInformation"/> from the windows runtime
 	/// to a <see cref="Protocol.VoiceInfo"/> usable to transmit data

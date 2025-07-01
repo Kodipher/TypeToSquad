@@ -53,12 +53,16 @@ public sealed record class AllVoicesResponse : Response {
 
 	public VoiceInfo[] Voices { get; set; } = Array.Empty<VoiceInfo>();
 
+	public VoiceInfo DefaultVoice { get; set; } = VoiceInfo.Empty;
+
 	public override void ReadContents(BinaryReader payloadReader) {
 		Voices = payloadReader.ReadVoiceInfoArray();
+		DefaultVoice = payloadReader.ReadVoiceInfo();
 	}
 
 	public override void WriteContents(BinaryWriter payloadWriter) {
 		payloadWriter.Write(Voices);
+		payloadWriter.Write(DefaultVoice);
 	}
 
 }

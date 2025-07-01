@@ -29,7 +29,7 @@ public class Program {
 		var requestHandler = new RequestMapper()
 			.Register<SynthesizeTextRequest>(req => new SyntesisResultResponse() { SynthesizedData = speechSynth.SynthesizeText(req.InputString) })
 			.Register<SynthesizeSsmlRequest>(req => new SyntesisResultResponse() { SynthesizedData = speechSynth.SynthesizeSsml(req.InputString) })
-			.Register<GetVoicesRequest>(_ => new AllVoicesResponse() { Voices = SpeechSynthesisWrapper.GetVoices() })
+			.Register<GetVoicesRequest>(_ => new AllVoicesResponse() { Voices = SpeechSynthesisWrapper.GetVoices(), DefaultVoice = SpeechSynthesisWrapper.GetDefaultVoice() })
 			.Register<SetVoiceRequest>(req => new VoiceSetResponse() { WasSet = speechSynth.SetVoice(req.VoiceName) })
 			.Register<SetVoiceToDefaultRequest>(_ => new DefaultVoiceSetResponse() { DefaultVoice = speechSynth.SetVoiceToDefault() })
 			.Register<TerminateRequest>(_ => { terminateRequestFlag = true; return new TerminateAcceptedResponse(); })
