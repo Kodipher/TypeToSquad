@@ -188,5 +188,8 @@
         <member name="P:WinRTSpeechSynthServer.Protocol.VoiceInfo.Gender">
             <summary>The gender of the synthesis engine (voice).</summary>
         </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.VoiceInfo.Empty">
+            <summary>Empty voice to be used as place holder.</summary>
+        </member>
     </members>
 </doc>
