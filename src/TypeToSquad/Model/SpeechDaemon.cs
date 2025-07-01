@@ -185,6 +185,11 @@ public class SpeechDaemon : IDisposable {
 	public void DispatchRequest(Request request, Action<Response> callback) {
 		ObjectDisposedException.ThrowIf(isDisposed, this);
 
+		if (!IsDaemonAliveNoHeartbeat()) {
+			GD.PushWarning("Daemon is not alive. Starting new daemon");
+			StartDaemon();
+		}
+
 		Task.Run(() => {
 			// Send request
 			Response? response = null;
