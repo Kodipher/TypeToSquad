@@ -24,9 +24,23 @@ public class FieldOptionsRuntime : Field<string> {
 	public string? DefaultOption { get; private set; } = null;
 
 	/// <remarks>Options are copied.</remarks>
+	public void SetOptions(IEnumerable<string> options, string defaultOption) {
+		// Enumerate options
+		string[] optionsArr = options.ToArray();
+
+		// Find index
+		int defaultIndex = Array.IndexOf(optionsArr, defaultOption);
+		if (defaultIndex < 0) {
+			throw new ArgumentException($"Default option \"{defaultOption}\" is not amongs options.", nameof(defaultOption));
+		}
+
+		SetOptions(optionsArr, defaultIndex);
+	}
+
+	/// <inheritdoc cref="SetOptions(IEnumerable{string}, string)"/>
 	public void SetOptions(IEnumerable<string> options, int defaultOptionIndex = 0) {
 
-		// Convert options
+		// Enumerate options
 		string[] optionsArr = options.ToArray();
 
 		// Guards
