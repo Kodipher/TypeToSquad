@@ -76,11 +76,10 @@ public partial class CoreNode : Node {
 			new GetVoicesRequest(),
 			(resp) => {
 
-				if (resp is not AllVoicesResponse) {
+				if (resp is not AllVoicesResponse voicesResponse) {
 					GD.PushError($"{nameof(GetVoicesRequest)} did not give a {nameof(AllVoicesResponse)}");
 					return null;
 				}
-				var voicesResponse = (AllVoicesResponse)resp;
 				
 				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
 				
