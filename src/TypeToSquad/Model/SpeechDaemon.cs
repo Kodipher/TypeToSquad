@@ -205,7 +205,44 @@ public class SpeechDaemon : IDisposable {
 				GD.PushError($"Exception(s) occurred during a request dispatch.\n{task.Exception}");
 			}
 		});
-		
+	}
+
+	/// <summary>Sends multiple requests in series, chaining callbacks together.</summary>
+	public void DispatchRequestSeries(Request startingRequest, params Func<Response, Request?>[] chainCallbacks) {
+
+		if (chainCallbacks.Length == 0) {
+			throw new ArgumentException("There must be at least one callback.", nameof(chainCallbacks));
+		}
+
+		Action<int, Response> indexedCallback = null!;
+		indexedCallback = (index, response) => {
+
+			// Guards
+			ArgumentOutOfRangeException.ThrowIfNegative(index);
+			ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, chainCallbacks.Length);
+
+			// Call
+			Request? nextRequest = chainCallbacks[index](response);
+
+			// Last request dispatched
+			if (index == chainCallbacks.Length - 1) {
+				if (nextRequest is not null) {
+					GD.PushError("Found request chain ending with a request that is not null.");
+				}
+				return;
+			}
+
+			// Dispatch next
+			if (nextRequest is null) {
+				GD.PushWarning("Found request chain with a null in the middle. Skipping further requests.");
+				return;
+			} else {
+				this.DispatchRequest(nextRequest, (resp) => indexedCallback(index+1, resp));
+			}
+		};
+
+		// Start the chain
+		DispatchRequest(startingRequest, (resp) => indexedCallback(0, resp));
 	}
 
 	/// <summary>
