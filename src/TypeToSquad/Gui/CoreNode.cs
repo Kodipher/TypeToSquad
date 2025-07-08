@@ -1,6 +1,9 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using WinRTSpeechSynthServer.Protocol.Messages;
 
 using TypeToSquad.Model;
 using TypeToSquad.Model.Settings;
@@ -24,12 +27,7 @@ public partial class CoreNode : Node {
 		FindNodes();
 
 		// Init
-		SpeechDaemon.StartDaemon();
-
-		AudioManager.InitOutputDeviceOptions();
-		AudioManager.SetOutputDeviceFromSettings();
-
-		UserSettingsLoader.Save(UserSettings);
+		InitModel();
 
 		// Instantiate main window
 		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");
@@ -62,6 +60,44 @@ public partial class CoreNode : Node {
 		UserSettings = UserSettingsLoader.Load();
 		SpeechDaemon = new SpeechDaemon();
 		LogMonitor = new LogMonitor();
+	}
+
+	void InitModel() {
+
+		// Init Audio 
+		AudioManager.InitOutputDeviceOptions();
+		AudioManager.SetOutputDeviceFromSettings();
+
+		// Start Daemon
+		SpeechDaemon.StartDaemon();
+
+		// Init voices
+		SpeechDaemon.DispatchRequestSeries(
+			new GetVoicesRequest(),
+			(resp) => {
+
+				if (resp is not AllVoicesResponse) {
+					GD.PushError($"{nameof(GetVoicesRequest)} did not give a {nameof(AllVoicesResponse)}");
+					return null;
+				}
+				var voicesResponse = (AllVoicesResponse)resp;
+				
+				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
+				
+				// Set current voice
+				return new SetVoiceRequest() { VoiceName = UserSettings.Voice };
+			},
+			(resp) => {
+				SpeechDaemon.NoteVoiceSetResponse(resp);
+
+				// Update settings
+				UserSettingsLoader.Save(UserSettings);
+
+				// Finish chain
+				return null;
+			}
+		);
+
 	}
 
 	#endregion
