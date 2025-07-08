@@ -6,7 +6,8 @@ namespace TypeToSquad.Model.Settings;
 
 
 interface IVariantSavable {
-	// To avoid getting properties via reflection
+	// A non-generic inhertiance root
+	// to avoid getting properties via reflection
 	public Variant ValueAsSavable { get; set; }
 }
 
