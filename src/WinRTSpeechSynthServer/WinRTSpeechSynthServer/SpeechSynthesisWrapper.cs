@@ -41,6 +41,9 @@ public class SpeechSynthesisWrapper : IDisposable {
 		synth.Voice = defaultVoice;
 		return ConvertVoiceInfo(defaultVoice);
 	}
+	
+	/// <summary>Returns the current voice set</summary>
+	public Protocol.VoiceInfo GetCurrentVoice() => ConvertVoiceInfo(synth.Voice);
 
 	/// <summary>Returns all installed voices.</summary>
 	public static Protocol.VoiceInfo[] GetVoices() {

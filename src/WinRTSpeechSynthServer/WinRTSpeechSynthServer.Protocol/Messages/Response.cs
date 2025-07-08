@@ -73,13 +73,16 @@ public sealed record class VoiceSetResponse : Response {
 	public override ResponseType Type => ResponseType.VoiceSetConfirmation;
 
 	public bool WasSet { get; set; } = false;
+	public VoiceInfo CurrentVoice { get; set; } = VoiceInfo.Empty;
 
 	public override void WriteContents(BinaryWriter payloadWriter) {
 		payloadWriter.Write(WasSet);
+		payloadWriter.Write(CurrentVoice);
 	}
 
 	public override void ReadContents(BinaryReader payloadReader) {
 		WasSet = payloadReader.ReadBoolean();
+		CurrentVoice = payloadReader.ReadVoiceInfo();
 	}
 }
 
