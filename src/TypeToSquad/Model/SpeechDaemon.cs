@@ -161,6 +161,7 @@ public class SpeechDaemon : IDisposable {
 		daemonProcess.Dispose();
 		daemonProcess = null;
 		currentPipeName = "";
+		CurrentVoice = null;
 	}
 
 	#endregion
@@ -261,6 +262,23 @@ public class SpeechDaemon : IDisposable {
 				callback();
 			}
 		}
+	}
+
+	#endregion
+
+	#region //// Voice State
+
+	public VoiceInfo? CurrentVoice { get; private set; } = null;
+
+	public bool VoiceChangeRequestRequired(string targetVoiceName) {
+		if (!IsDaemonAliveNoHeartbeat()) return true;
+		if (CurrentVoice is not null && CurrentVoice.Name == targetVoiceName) return false;
+		return true;
+	}
+
+	public void NoteVoiceSetResponse(Response response) {
+		if (response is not VoiceSetResponse voiceSetResponse) return;
+		this.CurrentVoice = voiceSetResponse.CurrentVoice;
 	}
 
 	#endregion
