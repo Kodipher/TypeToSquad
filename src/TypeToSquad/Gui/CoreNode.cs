@@ -52,7 +52,7 @@ public partial class CoreNode : Node {
 		} else {
 			// Try quit gracfully
 			hasPressedQuit = true;
-			GD.PushWarning("Gracefuly terminating...");
+			GD.Print("Gracefuly terminating daemon...");
 			SpeechDaemon.DispatchRequest(new TerminateRequest(), (_) => GetTree().Quit());
 		}
 	}
