@@ -49,12 +49,21 @@ public partial class CoreNode : Node {
 			// Force quit on second press
 			GD.PushWarning("Second close request detected. Force quitting without graceful terminate.");
 			GetTree().Quit();
-		} else {
-			// Try quit gracfully
-			hasPressedQuit = true;
-			GD.Print("Gracefuly terminating daemon...");
-			SpeechDaemon.DispatchRequest(new TerminateRequest(), (_) => GetTree().Quit());
+			return;
 		}
+
+		// Try quit gracfully
+		hasPressedQuit = true;
+		GD.Print("Gracefuly terminating daemon...");
+		SpeechDaemon.DispatchRequest(
+			new TerminateRequest(), 
+			(_) => {
+				GD.Print("Exiting...");
+				OnPreDelete();
+				GetTree().Quit();
+			}
+		);
+		
 	}
 
 	public override void _Notification(int what) {
