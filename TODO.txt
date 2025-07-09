@@ -7,7 +7,6 @@ TODO:
 -- tone
 -- sounds
 - feature: direct hardware shortcuts (like DCSB)
-- Daemon + Protocol: Add markers to ssml output
 
 TO TEST:
 - History Navigation

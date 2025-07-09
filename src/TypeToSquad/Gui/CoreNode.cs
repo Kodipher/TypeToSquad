@@ -43,8 +43,23 @@ public partial class CoreNode : Node {
 		SpeechDaemon.Dispose();
 	}
 
+	bool hasPressedQuit = false;
+	protected virtual void OnCloseRequest() {
+		if (hasPressedQuit) {
+			// Force quit on second press
+			GD.PushWarning("Second close request detected. Force quitting without graceful terminate.");
+			GetTree().Quit();
+		} else {
+			// Try quit gracfully
+			hasPressedQuit = true;
+			GD.PushWarning("Gracefuly terminating...");
+			SpeechDaemon.DispatchRequest(new TerminateRequest(), (_) => GetTree().Quit());
+		}
+	}
+
 	public override void _Notification(int what) {
 		if (what == NotificationPredelete) OnPreDelete();
+		else if (what == NotificationWMCloseRequest) OnCloseRequest();
 	}
 
 	#region //// Model

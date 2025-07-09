@@ -17,6 +17,7 @@ run/main_scene="uid://cdeue8fjdyebt"
 run/enable_alt_space_menu=true
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Kodipher/TypeToSquad"
+config/auto_accept_quit=false
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
 run/max_fps=60
 run/low_processor_mode=true
