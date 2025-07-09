@@ -35,6 +35,13 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 		FindNodes();
 		saveButton.Pressed += OnClose;
+
+		if (CoreNode is not null) {
+			SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
+			SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+			SetupInputLineEdit(CoreNode.UserSettings.HistorySlots, "%HistorySlotsInput");
+			SetupInputLineEdit(CoreNode.UserSettings.MaxConcurrentStreams, "%MaxConcurentInput");
+		}
 	}
 
 	public void OnClose() {
@@ -47,5 +54,44 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 		this.QueueFree();
 	}
+
+	#region //// Input setup
+
+	public void SetupInputLineEdit<[MustBeVariant] T>(Field<T> settingsField, NodePath inputPath)
+	where T : notnull 
+	{
+
+		var inputField = this.GetNodeNotNull<LineEdit>(inputPath);
+		inputField.Text = settingsField.Value.ToString();
+
+		// Connect input
+		void OnTextSubmit(string text) {
+			settingsField.ValueAsSavable = text;
+			inputField.Text = settingsField.ValueAsSavable.ToString();
+		}
+
+		inputField.TextSubmitted += OnTextSubmit;
+		inputField.FocusExited += () => OnTextSubmit(inputField.Text ?? "");
+	}
+
+	public void SetupInputOption(FieldOptionsRuntime options, NodePath inputPath) {
+		
+		// Options not set guard
+		if (options.Options is null) return;
+
+		// Set up items
+		var inputField = this.GetNodeNotNull<OptionButton>(inputPath);
+		inputField.Clear();
+
+		foreach (string option in options.Options) {
+			inputField.AddItem(option);
+			if (options.Value == option) inputField.Select(inputField.ItemCount - 1);
+		}
+
+		// Connect input
+		inputField.ItemSelected += index => options.Value = inputField.GetItemText((int)index);
+	}
+
+	#endregion
 
 }

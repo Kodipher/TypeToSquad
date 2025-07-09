@@ -34,6 +34,7 @@ text = "Main Voice"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+fit_to_longest_item = false
 allow_reselect = true
 
 [node name="OutputDeviceLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
@@ -45,6 +46,7 @@ text = "Output Device"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+fit_to_longest_item = false
 allow_reselect = true
 
 [node name="HistorySlotsLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
@@ -56,6 +58,7 @@ text = "History Slots"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+context_menu_enabled = false
 emoji_menu_enabled = false
 virtual_keyboard_type = 2
 
@@ -74,6 +77,7 @@ text = "Max Concurent Outputs"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+context_menu_enabled = false
 emoji_menu_enabled = false
 virtual_keyboard_type = 2
 
