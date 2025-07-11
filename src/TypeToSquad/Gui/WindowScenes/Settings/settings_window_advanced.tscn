@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cty723lak8pxd" path="res://Gui/WindowScenes/Settings/AdvancedSettingsWindow.cs" id="1_e7cc3"]
 
 [node name="AdvancedSettingsWindow" type="Window"]
-title = "Settings"
+title = "Settings (Advanced)"
 initial_position = 1
 size = Vector2i(700, 300)
 script = ExtResource("1_e7cc3")
@@ -25,43 +25,6 @@ layout_mode = 2
 columns = 2
 metadata/_tab_index = 0
 
-[node name="MainVoiceLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Main Voice"
-
-[node name="MainVoiceInput" type="OptionButton" parent="VBoxContainer/TabContainer/General"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-fit_to_longest_item = false
-allow_reselect = true
-
-[node name="OutputDeviceLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Output Device"
-
-[node name="OutputDeviceInput" type="OptionButton" parent="VBoxContainer/TabContainer/General"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-fit_to_longest_item = false
-allow_reselect = true
-
-[node name="HistorySlotsLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "History Slots"
-
-[node name="HistorySlotsInput" type="LineEdit" parent="VBoxContainer/TabContainer/General"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-context_menu_enabled = false
-emoji_menu_enabled = false
-virtual_keyboard_type = 2
-
 [node name="EnableAdvancedLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
 layout_mode = 2
 size_flags_horizontal = 0
@@ -71,18 +34,67 @@ text = "Enable Advanced Settings"
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Advanced" type="GridContainer" parent="VBoxContainer/TabContainer"]
+[node name="Voices" type="GridContainer" parent="VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
 columns = 2
 metadata/_tab_index = 1
 
-[node name="MaxConcurentLabel" type="Label" parent="VBoxContainer/TabContainer/Advanced"]
+[node name="MainVoiceLabel" type="Label" parent="VBoxContainer/TabContainer/Voices"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Main Voice"
+
+[node name="MainVoiceInput" type="OptionButton" parent="VBoxContainer/TabContainer/Voices"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+allow_reselect = true
+
+[node name="Input" type="GridContainer" parent="VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+columns = 2
+metadata/_tab_index = 2
+
+[node name="HistorySlotsLabel" type="Label" parent="VBoxContainer/TabContainer/Input"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "History Slots"
+
+[node name="HistorySlotsInput" type="LineEdit" parent="VBoxContainer/TabContainer/Input"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_type = 2
+
+[node name="Audio" type="GridContainer" parent="VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+columns = 2
+metadata/_tab_index = 3
+
+[node name="OutputDeviceLabel" type="Label" parent="VBoxContainer/TabContainer/Audio"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Output Device"
+
+[node name="OutputDeviceInput" type="OptionButton" parent="VBoxContainer/TabContainer/Audio"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+allow_reselect = true
+
+[node name="MaxConcurentLabel" type="Label" parent="VBoxContainer/TabContainer/Audio"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Max Concurent Outputs"
 
-[node name="MaxConcurentInput" type="LineEdit" parent="VBoxContainer/TabContainer/Advanced"]
+[node name="MaxConcurentInput" type="LineEdit" parent="VBoxContainer/TabContainer/Audio"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
