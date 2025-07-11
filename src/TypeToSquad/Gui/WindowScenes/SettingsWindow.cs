@@ -74,6 +74,12 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 		inputField.FocusExited += () => OnTextSubmit(inputField.Text ?? "");
 	}
 
+	public void SetupInputToggle(Field<bool> toggle, NodePath inputPath) {
+		var inputToggle = this.GetNodeNotNull<Button>(inputPath);
+		if (toggle.Value) inputToggle.ButtonPressed = true;
+		inputToggle.Toggled += newValue => toggle.Value = newValue;
+	}
+
 	public void SetupInputOption(FieldOptionsRuntime options, NodePath inputPath) {
 		
 		// Options not set guard
