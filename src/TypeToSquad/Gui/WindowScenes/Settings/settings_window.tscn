@@ -29,6 +29,8 @@ text = "Voice"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../OutputDeviceInput")
+focus_previous = NodePath("../../SaveButton")
 fit_to_longest_item = false
 allow_reselect = true
 
@@ -41,6 +43,8 @@ text = "Output Device"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+focus_next = NodePath("../EnableAdvancedInput")
+focus_previous = NodePath("../MainVoiceInput")
 fit_to_longest_item = false
 allow_reselect = true
 
@@ -52,9 +56,13 @@ text = "Enable Advanced Settings"
 [node name="EnableAdvancedInput" type="CheckBox" parent="VBoxContainer/MainGrid"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_next = NodePath("../../SaveButton")
+focus_previous = NodePath("../OutputDeviceInput")
 
 [node name="SaveButton" type="Button" parent="VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
+focus_next = NodePath("../MainGrid/MainVoiceInput")
+focus_previous = NodePath("../MainGrid/EnableAdvancedInput")
 text = "Save"
