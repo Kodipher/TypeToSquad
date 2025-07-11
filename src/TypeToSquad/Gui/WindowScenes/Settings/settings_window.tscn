@@ -5,7 +5,7 @@
 [node name="SettingsWindow" type="Window"]
 title = "Settings"
 initial_position = 1
-size = Vector2i(600, 150)
+size = Vector2i(700, 135)
 script = ExtResource("1_e6at4")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
