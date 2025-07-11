@@ -6,7 +6,7 @@ using TypeToSquad.Utils;
 using TypeToSquad.Model.Settings;
 
 
-namespace TypeToSquad.Gui.WindowScenes;
+namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 
 public partial class SettingsWindow : Window, IRefrencesCore {
@@ -19,29 +19,42 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 	#endregion
 
-	#region //// Nodes (except settings)
+	#region //// Nodes (common for both setting windows)
 
 	// All set in FindNodes, which is called in _Ready
 	BaseButton saveButton = null!;
+	BaseButton enableAdvancedCheckbox = null!;
 
 	void FindNodes() {
 		saveButton = this.GetNodeNotNull<BaseButton>("%SaveButton");
+		enableAdvancedCheckbox = this.GetNodeNotNull<BaseButton>("%EnableAdvancedInput");
 	}
 
 	#endregion
 
 	public override void _Ready() {
-		this.CloseRequested += OnClose;
-
 		FindNodes();
+
+		// Saving
+		this.CloseRequested += OnClose;
 		saveButton.Pressed += OnClose;
 
+		// Advanced settings toggle
 		if (CoreNode is not null) {
-			SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
-			SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
-			SetupInputLineEdit(CoreNode.UserSettings.HistorySlots, "%HistorySlotsInput");
-			SetupInputLineEdit(CoreNode.UserSettings.MaxConcurrentStreams, "%MaxConcurentInput");
+			Field<bool> advancedSettingsField = CoreNode.UserSettings.UseAdvancedSettings;
+
+			if (advancedSettingsField.Value) enableAdvancedCheckbox.ButtonPressed = true;
+			enableAdvancedCheckbox.Toggled += newValue => {
+				advancedSettingsField.Value = newValue;
+				OnClose();
+
+				var windowType = advancedSettingsField ? WindowType.AdvancedSettings : WindowType.Settings;
+				CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
+			};
 		}
+
+		// All inputs
+		SetupSettingInputs();
 	}
 
 	public void OnClose() {
@@ -55,9 +68,17 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 		this.QueueFree();
 	}
 
-	#region //// Input setup
+	protected virtual void SetupSettingInputs() {
 
-	public void SetupInputLineEdit<[MustBeVariant] T>(Field<T> settingsField, NodePath inputPath)
+		if (CoreNode is null) return;
+
+		SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
+		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+	}
+
+	#region //// Input Setup
+
+	protected void SetupInputLineEdit<[MustBeVariant] T>(Field<T> settingsField, NodePath inputPath)
 	where T : notnull 
 	{
 
@@ -66,7 +87,7 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 		// Connect input
 		void OnTextSubmit(string text) {
-			settingsField.ValueAsSavable = text;
+			settingsField.ValueAsSavable = text; // a bit of a hack to parse input
 			inputField.Text = settingsField.ValueAsSavable.ToString();
 		}
 
@@ -74,13 +95,13 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 		inputField.FocusExited += () => OnTextSubmit(inputField.Text ?? "");
 	}
 
-	public void SetupInputToggle(Field<bool> toggle, NodePath inputPath) {
+	protected void SetupInputToggle(Field<bool> toggle, NodePath inputPath) {
 		var inputToggle = this.GetNodeNotNull<Button>(inputPath);
 		if (toggle.Value) inputToggle.ButtonPressed = true;
 		inputToggle.Toggled += newValue => toggle.Value = newValue;
 	}
 
-	public void SetupInputOption(FieldOptionsRuntime options, NodePath inputPath) {
+	protected void SetupInputOption(FieldOptionsRuntime options, NodePath inputPath) {
 		
 		// Options not set guard
 		if (options.Options is null) return;

@@ -10,7 +10,8 @@ public enum WindowType {
 	Unknown,
 	Main,
 	Debug,
-	Settings
+	Settings,
+	AdvancedSettings
 }
 
 

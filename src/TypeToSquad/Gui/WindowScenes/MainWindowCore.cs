@@ -44,12 +44,15 @@ public partial class MainWindowCore : Control, IRefrencesCore {
 	#endregion
 
 	public override void _Ready() {
-		
 		FindNodes();
+
 		errorIndicator.Hide();
 
-		settingsButton.Pressed += () => { CoreNode?.WindowManager.CreateWindowAtSelfUnique(WindowType.Settings); };
-
+		settingsButton.Pressed += () => {
+			if (CoreNode is null) return;
+			var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.AdvancedSettings : WindowType.Settings;
+			CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType); 
+		};
 	}
 
 }
