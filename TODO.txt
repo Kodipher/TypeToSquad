@@ -1,12 +1,13 @@
 TODO:
 - ui window: main
-- ui window: settings
 - feature: sfml
 -- IPA replacements
 -- language changes
 -- tone
 -- sounds
 - feature: direct hardware shortcuts (like DCSB)
+- min window sizes for all windows
+- tab order and grab for all windows
 
 TO TEST:
 - History Navigation
