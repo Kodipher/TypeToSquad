@@ -69,43 +69,67 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 	/// <summary>
 	/// Creates a window of type <paramref name="windowType"/>
-	/// and unpacks the contents into <paramref name="unpackDestination"/>.
-	/// The child of the window will be the child of the destination node.
-	/// No window properties are copied.
-	/// Also provides the <see cref="TypeToSquad.CoreNode"/> reference
-	/// to the child of the root node if it's <see cref="IRefrencesCore"/>.
+	/// and transfters the script, script proprties and
+	/// children into root window.
+	/// (as seen by <see cref="CoreNode"/>).
+	/// The created window must have a single child,
+	/// that does not have <see cref="Node.UniqueNameInOwner"/> set,
+	/// to facilitate transfer.
 	/// </summary>
-	/// <remarks>
-	/// Only script-less windows are supported.
-	/// Only windows with 1 child node are supported.
-	/// </remarks>
-	public void CreateWindowUnpacked(WindowType windowType, Node unpackDestination) {
+	/// <remarks>Only windows with 1 child node are supported.</remarks>
+	public void CreateWindowIntoRoot(WindowType windowType) {
+
+		GD.Print($"Window {windowType} requested into root.");
+
 		Window window = InstantiateWindowScene(windowType);
 
 		// Guards
-		ArgumentNullException.ThrowIfNull(unpackDestination);
-
 		if (window.GetChildCount() != 1) {
 			throw new NotSupportedException("Only windows with 1 child can be unpacked.");
 		}
 
-		if (window.GetScript().VariantType != Variant.Type.Nil) {
-			throw new NotSupportedException("Only windows without a script can be unpacked.");
+		if (GetWindow().GetScript().VariantType != Variant.Type.Nil) {
+			throw new InvalidOperationException("The root window already has a script. Another window might have been created this way.");
 		}
 
-		// Unpack
+		if (CoreNode is null) throw new InvalidOperationException("Core node must be set.");
+
+		// Find root window
+		Window rootWindow = CoreNode.GetWindow();
+
+		// Move child node
 		Node child = window.GetChild(0);
 		foreach (var deepChild in child.FindChildren("*")) deepChild.Owner = child;
 
 		child.Owner = null;
 		window.RemoveChild(child);
-		unpackDestination.AddChild(child);
+		rootWindow.AddChild(child);
 
-		// Provide core
-		if (child is IRefrencesCore childWithCode) childWithCode.RecieveCoreReference(CoreNode);
+		foreach (var deepChild in child.FindChildren("*")) deepChild.Owner = rootWindow;
+
+		// Move script
+		Script windowScript = window.GetScript().As<Script>();
+		rootWindow.SetScript(windowScript);
+		rootWindow = CoreNode.GetWindow(); // refresh the C# object reference
+
+		// Move exported properties and re-give core node
+		foreach (Godot.Collections.Dictionary property in windowScript.GetScriptPropertyList()) {
+			if (
+				property["usage"]
+					.As<PropertyUsageFlags>()
+					.HasFlag(PropertyUsageFlags.ScriptVariable)
+			) {
+				StringName propertyName = property["name"].AsStringName();
+				rootWindow.Set(propertyName, window.Get(propertyName));
+			}
+		}
+
+		if (rootWindow is IRefrencesCore windowRootWithInterfaced) {
+			if (CoreNode is not null) windowRootWithInterfaced.RecieveCoreReference(CoreNode);
+		}
 
 		// Cleanup
-		window.Free();
+		window.QueueFree();
 	}
 
 

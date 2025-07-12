@@ -1,12 +1,14 @@
 [gd_scene load_steps=2 format=3 uid="uid://0w4yxg65pc57"]
 
-[ext_resource type="Script" uid="uid://b2gyqbxewtq7x" path="res://Gui/WindowScenes/MainWindowCore.cs" id="1_3e08y"]
+[ext_resource type="Script" uid="uid://b2gyqbxewtq7x" path="res://Gui/WindowScenes/MainWindow.cs" id="1_3e08y"]
 
-[node name="MainWindow" type="Window"]
+[node name="MainWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
 initial_position = 1
 size = Vector2i(500, 150)
+script = ExtResource("1_3e08y")
+AutoFocusNode = NodePath("TransferParent/HBox/VBoxMiddle/MessageTextEdit")
 
-[node name="MainWindowCore" type="Control" parent="."]
+[node name="TransferParent" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,9 +17,8 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("1_3e08y")
 
-[node name="HBox" type="HBoxContainer" parent="MainWindowCore"]
+[node name="HBox" type="HBoxContainer" parent="TransferParent"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,21 +26,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxLeft" type="VBoxContainer" parent="MainWindowCore/HBox"]
+[node name="VBoxLeft" type="VBoxContainer" parent="TransferParent/HBox"]
 layout_mode = 2
 size_flags_horizontal = 0
 alignment = 1
 
-[node name="SettingsButton" type="Button" parent="MainWindowCore/HBox/VBoxLeft"]
+[node name="SettingsButton" type="Button" parent="TransferParent/HBox/VBoxLeft"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Settings"
 
-[node name="VBoxMiddle" type="VBoxContainer" parent="MainWindowCore/HBox"]
+[node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MessageTextEdit" type="TextEdit" parent="MainWindowCore/HBox/VBoxMiddle"]
+[node name="MessageTextEdit" type="TextEdit" parent="TransferParent/HBox/VBoxMiddle"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -51,26 +52,26 @@ scroll_fit_content_width = true
 caret_blink = true
 caret_move_on_right_click = false
 
-[node name="VBoxRight" type="VBoxContainer" parent="MainWindowCore/HBox"]
+[node name="VBoxRight" type="VBoxContainer" parent="TransferParent/HBox"]
 layout_mode = 2
 size_flags_horizontal = 8
 alignment = 1
 
-[node name="SpeakButton" type="Button" parent="MainWindowCore/HBox/VBoxRight"]
+[node name="SpeakButton" type="Button" parent="TransferParent/HBox/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "Speak"
 
-[node name="ShutButton" type="Button" parent="MainWindowCore/HBox/VBoxRight"]
+[node name="ShutButton" type="Button" parent="TransferParent/HBox/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "Shut"
 
-[node name="ErrorIndicator" type="Button" parent="MainWindowCore"]
+[node name="ErrorIndicator" type="Button" parent="TransferParent"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 3

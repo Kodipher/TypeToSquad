@@ -10,7 +10,7 @@ using WinRTSpeechSynthServer.Protocol.Messages;
 namespace TypeToSquad.Gui.WindowScenes;
 
 
-public partial class MainWindowCore : Control, IRefrencesCore {
+public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	#region //// Core Node
 
@@ -44,17 +44,18 @@ public partial class MainWindowCore : Control, IRefrencesCore {
 	#endregion
 
 	public override void _Ready() {
+		base._Ready();
+		
 		FindNodes();
 
 		errorIndicator.Hide();
-
-		messageTextEdit.GrabFocus();
 
 		settingsButton.Pressed += () => {
 			if (CoreNode is null) return;
 			var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.AdvancedSettings : WindowType.Settings;
 			CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType); 
 		};
+
 	}
 
 }

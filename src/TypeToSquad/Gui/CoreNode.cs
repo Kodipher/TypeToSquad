@@ -29,13 +29,14 @@ public partial class CoreNode : Node {
 		// Init
 		InitModel();
 
-		// Make the root window an ex window
-		GetWindow().SetScript(GD.Load<Script>("res://Utils/WindowEx.cs"));
+		// Instantiate main window after ready
+		CallDeferred(nameof(PostReady));
+	}
 
-		// Instantiate main window
-		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");
-		WindowManager.CreateWindowUnpacked(WindowType.Main, mainWindowCoreParent);
-		MainWindow = mainWindowCoreParent.GetChild<WindowScenes.MainWindowCore>(0);
+	public void PostReady() {
+		WindowManager.CreateWindowIntoRoot(WindowType.Main);
+		MainWindow = (WindowScenes.MainWindow)GetWindow();
+		MainWindow._Ready(); // Call ready again manually after the new script is attached
 	}
 
 	public override void _Process(double delta) {
@@ -131,7 +132,7 @@ public partial class CoreNode : Node {
 	#region //// Children
 
 	public WindowManager WindowManager { get; private set; } = null!; // Set in _Ready
-	public WindowScenes.MainWindowCore MainWindow { get; private set; } = null!; // Set in _Ready
+	public WindowScenes.MainWindow MainWindow { get; private set; } = null!; // Set in _Ready
 	public AudioManager AudioManager { get; private set; } = null!; // Set in _Ready
 
 	void FindNodes() {
