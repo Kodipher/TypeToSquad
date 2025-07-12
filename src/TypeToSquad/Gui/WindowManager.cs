@@ -77,7 +77,8 @@ public partial class WindowManager : Node, IRefrencesCore {
 	/// to facilitate transfer.
 	/// </summary>
 	/// <remarks>Only windows with 1 child node are supported.</remarks>
-	public void CreateWindowIntoRoot(WindowType windowType) {
+	/// <returns>The root window, as the newly created window.</returns>
+	public Window CreateWindowIntoRoot(WindowType windowType) {
 
 		GD.Print($"Window {windowType} requested into root.");
 
@@ -129,8 +130,9 @@ public partial class WindowManager : Node, IRefrencesCore {
 			if (CoreNode is not null) windowRootWithInterfaced.RecieveCoreReference(CoreNode);
 		}
 
-		// Cleanup
+		// Cleanup and return
 		window.QueueFree();
+		return rootWindow;
 	}
 
 

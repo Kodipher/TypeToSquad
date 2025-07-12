@@ -34,8 +34,7 @@ public partial class CoreNode : Node {
 	}
 
 	public void PostReady() {
-		WindowManager.CreateWindowIntoRoot(WindowType.Main);
-		MainWindow = (WindowScenes.MainWindow)GetWindow();
+		MainWindow = (WindowScenes.MainWindow)WindowManager.CreateWindowIntoRoot(WindowType.Main);
 		MainWindow._Ready(); // Call ready again manually after the new script is attached
 	}
 
