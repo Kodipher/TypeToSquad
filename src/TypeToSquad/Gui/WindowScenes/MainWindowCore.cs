@@ -48,6 +48,8 @@ public partial class MainWindowCore : Control, IRefrencesCore {
 
 		errorIndicator.Hide();
 
+		messageTextEdit.GrabFocus();
+
 		settingsButton.Pressed += () => {
 			if (CoreNode is null) return;
 			var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.AdvancedSettings : WindowType.Settings;

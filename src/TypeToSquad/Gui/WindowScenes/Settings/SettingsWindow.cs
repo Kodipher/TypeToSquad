@@ -55,6 +55,9 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 		// All inputs
 		SetupSettingInputs();
+
+		// Grab first focus
+		GrabInitialNodeFocus();
 	}
 
 	public void OnClose() {
@@ -74,6 +77,10 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 		SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
 		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+	}
+
+	protected virtual void GrabInitialNodeFocus() {
+		this.GetNodeNotNull<Control>("%MainVoiceInput").GrabFocus();
 	}
 
 	#region //// Input Setup
