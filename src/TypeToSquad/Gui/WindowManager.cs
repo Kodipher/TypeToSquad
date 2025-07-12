@@ -99,13 +99,14 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 		// Move child node
 		Node child = window.GetChild(0);
-		foreach (var deepChild in child.FindChildren("*")) deepChild.Owner = child;
+		var deepChildren = child.FindChildren("*");
+		foreach (var deepChild in deepChildren) deepChild.Owner = child;
 
 		child.Owner = null;
 		window.RemoveChild(child);
 		rootWindow.AddChild(child);
 
-		foreach (var deepChild in child.FindChildren("*")) deepChild.Owner = rootWindow;
+		foreach (var deepChild in deepChildren) deepChild.Owner = rootWindow;
 
 		// Move script
 		Script windowScript = window.GetScript().As<Script>();
