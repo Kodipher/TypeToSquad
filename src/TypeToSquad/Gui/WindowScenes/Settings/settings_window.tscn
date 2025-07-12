@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" uid="uid://d6m05kgpahi8" path="res://Gui/WindowScenes/Settings/SettingsWindow.cs" id="1_e6at4"]
 
-[node name="SettingsWindow" type="Window"]
+[node name="SettingsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
 title = "Settings"
 initial_position = 1
 size = Vector2i(700, 135)
 script = ExtResource("1_e6at4")
+AutoFocusNode = NodePath("VBoxContainer/MainGrid/MainVoiceInput")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = 15

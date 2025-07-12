@@ -22,8 +22,4 @@ public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 		SetupInputLineEdit(CoreNode.UserSettings.MaxConcurrentStreams, "%MaxConcurentInput");
 	}
 
-	protected override void GrabInitialNodeFocus() {
-		this.GetNodeNotNull<TabContainer>("%TabContainer").GetTabBar().GrabFocus();
-	}
-
 }

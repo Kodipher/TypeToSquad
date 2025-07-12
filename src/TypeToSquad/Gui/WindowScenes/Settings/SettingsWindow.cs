@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Linq;
 
 using TypeToSquad.Utils;
 using TypeToSquad.Model.Settings;
@@ -9,7 +7,7 @@ using TypeToSquad.Model.Settings;
 namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 
-public partial class SettingsWindow : Window, IRefrencesCore {
+public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 	#region //// Core Node
 
@@ -33,6 +31,8 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 	#endregion
 
 	public override void _Ready() {
+		base._Ready();
+
 		FindNodes();
 
 		// Saving
@@ -55,9 +55,6 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 		// All inputs
 		SetupSettingInputs();
-
-		// Grab first focus
-		GrabInitialNodeFocus();
 	}
 
 	public void OnClose() {
@@ -77,10 +74,6 @@ public partial class SettingsWindow : Window, IRefrencesCore {
 
 		SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
 		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
-	}
-
-	protected virtual void GrabInitialNodeFocus() {
-		this.GetNodeNotNull<Control>("%MainVoiceInput").GrabFocus();
 	}
 
 	#region //// Input Setup

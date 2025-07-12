@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" uid="uid://cty723lak8pxd" path="res://Gui/WindowScenes/Settings/AdvancedSettingsWindow.cs" id="1_8ncbl"]
 
-[node name="AdvancedSettingsWindow" type="Window"]
+[node name="AdvancedSettingsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
 title = "Settings (Advanced)"
 initial_position = 1
 size = Vector2i(700, 300)
 script = ExtResource("1_8ncbl")
+AutoFocusNode = NodePath("VBoxContainer/TabContainer")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = 15
