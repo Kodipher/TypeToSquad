@@ -14,6 +14,10 @@ namespace TypeToSquad.Gui;
 
 
 public interface IRefrencesCore {
+	/// <summary>
+	/// Called once to share the <see cref="CoreNode"/> reference.
+	/// <b>Note:</b> Might be called before <see cref="Node._Ready"/>.
+	/// </summary>
 	public void RecieveCoreReference(CoreNode? core);
 }
 
@@ -77,7 +81,7 @@ public partial class CoreNode : Node {
 	#region //// Model
 
 	// Assume to be { get; private init; }
-	// Need to be private set; because they are set in _Ready
+	// Need to be private set; because they are when _Ready is called
 
 	public UserSettings UserSettings { get; private set; } = null!; // Set in _Ready
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!; // Set in _Ready

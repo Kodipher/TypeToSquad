@@ -68,15 +68,22 @@ public partial class WindowManager : Node, IRefrencesCore {
 	#endregion
 
 	/// <summary>
+	/// <para>
 	/// Creates a window of type <paramref name="windowType"/>
 	/// and transfters the script, script proprties and
 	/// children into root window.
 	/// (as seen by <see cref="CoreNode"/>).
+	/// </para>
+	/// <para>
 	/// The created window must have a single child,
 	/// that does not have <see cref="Node.UniqueNameInOwner"/> set,
 	/// to facilitate transfer.
+	/// </para>
+	/// <para>
+	/// Because root must be ready by the point this is called,
+	/// the <see cref="Node._Ready"/> of the window is not called automatically.
+	/// </para>
 	/// </summary>
-	/// <remarks>Only windows with 1 child node are supported.</remarks>
 	/// <returns>The root window, as the newly created window.</returns>
 	public Window CreateWindowIntoRoot(WindowType windowType) {
 
@@ -98,7 +105,7 @@ public partial class WindowManager : Node, IRefrencesCore {
 		// Find root window
 		Window rootWindow = CoreNode.GetWindow();
 
-		// Move child node
+		// Move children
 		Node child = window.GetChild(0);
 		var deepChildren = child.FindChildren("*");
 		foreach (var deepChild in deepChildren) deepChild.Owner = child;
@@ -109,12 +116,11 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 		foreach (var deepChild in deepChildren) deepChild.Owner = rootWindow;
 
-		// Move script
+		// Move script, provide core node to the new instance
 		Script windowScript = window.GetScript().As<Script>();
 		rootWindow.SetScript(windowScript);
 		rootWindow = CoreNode.GetWindow(); // refresh the C# object reference
 
-		// Move exported properties and re-give core node
 		foreach (Godot.Collections.Dictionary property in windowScript.GetScriptPropertyList()) {
 			if (
 				property["usage"]

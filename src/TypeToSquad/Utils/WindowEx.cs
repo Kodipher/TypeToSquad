@@ -11,6 +11,8 @@ namespace TypeToSquad.Utils;
 [GlobalClass]
 public partial class WindowEx : Window {
 
+	#region //// Auto focus on ready
+
 	/// <summary>
 	/// <para>
 	/// The control to be focused automatically when the node is ready.
@@ -34,6 +36,8 @@ public partial class WindowEx : Window {
 
 		AutoFocusNode?.GrabFocus();
 	}
+
+	#endregion
 
 	public override void _Ready() {
 		base._Ready();
