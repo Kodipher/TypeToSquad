@@ -29,6 +29,9 @@ public partial class CoreNode : Node {
 		// Init
 		InitModel();
 
+		// Make the root window an ex window
+		GetWindow().SetScript(GD.Load<Script>("res://Utils/WindowEx.cs"));
+
 		// Instantiate main window
 		Node mainWindowCoreParent = this.GetNodeNotNull<Node>("%MainWindowUnpackParent");
 		WindowManager.CreateWindowUnpacked(WindowType.Main, mainWindowCoreParent);
