@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bcpfjd6g106yg"]
+[gd_scene load_steps=4 format=3 uid="uid://bcpfjd6g106yg"]
 
 [ext_resource type="Script" uid="uid://cty723lak8pxd" path="res://Gui/WindowScenes/Settings/AdvancedSettingsWindow.cs" id="1_8ncbl"]
+[ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_c2op0"]
+[ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_5ide3"]
 
 [node name="AdvancedSettingsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
 title = "Settings (Advanced)"
@@ -8,6 +10,8 @@ initial_position = 1
 size = Vector2i(700, 300)
 script = ExtResource("1_8ncbl")
 AutoFocusNode = NodePath("VBoxContainer/TabContainer")
+MainTheme = ExtResource("2_c2op0")
+KeyboardPatchTheme = ExtResource("3_5ide3")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = 15

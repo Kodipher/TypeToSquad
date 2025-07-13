@@ -1,0 +1,12 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://buhkmdg2cgg55"]
+
+[ext_resource type="StyleBox" uid="uid://dtqtvbwr7bcwr" path="res://assets/tab_outline_stylebox.tres" id="1_7m47p"]
+
+[resource]
+Button/styles/focus = ExtResource("1_7m47p")
+ItemList/styles/focus = ExtResource("1_7m47p")
+LineEdit/styles/focus = ExtResource("1_7m47p")
+TabBar/styles/tab_focus = ExtResource("1_7m47p")
+TabContainer/styles/tab_focus = ExtResource("1_7m47p")
+TextEdit/styles/focus = ExtResource("1_7m47p")
+Tree/styles/focus = ExtResource("1_7m47p")

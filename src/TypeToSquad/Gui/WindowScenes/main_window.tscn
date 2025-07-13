@@ -1,12 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://0w4yxg65pc57"]
+[gd_scene load_steps=4 format=3 uid="uid://0w4yxg65pc57"]
 
 [ext_resource type="Script" uid="uid://b2gyqbxewtq7x" path="res://Gui/WindowScenes/MainWindow.cs" id="1_3e08y"]
+[ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_f3pvk"]
+[ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_ulwh1"]
 
 [node name="MainWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
 initial_position = 1
 size = Vector2i(500, 150)
 script = ExtResource("1_3e08y")
 AutoFocusNode = NodePath("TransferParent/HBox/VBoxMiddle/MessageTextEdit")
+MainTheme = ExtResource("2_f3pvk")
+KeyboardPatchTheme = ExtResource("3_ulwh1")
 
 [node name="TransferParent" type="Control" parent="."]
 layout_mode = 3
