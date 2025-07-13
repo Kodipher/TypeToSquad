@@ -82,17 +82,30 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 	where T : notnull 
 	{
 
-		var inputField = this.GetNodeNotNull<LineEdit>(inputPath);
-		inputField.Text = settingsField.Value.ToString();
+		var fieldInput = this.GetNodeNotNull<LineEdit>(inputPath);
+		fieldInput.Text = settingsField.Value.ToString();
 
 		// Connect input
 		void OnTextSubmit(string text) {
 			settingsField.ValueAsSavable = text; // a bit of a hack to parse input
-			inputField.Text = settingsField.ValueAsSavable.ToString();
+			fieldInput.Text = settingsField.ValueAsSavable.ToString();
 		}
 
-		inputField.TextSubmitted += OnTextSubmit;
-		inputField.FocusExited += () => OnTextSubmit(inputField.Text ?? "");
+		fieldInput.TextSubmitted += OnTextSubmit;
+		fieldInput.FocusExited += () => OnTextSubmit(fieldInput.Text ?? "");
+	}
+
+	protected void SetupInputSpinBox(FieldIntRange field, NodePath inputPath) {
+
+		var fieldInput = this.GetNodeNotNull<SpinBox>(inputPath);
+		fieldInput.MinValue = field.MinInclusive;
+		fieldInput.MaxValue = field.MaxInclusive;
+		fieldInput.Rounded = true;
+		fieldInput.Step = 1;
+		fieldInput.Value = field.Value;
+
+		// Connect input
+		fieldInput.ValueChanged += newValue => field.Value = (int)newValue;
 	}
 
 	protected void SetupInputToggle(Field<bool> toggle, NodePath inputPath) {

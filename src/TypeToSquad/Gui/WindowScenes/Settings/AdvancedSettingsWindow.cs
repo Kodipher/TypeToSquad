@@ -15,11 +15,11 @@ public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 		SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
 
 		// Input
-		SetupInputLineEdit(CoreNode.UserSettings.HistorySlots, "%HistorySlotsInput");
+		SetupInputSpinBox(CoreNode.UserSettings.HistorySlots, "%HistorySlotsInput");
 
 		// Audio
 		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
-		SetupInputLineEdit(CoreNode.UserSettings.MaxConcurrentStreams, "%MaxConcurentInput");
+		SetupInputSpinBox(CoreNode.UserSettings.MaxConcurrentStreams, "%MaxConcurentInput");
 	}
 
 }

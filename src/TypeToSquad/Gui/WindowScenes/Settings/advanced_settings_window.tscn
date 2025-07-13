@@ -65,13 +65,10 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "History Slots"
 
-[node name="HistorySlotsInput" type="LineEdit" parent="VBoxContainer/TabContainer/Input"]
+[node name="HistorySlotsInput" type="SpinBox" parent="VBoxContainer/TabContainer/Input"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-context_menu_enabled = false
-emoji_menu_enabled = false
-virtual_keyboard_type = 2
 
 [node name="Audio" type="GridContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -96,13 +93,10 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Max Concurent Outputs"
 
-[node name="MaxConcurentInput" type="LineEdit" parent="VBoxContainer/TabContainer/Audio"]
+[node name="MaxConcurentInput" type="SpinBox" parent="VBoxContainer/TabContainer/Audio"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-context_menu_enabled = false
-emoji_menu_enabled = false
-virtual_keyboard_type = 2
 
 [node name="SaveButton" type="Button" parent="VBoxContainer"]
 unique_name_in_owner = true
