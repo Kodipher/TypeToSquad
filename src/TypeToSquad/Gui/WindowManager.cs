@@ -136,6 +136,11 @@ public partial class WindowManager : Node, IRefrencesCore {
 			if (CoreNode is not null) windowRootWithInterfaced.RecieveCoreReference(CoreNode);
 		}
 
+		// Enable root event processing
+		rootWindow.SetProcessInput(true);
+		rootWindow.SetProcess(true);
+		rootWindow.SetProcessShortcutInput(true);
+
 		// Cleanup and return
 		window.QueueFree();
 		return rootWindow;
