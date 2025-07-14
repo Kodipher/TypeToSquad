@@ -44,18 +44,85 @@ public partial class WindowEx : Window {
 	/// <summary>
 	/// The main theme used by window.
 	/// Overrides <see cref="Window.Theme"/>.
+	/// The theme is assumed to not change.
 	/// </summary>
 	[Export]
 	public Theme? MainTheme { get; set; } = null;
 
 	/// <summary>
-	/// A theme that patchrs <see cref="MainTheme"/>
+	/// A theme that patches <see cref="MainTheme"/>
 	/// when keyboard input is detected.
 	/// </summary>
+	/// <remarks>
+	/// Only stylebox patches are supported.
+	/// </remarks>
 	[Export]
 	public Theme? KeyboardPatchTheme { get; set; } = null;
 
-	void HandleInputEvent() {
+	/// <summary>
+	/// If set, the theme patch will be reverted
+	/// on mouse click.
+	/// </summary>
+	[Export]
+	public bool RevertThemeOnMouseInput { get; set; } = false;
+
+	bool isThemePatched = false;
+
+	void HandleInputEvent(InputEvent inputEvent) {
+
+		if (isThemePatched) {
+
+			// Try revert theme patch
+			if (!RevertThemeOnMouseInput) return;
+
+			if (inputEvent is not InputEventMouseButton inputEventMouseButton) return;
+
+			if (inputEventMouseButton.Pressed) {
+				ResetThemeToMain();
+			}
+			
+		} else {
+
+			// Try patch
+			if (inputEvent is not InputEventKey inputEventKey) return;
+				
+			if (!inputEventKey.Pressed) return;
+
+			if (GuiGetFocusOwner() is TextEdit) return;
+			if (inputEventKey.AltPressed || inputEventKey.CtrlPressed) return;
+
+			if (inputEventKey.Keycode == Key.Tab) {
+				PatchTheme();
+				if (!inputEventKey.ShiftPressed) SetInputAsHandled(); // do not move forward
+			}
+
+			if (inputEventKey.Keycode is Key.Up or Key.Down or Key.Left or Key.Right) {
+				PatchTheme();
+				SetInputAsHandled(); // do not move
+			}
+			
+		}
+
+	}
+
+	void ResetThemeToMain() {
+		if (MainTheme is null) return;
+		this.Theme = (Theme)MainTheme.Duplicate();
+		isThemePatched = false;
+	}
+
+	void PatchTheme() {
+		if (isThemePatched) return;
+		if (KeyboardPatchTheme is null) return;
+
+		foreach (var type in KeyboardPatchTheme.GetTypeList()) {
+			foreach (var property in KeyboardPatchTheme.GetStyleboxList(type)) {
+				var proeprtyOverride = KeyboardPatchTheme.GetStylebox(property, type);
+				this.Theme.SetStylebox(property, type, proeprtyOverride);
+			}
+		}
+
+		isThemePatched = true;
 	}
 
 	#endregion
@@ -63,6 +130,12 @@ public partial class WindowEx : Window {
 	public override void _Ready() {
 		base._Ready();
 		TryAutoFocusNode();
+		ResetThemeToMain();
+	}
+
+	public override void _Input(InputEvent @event) {
+		base._Input(@event);
+		HandleInputEvent(@event);
 	}
 
 }

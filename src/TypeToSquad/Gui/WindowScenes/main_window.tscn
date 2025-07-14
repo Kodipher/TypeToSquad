@@ -11,6 +11,7 @@ script = ExtResource("1_3e08y")
 AutoFocusNode = NodePath("TransferParent/HBox/VBoxMiddle/MessageTextEdit")
 MainTheme = ExtResource("2_f3pvk")
 KeyboardPatchTheme = ExtResource("3_ulwh1")
+RevertThemeOnMouseInput = true
 
 [node name="TransferParent" type="Control" parent="."]
 layout_mode = 3
