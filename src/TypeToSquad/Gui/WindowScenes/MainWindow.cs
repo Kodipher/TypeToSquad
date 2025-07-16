@@ -56,8 +56,13 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		}
 
 		// Connect button signals
+		speakButton.Pressed += OnSpeakPressed;
+		shutButton.Pressed += OnShutPressed;
 		settingsButton.Pressed += OnSettingsPressed;
 		errorIndicator.Pressed += OnErrorIndicatorPressed;
+
+		// Core check
+		if (CoreNode is null) GD.PushError("Main Window has not been provided with CoreNode.");
 	}
 
 	public void OnSettingsPressed() {
@@ -76,8 +81,19 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		CoreNode.LogMonitor.SeekToLogEnd();
 		CoreNode.LogMonitor.BlockChecks = false;
 		OS.ShellOpen(LogMonitor.GetLogfilePath());
+	}
 
+	public void OnSpeakPressed() {
+		if (CoreNode is null) return;
 
+		GD.Print("Speaking.");
+		CoreNode.LogMonitor.CheckLog();
+	}
+
+	public void OnShutPressed() {
+		if (CoreNode is null) return;
+
+		GD.Print("Shutting.");
 	}
 
 }
