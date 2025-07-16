@@ -1,8 +1,22 @@
-[gd_scene load_steps=4 format=3 uid="uid://0w4yxg65pc57"]
+[gd_scene load_steps=8 format=3 uid="uid://0w4yxg65pc57"]
 
 [ext_resource type="Script" uid="uid://b2gyqbxewtq7x" path="res://Gui/WindowScenes/MainWindow.cs" id="1_3e08y"]
 [ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_f3pvk"]
 [ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_ulwh1"]
+
+[sub_resource type="InputEventAction" id="InputEventAction_f3pvk"]
+action = &"shortcut_settings"
+pressed = true
+
+[sub_resource type="Shortcut" id="Shortcut_ulwh1"]
+events = [SubResource("InputEventAction_f3pvk")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_xqhr5"]
+action = &"shortcut_shut"
+pressed = true
+
+[sub_resource type="Shortcut" id="Shortcut_7es2g"]
+events = [SubResource("InputEventAction_xqhr5")]
 
 [node name="MainWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
 initial_position = 1
@@ -39,6 +53,7 @@ alignment = 1
 [node name="SettingsButton" type="Button" parent="TransferParent/HBox/VBoxLeft"]
 unique_name_in_owner = true
 layout_mode = 2
+shortcut = SubResource("Shortcut_ulwh1")
 text = "Settings"
 
 [node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/HBox"]
@@ -74,6 +89,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
+shortcut = SubResource("Shortcut_7es2g")
 text = "Shut"
 
 [node name="ErrorIndicator" type="Button" parent="TransferParent"]
