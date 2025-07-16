@@ -11,6 +11,9 @@ public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 
 		if (CoreNode is null) return;
 
+		// General
+		SetupInputToggle(CoreNode.UserSettings.EnableErrorMonitoring, "%EnableMonitoringInput");
+
 		// Voices
 		SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
 

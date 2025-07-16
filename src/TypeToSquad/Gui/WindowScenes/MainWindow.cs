@@ -87,7 +87,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		if (CoreNode is null) return;
 
 		GD.Print("Speaking.");
-		CoreNode.LogMonitor.CheckLog();
+		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 	}
 
 	public void OnShutPressed() {

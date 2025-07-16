@@ -40,6 +40,15 @@ text = "Enable Advanced Settings"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="EnableMonitoringLabel" type="Label" parent="VBoxContainer/TabContainer/General"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Enable Error Monitoring"
+
+[node name="EnableMonitoringInput" type="CheckBox" parent="VBoxContainer/TabContainer/General"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="Voices" type="GridContainer" parent="VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
