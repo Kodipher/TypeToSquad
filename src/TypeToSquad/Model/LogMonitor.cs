@@ -69,9 +69,35 @@ public class LogMonitor {
 				BlockChecks = true;
 				OnErrorFound();
 			}
-		}
+		}	
+	}
 
-		
+	/// <summary>
+	/// Forces the next read in <see cref="CheckLog"/>
+	/// at the point where it is currently the end.
+	/// This effectively skips all errors already present in the log.
+	/// </summary>
+	public void SeekToLogEnd() {
+
+		try {
+			string path = GetLogfilePath();
+			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+			using var sr = new StreamReader(fs);
+			
+			fs.Seek(0, SeekOrigin.End);
+			lastCheckEndPosition = fs.Position;
+
+		} catch (Exception ex) {
+
+			if (
+				ex is IOException ||
+				ex is ArgumentException ||
+				ex is System.Security.SecurityException ||
+				ex is UnauthorizedAccessException
+			) {
+				GD.PushError($"Error in the LogMonitor: {ex}");
+			}
+		}
 	}
 
 	/// <summary>Invoked when <see cref="CheckLog"/> finds errors.</summary>
