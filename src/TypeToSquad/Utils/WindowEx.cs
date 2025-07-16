@@ -77,6 +77,7 @@ public partial class WindowEx : Window {
 
 			if (inputEvent is not InputEventMouseButton inputEventMouseButton) return;
 
+
 			if (inputEventMouseButton.Pressed) {
 				ResetThemeToMain();
 			}
@@ -89,16 +90,28 @@ public partial class WindowEx : Window {
 			if (!inputEventKey.Pressed) return;
 
 			if (GuiGetFocusOwner() is TextEdit) return;
-			if (inputEventKey.AltPressed || inputEventKey.CtrlPressed) return;
 
-			if (inputEventKey.Keycode == Key.Tab) {
-				PatchTheme();
-				if (!inputEventKey.ShiftPressed) SetInputAsHandled(); // do not move forward
-			}
 
-			if (inputEventKey.Keycode is Key.Up or Key.Down or Key.Left or Key.Right) {
+			if (inputEventKey.IsActionPressed("ui_focus_next", exactMatch: true)) {
 				PatchTheme();
 				SetInputAsHandled(); // do not move
+				return;
+			}
+
+			if (inputEventKey.IsActionPressed("ui_focus_prev", exactMatch: true)) {
+				PatchTheme();
+				return;
+			}
+
+			if (
+				inputEventKey.IsActionPressed("ui_up", exactMatch: true) ||
+				inputEventKey.IsActionPressed("ui_down", exactMatch: true) ||
+				inputEventKey.IsActionPressed("ui_left", exactMatch: true) ||
+				inputEventKey.IsActionPressed("ui_right", exactMatch: true)
+			) {
+				PatchTheme();
+				SetInputAsHandled(); // do not move
+				return;
 			}
 			
 		}
