@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Linq;
 
+using TypeToSquad.Model;
 using TypeToSquad.Utils;
 using Rephidock.GeneralUtilities.Collections;
 using WinRTSpeechSynthServer.Protocol.Messages;
@@ -45,16 +46,37 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	public override void _Ready() {
 		base._Ready();
-		
+
 		FindNodes();
 
+		// Init error indicator
+		errorIndicator.Hide();
+		if (CoreNode is not null) {
+			CoreNode.LogMonitor.OnErrorFound += errorIndicator.Show;
+		}
+
+		// Connect button signals
+		settingsButton.Pressed += OnSettingsPressed;
+		errorIndicator.Pressed += OnErrorIndicatorPressed;
+	}
+
+	public void OnSettingsPressed() {
+		if (CoreNode is null) return;
+
+		var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.AdvancedSettings : WindowType.Settings;
+		CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
+	}
+
+	public void OnErrorIndicatorPressed() {
+		if (CoreNode is null) return;
+
+		GD.Print("Opening log file.");
 		errorIndicator.Hide();
 
-		settingsButton.Pressed += () => {
-			if (CoreNode is null) return;
-			var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.AdvancedSettings : WindowType.Settings;
-			CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType); 
-		};
+		CoreNode.LogMonitor.SeekToLogEnd();
+		CoreNode.LogMonitor.BlockChecks = false;
+		OS.ShellOpen(LogMonitor.GetLogfilePath());
+
 
 	}
 
