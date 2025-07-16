@@ -53,6 +53,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		errorIndicator.Hide();
 		if (CoreNode is not null) {
 			CoreNode.LogMonitor.OnErrorFound += errorIndicator.Show;
+			if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 		}
 
 		// Connect button signals
