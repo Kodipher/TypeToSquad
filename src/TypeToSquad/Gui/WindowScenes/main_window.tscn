@@ -68,6 +68,7 @@ placeholder_text = "(Message)"
 emoji_menu_enabled = false
 wrap_mode = 1
 scroll_smooth = true
+scroll_v_scroll_speed = 20.0
 scroll_fit_content_width = true
 caret_blink = true
 caret_move_on_right_click = false
