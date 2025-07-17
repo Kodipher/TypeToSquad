@@ -8,6 +8,7 @@
 title = "Settings"
 initial_position = 1
 size = Vector2i(700, 135)
+min_size = Vector2i(200, 130)
 script = ExtResource("1_e6at4")
 AutoFocusNode = NodePath("VBoxContainer/MainGrid/MainVoiceInput")
 MainTheme = ExtResource("2_xtlee")
