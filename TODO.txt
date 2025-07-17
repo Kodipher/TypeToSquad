@@ -1,14 +1,18 @@
 TODO:
-- ui window: main
+- main window
+-- speak
+-- shut
 - feature: sfml
 -- IPA replacements
 -- language changes
 -- tone
 -- sounds
+-- syntax highlight
 - feature: direct hardware shortcuts (like DCSB)
 - min window sizes for all windows
-- tab order and grab for all windows
+- check tab order in all windows
+- themes
+- hover information
 
 TO TEST:
-- History Navigation
 - AudioManager: Max concurrent streams
