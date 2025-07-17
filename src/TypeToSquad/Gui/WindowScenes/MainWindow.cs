@@ -21,7 +21,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	#endregion
 
-	#region //// Nodes
+	#region //// Nodes + Setup
 
 	// All set in FindNodes, which is called in _Ready
 	BaseButton speakButton = null!;
@@ -41,8 +41,6 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
 	}
-
-	#endregion
 
 	public override void _Ready() {
 		base._Ready();
@@ -65,6 +63,28 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		// Core check
 		if (CoreNode is null) GD.PushError("Main Window has not been provided with CoreNode.");
 	}
+
+	public override void _Input(InputEvent @event) {
+
+		// Handle some shortcuts manually
+		if (@event is not InputEventKey inputEventKey) return;
+		if (!inputEventKey.Pressed) return;
+
+		if (inputEventKey.IsActionPressed("shortcut_speak", exactMatch: true)) {
+			OnSpeakPressed();
+			SetInputAsHandled(); // do print newline
+			return;
+		}
+
+		if (inputEventKey.IsActionPressed("print_newline", exactMatch: true)) {
+			messageTextEdit.InsertTextAtCaret("\n");
+			SetInputAsHandled();
+			return;
+		}
+
+	}
+
+	#endregion
 
 	public void OnSettingsPressed() {
 		if (CoreNode is null) return;
