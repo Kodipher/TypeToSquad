@@ -21,9 +21,12 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	#endregion
 
-	#region //// Nodes + Setup
+	#region //// Setup
 
-	// All set in FindNodes, which is called in _Ready
+	// Misc. state
+	readonly HistoryTracker historyTracker = new();
+
+	// Nodes
 	BaseButton speakButton = null!;
 	BaseButton shutButton = null!;
 	TextEdit messageTextEdit = null!;
@@ -32,7 +35,11 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	BaseButton errorIndicator = null!;
 
-	void FindNodes() {
+
+	public override void _Ready() {
+		base._Ready();
+
+		// Find nodes
 		speakButton = this.GetNodeNotNull<BaseButton>("%SpeakButton");
 		shutButton = this.GetNodeNotNull<BaseButton>("%ShutButton");
 		messageTextEdit = this.GetNodeNotNull<TextEdit>("%MessageTextEdit");
@@ -40,12 +47,6 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		settingsButton = this.GetNodeNotNull<BaseButton>("%SettingsButton");
 
 		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
-	}
-
-	public override void _Ready() {
-		base._Ready();
-
-		FindNodes();
 
 		// Init error indicator
 		errorIndicator.Hide();
@@ -82,6 +83,18 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 			return;
 		}
 
+		if (inputEventKey.IsActionPressed("history_prev", exactMatch: true)) {
+			OnHistoryPrevRequest();
+			SetInputAsHandled();
+			return;
+		}
+
+		if (inputEventKey.IsActionPressed("history_next", exactMatch: true)) {
+			OnHistoryNextRequest();
+			SetInputAsHandled();
+			return;
+		}
+
 	}
 
 	#endregion
@@ -109,12 +122,28 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 		GD.Print("Speaking.");
 		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
+
+		historyTracker.AddHistoryEntry(messageTextEdit.Text, CoreNode.UserSettings.HistorySlots);
+		historyTracker.NavigateReset();
+		messageTextEdit.Clear();
 	}
 
 	public void OnShutPressed() {
 		if (CoreNode is null) return;
 
 		GD.Print("Shutting.");
+	}
+
+	public void OnHistoryPrevRequest() {
+		if (historyTracker.TryNavigatePrevious(messageTextEdit.Text, out string queryResult)) {
+			messageTextEdit.Text = queryResult;
+		}
+	}
+
+	public void OnHistoryNextRequest() {
+		if (historyTracker.TryNavigateNext(messageTextEdit.Text, out string queryResult)) {
+			messageTextEdit.Text = queryResult;
+		}
 	}
 
 }
