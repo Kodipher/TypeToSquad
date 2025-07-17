@@ -11,7 +11,8 @@ public enum WindowType {
 	Main,
 	Debug,
 	Settings,
-	AdvancedSettings
+	AdvancedSettings,
+	Shortcuts
 }
 
 
