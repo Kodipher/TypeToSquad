@@ -7,6 +7,17 @@ namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 
+	public override void _Ready() {
+		base._Ready();
+
+		// View shortcuts button
+		var openShortcutsButton = this.GetNodeNotNull<BaseButton>("%OpenShortcutsButton");
+		openShortcutsButton.Pressed += () => {
+			if (CoreNode is null) return;
+			CoreNode.WindowManager.CreateWindowAtSelfUnique(WindowType.Shortcuts);
+		};
+	}
+
 	protected override void SetupSettingInputs() {
 
 		if (CoreNode is null) return;

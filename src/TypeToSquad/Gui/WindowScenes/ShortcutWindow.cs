@@ -1,7 +1,14 @@
 using Godot;
 using System;
+using System.Linq;
+
+using Rephidock.GeneralUtilities.Collections;
+
 using TypeToSquad.Gui;
 using TypeToSquad.Utils;
+
+
+namespace TypeToSquad.Gui.WindowScenes;
 
 
 public partial class ShortcutWindow : Window, IRefrencesCore {
@@ -14,25 +21,41 @@ public partial class ShortcutWindow : Window, IRefrencesCore {
 
 	#endregion
 
-	#region //// Nodes
+	#region //// Displayed Shortcuts
 
-	// All set in FindNodes, which is called in _Ready
-	BaseButton closeButton = null!;
-
-	void FindNodes() {
-		closeButton = this.GetNodeNotNull<BaseButton>("%CloseButton");
-	}
+	/// <summary>A list of shortcuts to display.</summary>
+	[Export]
+	public string[] DisplayedShortcuts { get; set; } = Array.Empty<string>();
 
 	#endregion
 
 	public override void _Ready() {
 		base._Ready();
 
-		FindNodes();
-
 		// Closing
 		this.CloseRequested += OnClose;
+
+		var closeButton = this.GetNodeNotNull<BaseButton>("%CloseButton");
 		closeButton.Pressed += OnClose;
+
+		// Add shortcuts
+		var shortcutGrid = this.GetNodeNotNull<GridContainer>("%ShortcutGrid");
+
+		foreach (var actionName in DisplayedShortcuts) {
+
+			string displayName = actionName
+									.Replace("shortcut", "")
+									.Capitalize()
+									.Replace("Prev", "Previous");
+
+			string inputEvent = InputMap
+									.ActionGetEvents(actionName)
+									.Select(ev => ev.AsText())
+									.JoinString("; ");
+
+			shortcutGrid.AddChild(new Label() { Text = displayName, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+			shortcutGrid.AddChild(new Label() { Text = inputEvent, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+		}
 	}
 
 	public void OnClose() {

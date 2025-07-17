@@ -68,21 +68,32 @@ size_flags_horizontal = 3
 fit_to_longest_item = false
 allow_reselect = true
 
-[node name="Input" type="GridContainer" parent="VBoxContainer/TabContainer"]
+[node name="Input" type="VBoxContainer" parent="VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
-columns = 2
 metadata/_tab_index = 2
 
-[node name="HistorySlotsLabel" type="Label" parent="VBoxContainer/TabContainer/Input"]
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/TabContainer/Input"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+
+[node name="HistorySlotsLabel" type="Label" parent="VBoxContainer/TabContainer/Input/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "History Slots"
 
-[node name="HistorySlotsInput" type="SpinBox" parent="VBoxContainer/TabContainer/Input"]
+[node name="HistorySlotsInput" type="SpinBox" parent="VBoxContainer/TabContainer/Input/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="OpenShortcutsButton" type="Button" parent="VBoxContainer/TabContainer/Input"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "View Input Shortcuts"
 
 [node name="Audio" type="GridContainer" parent="VBoxContainer/TabContainer"]
 visible = false
