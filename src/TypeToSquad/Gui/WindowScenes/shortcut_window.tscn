@@ -4,7 +4,7 @@
 
 [node name="ShortcutWindow" type="Window"]
 title = "Shortcuts"
-initial_position = 1
+initial_position = 2
 size = Vector2i(300, 300)
 min_size = Vector2i(200, 150)
 script = ExtResource("1_dbdd4")

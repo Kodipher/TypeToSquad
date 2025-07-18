@@ -6,7 +6,7 @@
 
 [node name="AdvancedSettingsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
 title = "Settings (Advanced)"
-initial_position = 1
+initial_position = 2
 size = Vector2i(700, 300)
 min_size = Vector2i(300, 200)
 script = ExtResource("1_8ncbl")
