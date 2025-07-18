@@ -1,4 +1,6 @@
-[gd_resource type="Theme" load_steps=8 format=3 uid="uid://cg2oy1w7gxbkx"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://cg2oy1w7gxbkx"]
+
+[ext_resource type="FontFile" uid="uid://edw88ex55cqt" path="res://assets/KurintoSans-Rg.ttf" id="1_xgdp2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_64js0"]
 
@@ -15,6 +17,8 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_upuy7"]
 
 [resource]
+default_font = ExtResource("1_xgdp2")
+default_font_size = 16
 Button/styles/focus = SubResource("StyleBoxEmpty_64js0")
 ItemList/styles/focus = SubResource("StyleBoxEmpty_pefyd")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_xgdp2")
