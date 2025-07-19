@@ -1,8 +1,62 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://cg2oy1w7gxbkx"]
+[gd_resource type="Theme" load_steps=13 format=3 uid="uid://cg2oy1w7gxbkx"]
 
 [ext_resource type="FontFile" uid="uid://edw88ex55cqt" path="res://assets/KurintoSans-Rg.ttf" id="1_xgdp2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_64js0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xgdp2"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.142, 0.163267, 0.2, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.56, 0.64, 0.8, 1)
+border_blend = true
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_611f8"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.21, 0.24, 0.3, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.56, 0.64, 0.8, 1)
+border_blend = true
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d80jv"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.142, 0.163267, 0.2, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.21, 0.24, 0.3, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0arac"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.28, 0.32, 0.4, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.56, 0.64, 0.8, 1)
+corner_detail = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pefyd"]
 
@@ -20,6 +74,10 @@
 default_font = ExtResource("1_xgdp2")
 default_font_size = 16
 Button/styles/focus = SubResource("StyleBoxEmpty_64js0")
+Button/styles/hover = SubResource("StyleBoxFlat_xgdp2")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_611f8")
+Button/styles/normal = SubResource("StyleBoxFlat_d80jv")
+Button/styles/pressed = SubResource("StyleBoxFlat_0arac")
 ItemList/styles/focus = SubResource("StyleBoxEmpty_pefyd")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_xgdp2")
 TabBar/styles/tab_focus = SubResource("StyleBoxEmpty_d80jv")
