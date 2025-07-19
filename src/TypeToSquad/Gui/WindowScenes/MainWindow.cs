@@ -61,6 +61,9 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		settingsButton.Pressed += OnSettingsPressed;
 		errorIndicator.Pressed += OnErrorIndicatorPressed;
 
+		// Connect focus
+		this.FocusEntered += messageTextEdit.GrabFocus;
+
 		// Core check
 		if (CoreNode is null) GD.PushError("Main Window has not been provided with CoreNode.");
 	}
@@ -126,12 +129,15 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		historyTracker.AddHistoryEntry(messageTextEdit.Text, CoreNode.UserSettings.HistorySlots);
 		historyTracker.NavigateReset();
 		messageTextEdit.Clear();
+
+		messageTextEdit.GrabFocus();
 	}
 
 	public void OnShutPressed() {
 		if (CoreNode is null) return;
 
 		GD.Print("Shutting.");
+		messageTextEdit.GrabFocus();
 	}
 
 	public void OnHistoryPrevRequest() {
