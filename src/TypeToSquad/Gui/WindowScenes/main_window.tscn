@@ -1,8 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://0w4yxg65pc57"]
+[gd_scene load_steps=12 format=3 uid="uid://0w4yxg65pc57"]
 
 [ext_resource type="Script" uid="uid://b2gyqbxewtq7x" path="res://Gui/WindowScenes/MainWindow.cs" id="1_3e08y"]
 [ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_f3pvk"]
 [ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_ulwh1"]
+[ext_resource type="Texture2D" uid="uid://dcf76i0j56fy5" path="res://assets/icons/m-cog-6-tooth.svg" id="4_7es2g"]
+[ext_resource type="Texture2D" uid="uid://b4vqky88rxt8i" path="res://assets/icons/m-exclamation-triangle.svg" id="4_ulwh1"]
+[ext_resource type="Texture2D" uid="uid://brgulx2rg7qdj" path="res://assets/icons/m-speaker-wave.svg" id="5_a1awg"]
+[ext_resource type="Texture2D" uid="uid://k8nk6kkqhwld" path="res://assets/icons/m-speaker-x-mark.svg" id="6_tsue3"]
 
 [sub_resource type="InputEventAction" id="InputEventAction_f3pvk"]
 action = &"shortcut_settings"
@@ -54,7 +58,7 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 shortcut = SubResource("Shortcut_ulwh1")
-text = "Settings"
+icon = ExtResource("4_7es2g")
 
 [node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/HBox"]
 layout_mode = 2
@@ -83,7 +87,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
-text = "Speak"
+icon = ExtResource("5_a1awg")
 
 [node name="ShutButton" type="Button" parent="TransferParent/HBox/VBoxRight"]
 unique_name_in_owner = true
@@ -91,7 +95,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 shortcut = SubResource("Shortcut_7es2g")
-text = "Shut"
+icon = ExtResource("6_tsue3")
 
 [node name="ErrorIndicator" type="Button" parent="TransferParent"]
 unique_name_in_owner = true
@@ -107,4 +111,4 @@ grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 8
-text = "Err"
+icon = ExtResource("4_ulwh1")
