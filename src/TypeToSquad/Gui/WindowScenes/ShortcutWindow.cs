@@ -11,7 +11,7 @@ using TypeToSquad.Utils;
 namespace TypeToSquad.Gui.WindowScenes;
 
 
-public partial class ShortcutWindow : Window, IRefrencesCore {
+public partial class ShortcutWindow : WindowEx, IRefrencesCore {
 
 	#region //// Core Node
 
