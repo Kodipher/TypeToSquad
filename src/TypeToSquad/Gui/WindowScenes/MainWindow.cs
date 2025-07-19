@@ -72,8 +72,8 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		if (!inputEventKey.Pressed) return;
 
 		if (inputEventKey.IsActionPressed("shortcut_speak", exactMatch: true)) {
-			OnSpeakPressed();
-			SetInputAsHandled(); // do print newline
+			PushInput(new InputEventShortcut() { Shortcut = speakButton.Shortcut });
+			SetInputAsHandled(); // intercepnt to not print newline
 			return;
 		}
 
