@@ -187,7 +187,7 @@ public class SpeechDaemon : IDisposable {
 		ObjectDisposedException.ThrowIf(isDisposed, this);
 
 		if (!IsDaemonAliveNoHeartbeat()) {
-			GD.PushWarning("Daemon is not alive. Starting new daemon");
+			GD.PushError("Daemon is not alive. Starting new daemon");
 			StartDaemon();
 		}
 
