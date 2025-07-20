@@ -7,8 +7,8 @@
 [node name="SettingsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
 title = "Settings"
 initial_position = 2
-size = Vector2i(700, 135)
-min_size = Vector2i(200, 130)
+size = Vector2i(700, 160)
+min_size = Vector2i(200, 155)
 script = ExtResource("1_e6at4")
 AutoFocusNode = NodePath("MarginContainer/VBoxContainer/MainGrid/MainVoiceInput")
 MainTheme = ExtResource("2_xtlee")
