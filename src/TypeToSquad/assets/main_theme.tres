@@ -1,6 +1,11 @@
-[gd_resource type="Theme" load_steps=13 format=3 uid="uid://cg2oy1w7gxbkx"]
+[gd_resource type="Theme" load_steps=21 format=3 uid="uid://cg2oy1w7gxbkx"]
 
+[ext_resource type="StyleBox" uid="uid://mfx8a888qb7g" path="res://assets/panel_stylebox.tres" id="1_d80jv"]
 [ext_resource type="FontFile" uid="uid://edw88ex55cqt" path="res://assets/KurintoSans-Rg.ttf" id="1_xgdp2"]
+[ext_resource type="Texture2D" uid="uid://cf7npoespw7ys" path="res://assets/icons/checkbox-checked.svg" id="2_upuy7"]
+[ext_resource type="Texture2D" uid="uid://bcbfumv1yvp46" path="res://assets/icons/checkbox-radio-checked.svg" id="3_2jsj3"]
+[ext_resource type="Texture2D" uid="uid://dhtgy3a5orrk2" path="res://assets/icons/checkbox-radio-unchecked.svg" id="4_2est8"]
+[ext_resource type="Texture2D" uid="uid://du25mo7esg0my" path="res://assets/icons/checkbox-unchecked.svg" id="5_7ojh6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_64js0"]
 
@@ -62,6 +67,25 @@ corner_detail = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xgdp2"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_upuy7"]
+bg_color = Color(0.142, 0.163267, 0.2, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pefyd"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.105, 0.12, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.21, 0.24, 0.3, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_d80jv"]
+color = Color(0.56, 0.64, 0.8, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d80jv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0arac"]
@@ -73,18 +97,32 @@ corner_detail = 1
 [resource]
 default_font = ExtResource("1_xgdp2")
 default_font_size = 16
+BoxContainer/constants/separation = 4
 Button/styles/focus = SubResource("StyleBoxEmpty_64js0")
 Button/styles/hover = SubResource("StyleBoxFlat_xgdp2")
 Button/styles/hover_pressed = SubResource("StyleBoxFlat_611f8")
 Button/styles/normal = SubResource("StyleBoxFlat_d80jv")
 Button/styles/pressed = SubResource("StyleBoxFlat_0arac")
+CheckBox/icons/checked = ExtResource("2_upuy7")
+CheckBox/icons/radio_checked = ExtResource("3_2jsj3")
+CheckBox/icons/radio_unchecked = ExtResource("4_2est8")
+CheckBox/icons/unchecked = ExtResource("5_7ojh6")
 ItemList/styles/focus = SubResource("StyleBoxEmpty_pefyd")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_xgdp2")
+LineEdit/styles/normal = ExtResource("1_d80jv")
 MarginContainer/constants/margin_bottom = 8
 MarginContainer/constants/margin_left = 8
 MarginContainer/constants/margin_right = 8
 MarginContainer/constants/margin_top = 8
+PopupMenu/icons/checked = ExtResource("2_upuy7")
+PopupMenu/icons/radio_checked = ExtResource("3_2jsj3")
+PopupMenu/icons/radio_unchecked = ExtResource("4_2est8")
+PopupMenu/icons/unchecked = ExtResource("5_7ojh6")
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_upuy7")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_pefyd")
+PopupMenu/styles/separator = SubResource("StyleBoxLine_d80jv")
 TabBar/styles/tab_focus = SubResource("StyleBoxEmpty_d80jv")
 TabContainer/styles/tab_focus = SubResource("StyleBoxEmpty_0arac")
 TextEdit/styles/focus = SubResource("StyleBoxEmpty_611f8")
+TextEdit/styles/normal = ExtResource("1_d80jv")
 Tree/styles/focus = SubResource("StyleBoxEmpty_upuy7")
