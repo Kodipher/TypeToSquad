@@ -33,7 +33,7 @@ events = [SubResource("InputEventAction_xqhr5")]
 initial_position = 1
 size = Vector2i(500, 150)
 script = ExtResource("1_3e08y")
-AutoFocusNode = NodePath("TransferParent/HBox/VBoxMiddle/MessageTextEdit")
+AutoFocusNode = NodePath("TransferParent/MarginContainer/HBox/VBoxMiddle/MessageTextEdit")
 MainTheme = ExtResource("2_f3pvk")
 KeyboardPatchTheme = ExtResource("3_ulwh1")
 RevertThemeOnMouseInput = true
@@ -48,7 +48,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBox" type="HBoxContainer" parent="TransferParent"]
+[node name="MarginContainer" type="MarginContainer" parent="TransferParent"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -56,23 +56,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxLeft" type="VBoxContainer" parent="TransferParent/HBox"]
+[node name="HBox" type="HBoxContainer" parent="TransferParent/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxLeft" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox"]
 layout_mode = 2
 size_flags_horizontal = 0
 alignment = 1
 
-[node name="SettingsButton" type="Button" parent="TransferParent/HBox/VBoxLeft"]
+[node name="SettingsButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxLeft"]
 unique_name_in_owner = true
 layout_mode = 2
 shortcut = SubResource("Shortcut_ulwh1")
 icon = ExtResource("4_7es2g")
 icon_alignment = 1
 
-[node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/HBox"]
+[node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MessageTextEdit" type="TextEdit" parent="TransferParent/HBox/VBoxMiddle"]
+[node name="MessageTextEdit" type="TextEdit" parent="TransferParent/MarginContainer/HBox/VBoxMiddle"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -85,12 +88,12 @@ scroll_fit_content_width = true
 caret_blink = true
 caret_move_on_right_click = false
 
-[node name="VBoxRight" type="VBoxContainer" parent="TransferParent/HBox"]
+[node name="VBoxRight" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox"]
 layout_mode = 2
 size_flags_horizontal = 8
 alignment = 1
 
-[node name="SpeakButton" type="Button" parent="TransferParent/HBox/VBoxRight"]
+[node name="SpeakButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -99,7 +102,7 @@ shortcut = SubResource("Shortcut_a1awg")
 icon = ExtResource("5_a1awg")
 icon_alignment = 1
 
-[node name="ShutButton" type="Button" parent="TransferParent/HBox/VBoxRight"]
+[node name="ShutButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxRight"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -111,13 +114,11 @@ icon_alignment = 1
 [node name="ErrorIndicator" type="TextureButton" parent="TransferParent"]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
+anchors_preset = -1
+anchor_left = 0.952
+anchor_top = 0.84
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -24.0
-offset_top = -24.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 3
