@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=21 format=3 uid="uid://cg2oy1w7gxbkx"]
+[gd_resource type="Theme" load_steps=25 format=3 uid="uid://cg2oy1w7gxbkx"]
 
 [ext_resource type="StyleBox" uid="uid://mfx8a888qb7g" path="res://assets/panel_stylebox.tres" id="1_d80jv"]
 [ext_resource type="FontFile" uid="uid://edw88ex55cqt" path="res://assets/KurintoSans-Rg.ttf" id="1_xgdp2"]
@@ -63,6 +63,46 @@ border_width_bottom = 3
 border_color = Color(0.56, 0.64, 0.8, 1)
 corner_detail = 1
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2jsj3"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.56, 0.64, 0.8, 1)
+border_blend = true
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2est8"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.56, 0.64, 0.8, 1)
+border_blend = true
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ojh6"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6f8b1"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pefyd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xgdp2"]
@@ -107,6 +147,10 @@ CheckBox/icons/checked = ExtResource("2_upuy7")
 CheckBox/icons/radio_checked = ExtResource("3_2jsj3")
 CheckBox/icons/radio_unchecked = ExtResource("4_2est8")
 CheckBox/icons/unchecked = ExtResource("5_7ojh6")
+CheckBox/styles/hover = SubResource("StyleBoxFlat_2jsj3")
+CheckBox/styles/hover_pressed = SubResource("StyleBoxFlat_2est8")
+CheckBox/styles/normal = SubResource("StyleBoxEmpty_7ojh6")
+CheckBox/styles/pressed = SubResource("StyleBoxEmpty_6f8b1")
 ItemList/styles/focus = SubResource("StyleBoxEmpty_pefyd")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_xgdp2")
 LineEdit/styles/normal = ExtResource("1_d80jv")
