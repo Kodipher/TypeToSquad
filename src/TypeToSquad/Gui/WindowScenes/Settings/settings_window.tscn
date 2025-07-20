@@ -65,6 +65,7 @@ text = "Enable Advanced Settings"
 [node name="EnableAdvancedInput" type="CheckBox" parent="MarginContainer/VBoxContainer/MainGrid"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 0
 focus_next = NodePath("../../SaveButton")
 focus_previous = NodePath("../OutputDeviceInput")
 
@@ -74,4 +75,4 @@ layout_mode = 2
 size_flags_horizontal = 6
 focus_next = NodePath("../MainGrid/MainVoiceInput")
 focus_previous = NodePath("../MainGrid/EnableAdvancedInput")
-text = "Save"
+text = "Close"
