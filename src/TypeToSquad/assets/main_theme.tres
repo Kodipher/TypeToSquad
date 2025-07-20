@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=25 format=3 uid="uid://cg2oy1w7gxbkx"]
+[gd_resource type="Theme" load_steps=28 format=3 uid="uid://cg2oy1w7gxbkx"]
 
 [ext_resource type="StyleBox" uid="uid://mfx8a888qb7g" path="res://assets/panel_stylebox.tres" id="1_d80jv"]
 [ext_resource type="FontFile" uid="uid://edw88ex55cqt" path="res://assets/KurintoSans-Rg.ttf" id="1_xgdp2"]
@@ -126,9 +126,49 @@ border_color = Color(0.21, 0.24, 0.3, 1)
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_d80jv"]
 color = Color(0.56, 0.64, 0.8, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d80jv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ojh6"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.21, 0.24, 0.3, 1)
+corner_detail = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0arac"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6f8b1"]
+content_margin_left = 12.0
+content_margin_top = 2.0
+content_margin_right = 12.0
+content_margin_bottom = 2.0
+bg_color = Color(0.142, 0.163267, 0.2, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_color = Color(0.56, 0.64, 0.8, 1)
+border_blend = true
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pl0ij"]
+content_margin_left = 12.0
+content_margin_top = 2.0
+content_margin_right = 12.0
+content_margin_bottom = 2.0
+bg_color = Color(0.21, 0.24, 0.3, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mfaqg"]
+content_margin_left = 12.0
+content_margin_top = 2.0
+content_margin_right = 12.0
+content_margin_bottom = 2.0
+bg_color = Color(0.142, 0.163267, 0.2, 1)
+corner_detail = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_611f8"]
 
@@ -165,8 +205,11 @@ PopupMenu/icons/unchecked = ExtResource("5_7ojh6")
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_upuy7")
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_pefyd")
 PopupMenu/styles/separator = SubResource("StyleBoxLine_d80jv")
-TabBar/styles/tab_focus = SubResource("StyleBoxEmpty_d80jv")
+TabContainer/styles/panel = SubResource("StyleBoxFlat_7ojh6")
 TabContainer/styles/tab_focus = SubResource("StyleBoxEmpty_0arac")
+TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_6f8b1")
+TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_pl0ij")
+TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_mfaqg")
 TextEdit/styles/focus = SubResource("StyleBoxEmpty_611f8")
 TextEdit/styles/normal = ExtResource("1_d80jv")
 Tree/styles/focus = SubResource("StyleBoxEmpty_upuy7")
