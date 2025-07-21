@@ -50,16 +50,51 @@ public sealed record class SynthesizeRequest : Request {
 	/// </summary>
 	public bool IsSsml { get; set; } = false;
 
+	/// <summary>
+	/// Sets the relative tone of the speech synthesis utterance,
+	/// in range from 0.0 to 2.0 inclusive. Default value is 1.0.
+	/// Some voices have tighter bounds.
+	/// </summary>
+	/// <remarks>
+	/// This value will be set under <c>SpeechSynthesizerOptions.AudioPitch</c>.
+	/// </remarks>
+	public double Pitch { get; set; } = 1;
+
+	/// <summary>
+	/// Sets the speaking rate speech synthesis utterance,
+	/// in range from 0.5 to 6.0, inclusive. Default value is 1.0.
+	/// Some voices have tighter bounds.
+	/// </summary>
+	/// <remarks>
+	/// This value will be set under <c>SpeechSynthesizerOptions.SpeakingRate</c>.
+	/// </remarks>
+	public double Rate { get; set; } = 1;
+
+	/// <summary>
+	/// Sets the loudness of the speech synthesis utterance,
+	/// in range from 0.0 to 1.0, inclusive. Default value is 1.0.
+	/// </summary>
+	/// <remarks>
+	/// This value will be set under <c>SpeechSynthesizerOptions.AudioVolume</c>.
+	/// </remarks>
+	public double Volume { get; set; } = 1;
+
 	public override void WriteContents(BinaryWriter payloadWriter) {
 		payloadWriter.WriteUtf8WithLength(VoiceName);
 		payloadWriter.WriteUtf8WithLength(InputString);
 		payloadWriter.Write(IsSsml);
+		payloadWriter.Write(Pitch);
+		payloadWriter.Write(Rate);
+		payloadWriter.Write(Volume);
 	}
 
 	public override void ReadContents(BinaryReader payloadReader) {
 		VoiceName = payloadReader.ReadUtf8WithLength();
 		InputString = payloadReader.ReadUtf8WithLength();
 		IsSsml = payloadReader.ReadBoolean();
+		Pitch = payloadReader.ReadDouble();
+		Rate = payloadReader.ReadDouble();
+		Volume = payloadReader.ReadDouble();
 	}
 
 }

@@ -79,6 +79,11 @@ public class SpeechSynthesisWrapper : IDisposable {
 		bool wasVoiceSet = TrySetVoice(request.VoiceName);
 		if (!wasVoiceSet) synth.Voice = SpeechSynthesizer.DefaultVoice;
 
+		// Set options
+		synth.Options.AudioPitch = request.Pitch;
+		synth.Options.SpeakingRate = request.Rate;
+		synth.Options.AudioVolume = request.Volume;
+
 		// Speak
 		byte[] speechStreamContents;
 		if (request.IsSsml) {
