@@ -1,6 +1,10 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Concurrent;
+using System.Linq;
+
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
@@ -161,7 +165,6 @@ public class SpeechDaemon : IDisposable {
 		daemonProcess.Dispose();
 		daemonProcess = null;
 		currentPipeName = "";
-		CurrentVoice = null;
 	}
 
 	#endregion
@@ -303,19 +306,15 @@ public class SpeechDaemon : IDisposable {
 
 	#endregion
 
-	#region //// Voice State
+	#region //// Voice Storange
 
-	public VoiceInfo? CurrentVoice { get; private set; } = null;
+	public VoiceInfo? DefaultVoice { get; private set; } = null;
 
-	public bool VoiceChangeRequestRequired(string targetVoiceName) {
-		if (!IsDaemonAliveNoHeartbeat()) return true;
-		if (CurrentVoice is not null && CurrentVoice.Name == targetVoiceName) return false;
-		return true;
-	}
+	public ReadOnlyDictionary<string, VoiceInfo>? VoicesByName { get; private set; } = null;
 
-	public void NoteVoiceSetResponse(Response response) {
-		if (response is not VoiceSetResponse voiceSetResponse) return;
-		this.CurrentVoice = voiceSetResponse.CurrentVoice;
+	public void StoreVoiceInfos(AllVoicesResponse response) {
+		DefaultVoice = response.DefaultVoice;
+		VoicesByName = response.Voices.Select(voice => KeyValuePair.Create(voice.Name, voice)).ToDictionary().AsReadOnly();
 	}
 
 	#endregion

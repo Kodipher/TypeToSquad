@@ -102,29 +102,22 @@ public partial class CoreNode : Node {
 		// Start Daemon
 		SpeechDaemon.StartDaemon();
 
-		// Init voices
-		SpeechDaemon.DispatchRequestSeries(
+		// Send request to init further
+		SpeechDaemon.DispatchRequest(
 			new GetVoicesRequest(),
 			(resp) => {
 
+				// Init voices
 				if (resp is not AllVoicesResponse voicesResponse) {
 					GD.PushError($"{nameof(GetVoicesRequest)} did not give a {nameof(AllVoicesResponse)}");
-					return null;
+					return;
 				}
 				
 				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
-				
-				// Set current voice
-				return new SetVoiceRequest() { VoiceName = UserSettings.Voice };
-			},
-			(resp) => {
-				SpeechDaemon.NoteVoiceSetResponse(resp);
+				SpeechDaemon.StoreVoiceInfos(voicesResponse);
 
 				// Update settings
 				UserSettingsLoader.Save(UserSettings);
-
-				// Finish chain
-				return null;
 			}
 		);
 
