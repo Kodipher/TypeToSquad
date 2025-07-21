@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 
 
@@ -22,9 +23,14 @@ public enum ResponseType : byte {
 
 /// <summary>Base class for all responce messages passed during communication.</summary>
 public abstract record class Response : Message {
+
 	public sealed override bool IsRequest => false;
+
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public sealed override byte MessageType => (byte)Type;
+
 	public abstract ResponseType Type { get; }
+
 }
 
 

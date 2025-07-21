@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 
 
@@ -22,11 +23,15 @@ public enum RequestType : byte {
 
 /// <summary>Base class for all request messages passed during communication.</summary>
 public abstract record class Request : Message {
-	public sealed override bool IsRequest => true;
-	public sealed override byte MessageType => (byte)Type;
-	public abstract RequestType Type { get; }
-}
 
+	public sealed override bool IsRequest => true;
+
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public sealed override byte MessageType => (byte)Type;
+
+	public abstract RequestType Type { get; }
+
+}
 
 #region //// Synthesis
 
