@@ -16,8 +16,7 @@ public static class BinaryReadWriteExtensions {
 	/// <summary>
 	/// Writes a <see cref="Message"/> to the steam
 	/// and advances stream position.
-	/// Does <b>not</b> distinguish <see cref="Message.MessageType"/>
-	/// and does not write it to the stream.
+	/// Writes <see cref="Message.MessageType"/> byte first.
 	/// </summary>
 	public static void Write(this BinaryWriter writer, Message message) {
 		writer.Write((byte)message.MessageType);
