@@ -7,6 +7,11 @@ using Windows.Media.SpeechSynthesis;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices.WindowsRuntime;
 
+using SynthesizeRequest = WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest;
+using SyntesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse;
+using ProtocolVoiceInfo = WinRTSpeechSynthServer.Protocol.VoiceInfo;
+using ProtocolVoiceGender = WinRTSpeechSynthServer.Protocol.VoiceGender;
+
 
 namespace WinRTSpeechSynthServer;
 
@@ -18,11 +23,11 @@ public class SpeechSynthesisWrapper : IDisposable {
 	#region //// Voices
 
 	/// <summary>
-	/// Sets a voice by their <see cref="VoiceInformation.DisplayName"/>.
+	/// Sets a voice by <see cref="VoiceInformation.DisplayName"/>.
 	/// If any voice matches then it is set and <see langword="true"/> is returned.
 	/// Returns <see langword="false"/> if no voice matches.
 	/// </summary>
-	public bool SetVoice(string name) {
+	public bool TrySetVoice(string name) {
 
 		VoiceInformation? voice = SpeechSynthesizer
 									.AllVoices
@@ -35,37 +40,27 @@ public class SpeechSynthesisWrapper : IDisposable {
 		return true;
 	}
 
-	/// <summary>Sets the voice to default and returns the default voice.</summary>
-	public Protocol.VoiceInfo SetVoiceToDefault() {
-		var defaultVoice = SpeechSynthesizer.DefaultVoice;
-		synth.Voice = defaultVoice;
-		return ConvertVoiceInfo(defaultVoice);
-	}
-	
-	/// <summary>Returns the current voice set</summary>
-	public Protocol.VoiceInfo GetCurrentVoice() => ConvertVoiceInfo(synth.Voice);
-
 	/// <summary>Returns all installed voices.</summary>
-	public static Protocol.VoiceInfo[] GetVoices() {
+	public static ProtocolVoiceInfo[] GetVoices() {
 		return SpeechSynthesizer.AllVoices.Select(ConvertVoiceInfo).ToArray();
 	}
 
 	/// <summary>Returns the default voice.</summary>
-	public static Protocol.VoiceInfo GetDefaultVoice() => ConvertVoiceInfo(SpeechSynthesizer.DefaultVoice);
+	public static ProtocolVoiceInfo GetDefaultVoice() => ConvertVoiceInfo(SpeechSynthesizer.DefaultVoice);
 
 	/// <summary>
 	/// Converts a <see cref="VoiceInformation"/> from the windows runtime
 	/// to a <see cref="Protocol.VoiceInfo"/> usable to transmit data
 	/// </summary>
-	public static Protocol.VoiceInfo ConvertVoiceInfo(VoiceInformation info) {
+	public static ProtocolVoiceInfo ConvertVoiceInfo(VoiceInformation info) {
 
 		var convertedGender = info.Gender switch {
-			VoiceGender.Male => Protocol.VoiceGender.Male,
-			VoiceGender.Female => Protocol.VoiceGender.Female,
-			_ => Protocol.VoiceGender.Unknown,
+			VoiceGender.Male => ProtocolVoiceGender.Male,
+			VoiceGender.Female => ProtocolVoiceGender.Female,
+			_ => ProtocolVoiceGender.Unknown,
 		};
 
-		return new Protocol.VoiceInfo() {
+		return new ProtocolVoiceInfo() {
 			Id = info.Id,
 			Name = info.DisplayName,
 			Language = info.Language,
@@ -75,24 +70,35 @@ public class SpeechSynthesisWrapper : IDisposable {
 
 	#endregion
 
-	#region //// Syntehsis
+	#region //// Synthesis
 
-	public async Task<byte[]> SynthesizeTextAsync(string input) {
-		using SpeechSynthesisStream stream = await synth.SynthesizeTextToStreamAsync(input);
-		return await GetSpeechStreamContents(stream);
+	public async Task<SyntesisResultResponse> SynthesizeFromRequestAsync(SynthesizeRequest request) {
+
+
+		// Try set voice
+		bool wasVoiceSet = TrySetVoice(request.VoiceName);
+		if (!wasVoiceSet) synth.Voice = SpeechSynthesizer.DefaultVoice;
+
+		// Speak
+		byte[] speechStreamContents;
+		if (request.IsSsml) {
+			using SpeechSynthesisStream stream = await synth.SynthesizeSsmlToStreamAsync(request.InputString);
+			speechStreamContents = await GetSpeechStreamContents(stream);
+		} else {
+			using SpeechSynthesisStream stream = await synth.SynthesizeTextToStreamAsync(request.InputString);
+			speechStreamContents = await GetSpeechStreamContents(stream);
+		}
+
+		// Retrun
+		return new SyntesisResultResponse() {
+			SynthesizedData = speechStreamContents,
+			GivenVoiceExists = wasVoiceSet
+		};
+
 	}
 
-	public async Task<byte[]> SynthesizeSsmlAsync(string input) {
-		using SpeechSynthesisStream stream = await synth.SynthesizeSsmlToStreamAsync(input);
-		return await GetSpeechStreamContents(stream);
-	}
-
-	public byte[] SynthesizeText(string input) {
-		return SynthesizeTextAsync(input).GetAwaiter().GetResult();
-	}
-
-	public byte[] SynthesizeSsml(string input) {
-		return SynthesizeSsmlAsync(input).GetAwaiter().GetResult();
+	public SyntesisResultResponse SynthesizeFromRequest(SynthesizeRequest request) {
+		return Task.Run(() => SynthesizeFromRequest(request)).GetAwaiter().GetResult();
 	}
 
 	/// <summary>

@@ -13,8 +13,6 @@ public enum ResponseType : byte {
 	Unknown = 0x00,
 	SyntesisResult = 0x21,
 	AllVoices = 0x29,
-	VoiceSetConfirmation = 0x2A,
-	DefaultVoiceSetConfirmation = 0x2B,
 	TerminationAccepted = 0x2F,
 	HeartbeatEcho = 0x30,
 	UnknwonRequestType = 0xFF,
@@ -38,19 +36,26 @@ public sealed record class SyntesisResultResponse : Response {
 
 	public override ResponseType Type => ResponseType.SyntesisResult;
 
+	/// <summary>The audio synthezied from the given message.</summary>
 	public byte[] SynthesizedData { get; set; } = Array.Empty<byte>();
+
+	/// <summary>
+	/// Wether the given voice was used (true) or
+	/// the default voice was used as a fallback (false).
+	/// </summary>
+	public bool GivenVoiceExists { get; set; } = true;
+
 
 	public override void WriteContents(BinaryWriter payloadWriter) {
 		payloadWriter.WriteBufferWithLength(SynthesizedData);
+		payloadWriter.Write(GivenVoiceExists);
 	}
 
 	public override void ReadContents(BinaryReader payloadReader) {
 		SynthesizedData = payloadReader.ReadBufferWithLength();
+		GivenVoiceExists = payloadReader.ReadBoolean();
 	}
 }
-
-
-#region //// Voices
 
 
 public sealed record class AllVoicesResponse : Response {
@@ -72,44 +77,6 @@ public sealed record class AllVoicesResponse : Response {
 	}
 
 }
-
-
-public sealed record class VoiceSetResponse : Response {
-
-	public override ResponseType Type => ResponseType.VoiceSetConfirmation;
-
-	public bool WasSet { get; set; } = false;
-	public VoiceInfo CurrentVoice { get; set; } = VoiceInfo.Empty;
-
-	public override void WriteContents(BinaryWriter payloadWriter) {
-		payloadWriter.Write(WasSet);
-		payloadWriter.Write(CurrentVoice);
-	}
-
-	public override void ReadContents(BinaryReader payloadReader) {
-		WasSet = payloadReader.ReadBoolean();
-		CurrentVoice = payloadReader.ReadVoiceInfo();
-	}
-}
-
-
-public sealed record class DefaultVoiceSetResponse : Response {
-
-	public override ResponseType Type => ResponseType.DefaultVoiceSetConfirmation;
-
-	public VoiceInfo DefaultVoice { get; set; } = VoiceInfo.Empty;
-
-	public override void ReadContents(BinaryReader payloadReader) {
-		DefaultVoice = payloadReader.ReadVoiceInfo();
-	}
-
-	public override void WriteContents(BinaryWriter payloadWriter) {
-		payloadWriter.Write(DefaultVoice);
-	}
-
-}
-
-#endregion
 
 
 public sealed record class UnknownRequestResponse : Response {

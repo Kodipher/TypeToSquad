@@ -27,11 +27,8 @@ public class Program {
 
 		// Setup request mapper
 		var requestHandler = new RequestMapper()
-			.Register<SynthesizeTextRequest>(req => new SyntesisResultResponse() { SynthesizedData = speechSynth.SynthesizeText(req.InputString) })
-			.Register<SynthesizeSsmlRequest>(req => new SyntesisResultResponse() { SynthesizedData = speechSynth.SynthesizeSsml(req.InputString) })
+			.Register<SynthesizeRequest>(speechSynth.SynthesizeFromRequest)
 			.Register<GetVoicesRequest>(_ => new AllVoicesResponse() { Voices = SpeechSynthesisWrapper.GetVoices(), DefaultVoice = SpeechSynthesisWrapper.GetDefaultVoice() })
-			.Register<SetVoiceRequest>(req => new VoiceSetResponse() { WasSet = speechSynth.SetVoice(req.VoiceName), CurrentVoice = speechSynth.GetCurrentVoice() })
-			.Register<SetVoiceToDefaultRequest>(_ => new DefaultVoiceSetResponse() { DefaultVoice = speechSynth.SetVoiceToDefault() })
 			.Register<TerminateRequest>(_ => { terminateRequestFlag = true; return new TerminateAcceptedResponse(); })
 			.Register<HeartbeatRequest>(req => new HeartbeatEchoResponse() { EchoByte = req.EchoByte });
 

@@ -11,11 +11,8 @@ namespace WinRTSpeechSynthServer.Protocol.Messages;
 
 public enum RequestType : byte {
 	Unknown = 0x00,
-	SynthesizeText = 0x01,
-	SynthesizeSsml = 0x02,
 	GetVoices = 0x10,
-	SetVoice = 0x11,
-	SetVoiceToDefault = 0x12,
+	Synthesize = 0x20,
 	Heartbeat = 0xE0,
 	Terminate = 0xFD
 }
@@ -33,77 +30,46 @@ public abstract record class Request : Message {
 
 }
 
-#region //// Synthesis
 
-public sealed record class SynthesizeTextRequest : Request {
+public sealed record class SynthesizeRequest : Request {
 
-	public override RequestType Type => RequestType.SynthesizeText;
+	public override RequestType Type => RequestType.Synthesize;
+	
+	/// <summary>
+	/// The name of the voice to use to synthesize text.
+	/// If the name is invalid, the default voice will be used.
+	/// </summary>
+	public string VoiceName { get; set; } = "";
 
+	/// <summary>The text message to speak out.</summary>
 	public string InputString { get; set; } = "";
 
+	/// <summary>
+	/// Wether the <see cref="InputString"/> is written in SSML (true),
+	/// or plain text (false).
+	/// </summary>
+	public bool IsSsml { get; set; } = false;
+
 	public override void WriteContents(BinaryWriter payloadWriter) {
+		payloadWriter.WriteUtf8WithLength(VoiceName);
 		payloadWriter.WriteUtf8WithLength(InputString);
+		payloadWriter.Write(IsSsml);
 	}
 
 	public override void ReadContents(BinaryReader payloadReader) {
+		VoiceName = payloadReader.ReadUtf8WithLength();
 		InputString = payloadReader.ReadUtf8WithLength();
+		IsSsml = payloadReader.ReadBoolean();
 	}
 
 }
 
-
-public sealed record class SynthesizeSsmlRequest : Request {
-
-	public override RequestType Type => RequestType.SynthesizeSsml;
-
-	public string InputString { get; set; } = "";
-
-	public override void WriteContents(BinaryWriter payloadWriter) {
-		payloadWriter.WriteUtf8WithLength(InputString);
-	}
-
-	public override void ReadContents(BinaryReader payloadReader) {
-		InputString = payloadReader.ReadUtf8WithLength();
-	}
-
-}
-
-#endregion
-
-
-#region //// Voices
 
 public sealed record class GetVoicesRequest : Request {
 	public override RequestType Type => RequestType.GetVoices;
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 	public override void ReadContents(BinaryReader payloadReader) { }
 }
-
-
-public sealed record class SetVoiceRequest : Request {
-
-	public override RequestType Type => RequestType.SetVoice;
-
-	public string VoiceName { get; set; } = "";
-
-	public override void WriteContents(BinaryWriter payloadWriter) {
-		payloadWriter.WriteUtf8WithLength(VoiceName);
-	}
-
-	public override void ReadContents(BinaryReader payloadReader) {
-		VoiceName = payloadReader.ReadUtf8WithLength();
-	}
-
-}
-
-
-public sealed record class SetVoiceToDefaultRequest : Request {
-	public override RequestType Type => RequestType.SetVoiceToDefault;
-	public override void WriteContents(BinaryWriter payloadWriter) { }
-	public override void ReadContents(BinaryReader payloadReader) { }
-}
-
-#endregion
 
 
 public sealed record class TerminateRequest : Request {
