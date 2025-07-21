@@ -127,9 +127,12 @@ public partial class CoreNode : Node {
 	}
 
 	public void ReapplySettings() {
+
 		AudioManager.SetOutputDeviceFromSettings();
 		AudioManager.EnsureConcurrentNodeMax();
-		MainWindow.historyTracker.TrimToSize(UserSettings.HistorySlots);
+
+		MainWindow.historyTracker.MaxHistorySize = UserSettings.HistorySlots;
+		MainWindow.historyTracker.EnforceHistoryCountMax();
 
 		if (UserSettings.EnableErrorMonitoring) LogMonitor.CheckLog();
 	}

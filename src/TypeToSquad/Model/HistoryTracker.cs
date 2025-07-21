@@ -12,6 +12,13 @@ public class HistoryTracker {
 	/// <summary>History of input, recent input first.</summary>
 	readonly LinkedList<string> history = new();
 
+	/// <summary>The maximum number of recent inputs stored.</summary>
+	/// <remarks>
+	/// Changing this value does not trim history automaically. 
+	/// Use <see cref="EnforceHistoryCountMax()"/>.
+	/// </remarks>
+	public int MaxHistorySize { get; set; } = 32;
+
 	/// <summary>
 	/// Returns all stored previous inputs, ordered recent first.
 	/// Does not return the present (currently typed) entry.
@@ -19,24 +26,23 @@ public class HistoryTracker {
 	public string[] GetFullHistory() => history.ToArray();
 
 	/// <summary>Adds an entry to the history</summary>
-	public void AddHistoryEntry(string text, int maxSize) {
-
-		maxSize = Math.Max(maxSize, 0);
+	public void AddHistoryEntry(string text) {
 
 		// Reset naviation
 		NavigateReset();
 
 		// Add input
 		history.AddFirst(text);
-		TrimToSize(maxSize);
+		EnforceHistoryCountMax();
 	}
 
 	/// <summary>
 	/// Removes older entries, ensuring no more than a give number
 	/// of enteries is stored.
 	/// </summary>
-	public void TrimToSize(int maxSize) {
-		while (history.Count > maxSize) history.RemoveLast();
+	public void EnforceHistoryCountMax() {
+		if (MaxHistorySize < 0) MaxHistorySize = 0;
+		while (history.Count > MaxHistorySize) history.RemoveLast();
 	}
 
 	#region //// Navigation

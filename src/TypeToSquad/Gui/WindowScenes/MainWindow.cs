@@ -48,6 +48,11 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
 
+		// Init history
+		if (CoreNode is not null) {
+			historyTracker.MaxHistorySize = CoreNode.UserSettings.HistorySlots;
+		};
+
 		// Init error indicator
 		errorIndicator.Hide();
 		if (CoreNode is not null) {
