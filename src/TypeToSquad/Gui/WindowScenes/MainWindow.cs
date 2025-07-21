@@ -123,9 +123,13 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	public void OnSpeakPressed() {
 		if (CoreNode is null) return;
 
-		GD.Print("Speaking.");
 		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 
+		// Skip empty messages
+		if (string.IsNullOrWhiteSpace(messageTextEdit.Text)) return;
+
+		// Add to history and speak
+		GD.Print("Speaking.");
 		historyTracker.AddHistoryEntry(messageTextEdit.Text, CoreNode.UserSettings.HistorySlots);
 		historyTracker.NavigateReset();
 		messageTextEdit.Clear();
