@@ -26,17 +26,63 @@ public interface IRefrencesCore {
 
 public partial class CoreNode : Node {
 
+	#region //// Components and Parts
+
+	// Assume to be { get; private init; }
+	// Need to be private set; because they are set when _Ready is called
+
+	// All of these are set in _Ready
+
+	public UserSettings UserSettings { get; private set; } = null!;
+	public LogMonitor LogMonitor { get; private set; } = null!;
+
+	public SpeechDaemon SpeechDaemon { get; private set; } = null!;
+	public AudioManagerNode AudioManager { get; private set; } = null!;
+
+	public WindowManager WindowManager { get; private set; } = null!;
+	public MainWindow MainWindow { get; private set; } = null!;
+
+	#endregion
+
 	public override void _Ready() {
 
-		// Find children
-		CreateModel();
-		FindNodes();
+		// Misc. parts
+		UserSettings = UserSettingsLoader.Load();
+		LogMonitor = new LogMonitor();
 
-		// Init
-		InitModel();
+		// Init Audio 
+		AudioManager = this.GetNodeNotNull<AudioManagerNode>("%AudioManager");
+		AudioManager.RecieveCoreReference(this);
+		AudioManager.InitOutputDeviceOptions();
+		AudioManager.SetOutputDeviceFromSettings();
 
-		// Instantiate main window after ready
-		CallDeferred(nameof(PostReady));
+		// Start Daemon
+		SpeechDaemon = new SpeechDaemon();
+		SpeechDaemon.StartDaemon();
+
+		// find voices
+		SpeechDaemon.DispatchRequest(
+			new GetVoicesRequest(),
+			(resp) => {
+
+				if (resp is not AllVoicesResponse voicesResponse) {
+					GD.PushError($"{nameof(GetVoicesRequest)} did not give a {nameof(AllVoicesResponse)}");
+					return;
+				}
+
+				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
+				SpeechDaemon.StoreVoiceInfos(voicesResponse);
+
+				// Update settings
+				UserSettingsLoader.Save(UserSettings);
+			}
+		);
+
+		// Init WindowManager and
+		// instantiate main window after ready
+		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
+		WindowManager.RecieveCoreReference(this);
+		CallDeferred(CoreNode.MethodName.PostReady);
 	}
 
 	public void PostReady() {
@@ -80,51 +126,6 @@ public partial class CoreNode : Node {
 		else if (what == NotificationWMCloseRequest) OnCloseRequest();
 	}
 
-	#region //// Model
-
-	// Assume to be { get; private init; }
-	// Need to be private set; because they are when _Ready is called
-
-	public UserSettings UserSettings { get; private set; } = null!; // Set in _Ready
-	public SpeechDaemon SpeechDaemon { get; private set; } = null!; // Set in _Ready
-	public LogMonitor LogMonitor { get; private set; } = null!; // Set in _Ready
-
-	void CreateModel() {
-		UserSettings = UserSettingsLoader.Load();
-		SpeechDaemon = new SpeechDaemon();
-		LogMonitor = new LogMonitor();
-	}
-
-	void InitModel() {
-
-		// Init Audio 
-		AudioManager.InitOutputDeviceOptions();
-		AudioManager.SetOutputDeviceFromSettings();
-
-		// Start Daemon
-		SpeechDaemon.StartDaemon();
-
-		// Send request to init further
-		SpeechDaemon.DispatchRequest(
-			new GetVoicesRequest(),
-			(resp) => {
-
-				// Init voices
-				if (resp is not AllVoicesResponse voicesResponse) {
-					GD.PushError($"{nameof(GetVoicesRequest)} did not give a {nameof(AllVoicesResponse)}");
-					return;
-				}
-				
-				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
-				SpeechDaemon.StoreVoiceInfos(voicesResponse);
-
-				// Update settings
-				UserSettingsLoader.Save(UserSettings);
-			}
-		);
-
-	}
-
 	public void ReapplySettings() {
 		AudioManager.SetOutputDeviceFromSettings();
 		AudioManager.EnsureConcurrentNodeMax();
@@ -132,23 +133,5 @@ public partial class CoreNode : Node {
 
 		if (UserSettings.EnableErrorMonitoring) LogMonitor.CheckLog();
 	}
-
-	#endregion
-
-	#region //// Children
-
-	public WindowManager WindowManager { get; private set; } = null!; // Set in _Ready
-	public MainWindow MainWindow { get; private set; } = null!; // Set in _Ready
-	public AudioManagerNode AudioManager { get; private set; } = null!; // Set in _Ready
-
-	void FindNodes() {
-		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
-		AudioManager = this.GetNodeNotNull<AudioManagerNode>("%AudioManager");
-
-		WindowManager.RecieveCoreReference(this);
-		AudioManager.RecieveCoreReference(this);
-	}
-
-	#endregion
 
 }
