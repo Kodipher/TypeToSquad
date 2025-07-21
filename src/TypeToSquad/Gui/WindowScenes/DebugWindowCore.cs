@@ -54,7 +54,7 @@ public partial class DebugWindowCore : Control, IRefrencesCore {
 
 		var getVoicesButton = this.GetNodeNotNull<Button>("%ButtonGetVoices");
 		getVoicesButton.Pressed += () => CoreNode?.SpeechDaemon.DispatchRequest(new GetVoicesRequest(), HandleResponse);
-
+		/*
 		var setVoiceButton = this.GetNodeNotNull<Button>("%ButtonSetVoice");
 		setVoiceButton.Pressed += () => {
 			CoreNode?.SpeechDaemon.DispatchRequest(new SetVoiceRequest() { VoiceName = textEditInput.Text }, HandleResponse);
@@ -72,7 +72,7 @@ public partial class DebugWindowCore : Control, IRefrencesCore {
 		speakSsmlButton.Pressed += () => {
 			CoreNode?.SpeechDaemon.DispatchRequest(new SynthesizeSsmlRequest() { InputString = textEditInput.Text }, HandleResponse);
 		};
-
+		*/
 	}
 
 
@@ -84,10 +84,12 @@ public partial class DebugWindowCore : Control, IRefrencesCore {
 			labelResponse.Text = "Terminated";
 		} else if (response is AllVoicesResponse allVoicesResponse) {
 			labelResponse.Text = allVoicesResponse.Voices.Select(voice => voice.Name).JoinString("\n");
+		/*
 		} else if (response is VoiceSetResponse voiceSetResponse) {
 			labelResponse.Text = "Was set? " + voiceSetResponse.WasSet.ToString();
 		} else if (response is DefaultVoiceSetResponse defaultVoiceResponse) {
 			labelResponse.Text = "Default: " + defaultVoiceResponse.DefaultVoice.Name;
+		*/
 		} else if (response is SyntesisResultResponse speechResponce) {
 			labelResponse.Text = "Speech,len=" + speechResponce.SynthesizedData.Length.ToString();
 			CoreNode?.AudioManager?.PlayNew(speechResponce.SynthesizedData);
