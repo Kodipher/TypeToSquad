@@ -112,7 +112,7 @@ public sealed record class DefaultVoiceSetResponse : Response {
 #endregion
 
 
-public sealed record class UnknwonRequestResponse : Response {
+public sealed record class UnknownRequestResponse : Response {
 	public override ResponseType Type => ResponseType.UnknwonRequestType;
 	public override void ReadContents(BinaryReader payloadReader) { }
 	public override void WriteContents(BinaryWriter payloadWriter) { }

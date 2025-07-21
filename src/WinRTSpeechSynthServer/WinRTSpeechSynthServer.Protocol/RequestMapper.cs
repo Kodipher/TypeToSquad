@@ -41,7 +41,7 @@ public class RequestMapper {
 			response = handler(requestReader);
 		} else {
 			// Default response if unknown
-			response = new UnknwonRequestResponse();
+			response = new UnknownRequestResponse();
 		}
 
 		// Write response
