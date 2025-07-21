@@ -152,13 +152,15 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	public void OnHistoryPrevRequest() {
 		if (historyTracker.TryNavigatePrevious(messageTextEdit.Text, out string queryResult)) {
-			messageTextEdit.Text = queryResult;
+			messageTextEdit.Text = queryResult; // also clears carets
+			messageTextEdit.SetCaretPositionToEnd();
 		}
 	}
 
 	public void OnHistoryNextRequest() {
 		if (historyTracker.TryNavigateNext(messageTextEdit.Text, out string queryResult)) {
-			messageTextEdit.Text = queryResult;
+			messageTextEdit.Text = queryResult; // also clears carets
+			messageTextEdit.SetCaretPositionToEnd();
 		}
 	}
 

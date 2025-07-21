@@ -19,4 +19,15 @@ public static class GodotExtensions {
 		return thisNode.GetNode<T>(path) ?? throw new NodeNullException(path);
 	}
 
+	/// <summary>
+	/// Sets caret position to end of the text:
+	/// after the last chracter of the last line.
+	/// </summary>
+	/// <remarks>Does not call <see cref="TextEdit.MergeOverlappingCarets"/></remarks>
+	public static void SetCaretPositionToEnd(this TextEdit textEditNode, int caretIndex = 0) {
+		var lastLineIndex = textEditNode.GetLineCount() - 1;
+		textEditNode.SetCaretLine(lastLineIndex, caretIndex: caretIndex);
+		textEditNode.SetCaretColumn(textEditNode.GetLine(lastLineIndex).Length, caretIndex: caretIndex);
+	}
+
 }
