@@ -4,14 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace TypeToSquad.Gui;
+namespace TypeToSquad.Model;
 
 
+/// <summary>
+/// A node that manages playback of spoken messages.
+/// Is a <see cref="Node"/> to better interact with the Godot engine.
+/// </summary>
 /// <remarks>
 /// Expects to have no children, other than
 /// nodes created by itself.
 /// </remarks>
-public partial class AudioManager : Node, IRefrencesCore {
+public partial class AudioManagerNode : Node, IRefrencesCore {
 
 	#region //// Core Node
 

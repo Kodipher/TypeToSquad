@@ -1,7 +1,7 @@
 using Godot;
 
 
-namespace TypeToSquad.Utils;
+namespace TypeToSquad.Gui;
 
 
 /// <summary>

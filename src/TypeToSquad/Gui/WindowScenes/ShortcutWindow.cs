@@ -4,7 +4,6 @@ using System.Linq;
 
 using Rephidock.GeneralUtilities.Collections;
 
-using TypeToSquad.Gui;
 using TypeToSquad.Utils;
 
 

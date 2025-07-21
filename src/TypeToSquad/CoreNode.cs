@@ -5,12 +5,14 @@ using System.Linq;
 
 using WinRTSpeechSynthServer.Protocol.Messages;
 
+using TypeToSquad.Gui;
+using TypeToSquad.Gui.WindowScenes;
 using TypeToSquad.Model;
 using TypeToSquad.Model.Settings;
 using TypeToSquad.Utils;
 
 
-namespace TypeToSquad.Gui;
+namespace TypeToSquad;
 
 
 public interface IRefrencesCore {
@@ -38,7 +40,7 @@ public partial class CoreNode : Node {
 	}
 
 	public void PostReady() {
-		MainWindow = (WindowScenes.MainWindow)WindowManager.CreateWindowIntoRoot(WindowType.Main);
+		MainWindow = (MainWindow)WindowManager.CreateWindowIntoRoot(WindowType.Main);
 		MainWindow._Ready(); // Call ready again manually after the new script is attached
 	}
 
@@ -136,12 +138,12 @@ public partial class CoreNode : Node {
 	#region //// Children
 
 	public WindowManager WindowManager { get; private set; } = null!; // Set in _Ready
-	public WindowScenes.MainWindow MainWindow { get; private set; } = null!; // Set in _Ready
-	public AudioManager AudioManager { get; private set; } = null!; // Set in _Ready
+	public MainWindow MainWindow { get; private set; } = null!; // Set in _Ready
+	public AudioManagerNode AudioManager { get; private set; } = null!; // Set in _Ready
 
 	void FindNodes() {
 		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
-		AudioManager = this.GetNodeNotNull<AudioManager>("%AudioManager");
+		AudioManager = this.GetNodeNotNull<AudioManagerNode>("%AudioManager");
 
 		WindowManager.RecieveCoreReference(this);
 		AudioManager.RecieveCoreReference(this);
