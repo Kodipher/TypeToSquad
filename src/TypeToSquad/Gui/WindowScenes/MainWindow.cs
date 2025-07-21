@@ -24,7 +24,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	#region //// Setup
 
 	// Misc. state
-	readonly HistoryTracker historyTracker = new();
+	public readonly HistoryTracker historyTracker = new();
 
 	// Nodes
 	BaseButton speakButton = null!;

@@ -28,9 +28,16 @@ public class HistoryTracker {
 
 		// Add input
 		history.AddFirst(text);
-		while (history.Count > maxSize) history.RemoveLast();
+		TrimToSize(maxSize);
 	}
 
+	/// <summary>
+	/// Removes older entries, ensuring no more than a give number
+	/// of enteries is stored.
+	/// </summary>
+	public void TrimToSize(int maxSize) {
+		while (history.Count > maxSize) history.RemoveLast();
+	}
 
 	#region //// Navigation
 

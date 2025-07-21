@@ -123,6 +123,14 @@ public partial class CoreNode : Node {
 
 	}
 
+	public void ReapplySettings() {
+		AudioManager.SetOutputDeviceFromSettings();
+		AudioManager.EnsureConcurrentNodeMax();
+		MainWindow.historyTracker.TrimToSize(UserSettings.HistorySlots);
+
+		if (UserSettings.EnableErrorMonitoring) LogMonitor.CheckLog();
+	}
+
 	#endregion
 
 	#region //// Children

@@ -62,7 +62,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 		if (CoreNode is not null) {
 			UserSettingsLoader.Save(CoreNode.UserSettings);
-			CoreNode.AudioManager.SetOutputDeviceFromSettings();
+			CoreNode.ReapplySettings();
 		}
 
 		this.QueueFree();
