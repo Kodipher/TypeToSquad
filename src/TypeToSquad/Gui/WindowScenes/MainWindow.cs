@@ -137,6 +137,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		if (CoreNode is null) return;
 
 		GD.Print("Shutting.");
+		CoreNode.AudioManager.StopAll();
 		messageTextEdit.GrabFocus();
 	}
 

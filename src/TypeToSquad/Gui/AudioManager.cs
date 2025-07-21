@@ -7,6 +7,10 @@ using System.Linq;
 namespace TypeToSquad.Gui;
 
 
+/// <remarks>
+/// Expects to have no children, other than
+/// nodes created by itself.
+/// </remarks>
 public partial class AudioManager : Node, IRefrencesCore {
 
 	#region //// Core Node
