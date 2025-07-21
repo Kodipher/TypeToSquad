@@ -43,6 +43,11 @@ public class HistoryTracker {
 	public void EnforceHistoryCountMax() {
 		if (MaxHistorySize < 0) MaxHistorySize = 0;
 		while (history.Count > MaxHistorySize) history.RemoveLast();
+
+		if (currentHistoryNode is not null && currentHistoryNode.List is null) {
+			GD.Print("Current history slot was trimmed. Resetting navigation as a failsafe.");
+			NavigateReset();
+		}
 	}
 
 	#region //// Navigation
@@ -78,18 +83,18 @@ public class HistoryTracker {
 			return false;
 		}
 
-		// Do not look beyond oldest entry
-		if (currentHistoryNode == history.Last) {
-			queryResult = currentText;
-			return false;
-		}
-
 		// Start of navigation: Store present
 		if (currentHistoryNode == null) {
 			presentEntry = currentText;
 			currentHistoryNode = history.First;
 			queryResult = currentHistoryNode!.Value;
 			return true;
+		}
+
+		// Do not look beyond oldest entry
+		if (currentHistoryNode == history.Last) {
+			queryResult = currentText;
+			return false;
 		}
 
 		// Select next entry
