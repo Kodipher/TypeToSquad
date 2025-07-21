@@ -14,8 +14,7 @@
             <summary>
             Writes a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Message"/> to the steam
             and advances stream position.
-            Does <b>not</b> distinguish <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Message.MessageType"/>
-            and does not write it to the stream.
+            Writes <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Message.MessageType"/> byte first.
             </summary>
         </member>
         <member name="M:WinRTSpeechSynthServer.Protocol.BinaryReadWriteExtensions.WriteBufferWithLength(System.IO.BinaryWriter,System.Byte[])">
@@ -97,8 +96,61 @@
         <member name="T:WinRTSpeechSynthServer.Protocol.Messages.Request">
             <summary>Base class for all request messages passed during communication.</summary>
         </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.VoiceName">
+            <summary>
+            The name of the voice to use to synthesize text.
+            If the name is invalid, the default voice will be used.
+            </summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.InputString">
+            <summary>The text message to speak out.</summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.IsSsml">
+            <summary>
+            Wether the <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.InputString"/> is written in SSML (true),
+            or plain text (false).
+            </summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.Pitch">
+            <summary>
+            Sets the relative tone of the speech synthesis utterance,
+            in range from 0.0 to 2.0 inclusive. Default value is 1.0.
+            Some voices have tighter bounds.
+            </summary>
+            <remarks>
+            This value will be set under <c>SpeechSynthesizerOptions.AudioPitch</c>.
+            </remarks>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.Rate">
+            <summary>
+            Sets the speaking rate speech synthesis utterance,
+            in range from 0.5 to 6.0, inclusive. Default value is 1.0.
+            Some voices have tighter bounds.
+            </summary>
+            <remarks>
+            This value will be set under <c>SpeechSynthesizerOptions.SpeakingRate</c>.
+            </remarks>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.Volume">
+            <summary>
+            Sets the loudness of the speech synthesis utterance,
+            in range from 0.0 to 1.0, inclusive. Default value is 1.0.
+            </summary>
+            <remarks>
+            This value will be set under <c>SpeechSynthesizerOptions.AudioVolume</c>.
+            </remarks>
+        </member>
         <member name="T:WinRTSpeechSynthServer.Protocol.Messages.Response">
             <summary>Base class for all responce messages passed during communication.</summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse.SynthesizedData">
+            <summary>The audio synthezied from the given message.</summary>
+        </member>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse.GivenVoiceExists">
+            <summary>
+            Wether the given voice was used (true) or
+            the default voice was used as a fallback (false).
+            </summary>
         </member>
         <member name="T:WinRTSpeechSynthServer.Protocol.RequestMapper">
             <summary>

@@ -74,7 +74,6 @@ public class SpeechSynthesisWrapper : IDisposable {
 
 	public async Task<SyntesisResultResponse> SynthesizeFromRequestAsync(SynthesizeRequest request) {
 
-
 		// Try set voice
 		bool wasVoiceSet = TrySetVoice(request.VoiceName);
 		if (!wasVoiceSet) synth.Voice = SpeechSynthesizer.DefaultVoice;
