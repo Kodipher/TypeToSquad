@@ -74,6 +74,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	}
 
 	public override void _Input(InputEvent @event) {
+		base._Input(@event);
 
 		// Handle some shortcuts manually
 		if (@event is not InputEventKey inputEventKey) return;
