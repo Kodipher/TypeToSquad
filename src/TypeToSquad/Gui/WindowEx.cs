@@ -140,13 +140,21 @@ public partial class WindowEx : Window {
 
 	#endregion
 
-	#region //// UI Zooming
+	#region //// UI Zoom
+
+	// Note: experemental
+
+	[Export]
+	public float MinContentScale { get; set; } = 0.5f;
+
+	[Export]
+	public float MaxContentScale { get; set; } = 5.0f;
 
 	void HandleZoomInput(InputEvent @event) {
 		if (@event.IsActionPressed("zoom_in")) {
-			this.ContentScaleFactor += 0.1f;
+			ContentScaleFactor = Mathf.Min(ContentScaleFactor + 0.1f, MaxContentScale);
 		} else if (@event.IsActionPressed("zoom_out")) {
-			this.ContentScaleFactor -= 0.1f;
+			ContentScaleFactor = Mathf.Max(ContentScaleFactor - 0.1f, MinContentScale);
 		} else if (@event.IsActionPressed("zoom_reset")) {
 			this.ContentScaleFactor = 1.0f;
 		}
