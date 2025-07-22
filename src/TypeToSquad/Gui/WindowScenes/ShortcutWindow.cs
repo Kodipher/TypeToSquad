@@ -40,6 +40,16 @@ public partial class ShortcutWindow : WindowEx, IRefrencesCore {
 		// Add shortcuts
 		var shortcutGrid = this.GetNodeNotNull<GridContainer>("%ShortcutGrid");
 
+		void PushLabel(string text) {
+			shortcutGrid.AddChild(
+				new Label() { 
+					Text = text, 
+					SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, 
+					SizeFlagsVertical = Control.SizeFlags.ShrinkBegin
+				}
+			);
+		}
+
 		foreach (var actionName in DisplayedShortcuts) {
 
 			string displayName = actionName
@@ -47,13 +57,13 @@ public partial class ShortcutWindow : WindowEx, IRefrencesCore {
 									.Capitalize()
 									.Replace("Prev", "Previous");
 
-			string inputEvent = InputMap
+			string inputEventString = InputMap
 									.ActionGetEvents(actionName)
 									.Select(ev => ev.AsText())
-									.JoinString("; ");
+									.JoinString("\nor ");
 
-			shortcutGrid.AddChild(new Label() { Text = displayName, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
-			shortcutGrid.AddChild(new Label() { Text = inputEvent, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+			PushLabel(displayName);
+			PushLabel(inputEventString);
 		}
 	}
 

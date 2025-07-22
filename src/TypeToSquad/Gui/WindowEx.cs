@@ -68,7 +68,7 @@ public partial class WindowEx : Window {
 
 	bool isThemePatched = false;
 
-	void HandleInputEvent(InputEvent inputEvent) {
+	void HandleThemeSwitchInput(InputEvent inputEvent) {
 
 		if (isThemePatched) {
 
@@ -140,6 +140,20 @@ public partial class WindowEx : Window {
 
 	#endregion
 
+	#region //// UI Zooming
+
+	void HandleZoomInput(InputEvent @event) {
+		if (@event.IsActionPressed("zoom_in")) {
+			this.ContentScaleFactor += 0.1f;
+		} else if (@event.IsActionPressed("zoom_out")) {
+			this.ContentScaleFactor -= 0.1f;
+		} else if (@event.IsActionPressed("zoom_reset")) {
+			this.ContentScaleFactor = 1.0f;
+		}
+	}
+
+	#endregion
+
 	public override void _Ready() {
 		base._Ready();
 		TryAutoFocusNode();
@@ -148,7 +162,8 @@ public partial class WindowEx : Window {
 
 	public override void _Input(InputEvent @event) {
 		base._Input(@event);
-		HandleInputEvent(@event);
+		HandleThemeSwitchInput(@event);
+		HandleZoomInput(@event);
 	}
 
 }
