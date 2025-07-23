@@ -19,9 +19,13 @@ public class FieldOptionsEnum<[MustBeVariant] TEnum> : Field<TEnum> where TEnum 
 					return;
 				}
 
+				if (Enum.TryParse(value.AsString().ToPascalCase(), out enumValue)) {
+					Value = enumValue;
+					return;
+				}
+
 				this.value = DefaultValue;
 				return;
-
 			} 
 			
 			if (value.VariantType == Variant.Type.Int) {
