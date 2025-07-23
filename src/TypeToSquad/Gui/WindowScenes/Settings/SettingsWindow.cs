@@ -100,12 +100,32 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		var fieldInput = this.GetNodeNotNull<SpinBox>(inputPath);
 		fieldInput.MinValue = field.MinInclusive;
 		fieldInput.MaxValue = field.MaxInclusive;
+		fieldInput.AllowLesser = false;
+		fieldInput.AllowGreater = false;
+
 		fieldInput.Rounded = true;
 		fieldInput.Step = 1;
 		fieldInput.Value = field.Value;
 
 		// Connect input
 		fieldInput.ValueChanged += newValue => field.Value = (int)newValue;
+	}
+
+	protected void SetupInputSpinBox(FieldNumericRange<double> field, NodePath inputPath, double valueStep = 0.1f) {
+
+		var fieldInput = this.GetNodeNotNull<SpinBox>(inputPath);
+
+		fieldInput.MinValue = field.MinInclusive;
+		fieldInput.MaxValue = field.MaxInclusive;
+		fieldInput.AllowLesser = false;
+		fieldInput.AllowGreater = false;
+
+		fieldInput.Rounded = false;
+		fieldInput.Step = valueStep;
+		fieldInput.Value = field.Value;
+
+		// Connect input
+		fieldInput.ValueChanged += newValue => field.Value = (double)newValue;
 	}
 
 	protected void SetupInputToggle(Field<bool> toggle, NodePath inputPath) {

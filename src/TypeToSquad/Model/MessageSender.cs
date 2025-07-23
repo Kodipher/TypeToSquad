@@ -32,9 +32,9 @@ public class MessageSender : IRefrencesCore {
 
 		// Voice
 		request.VoiceName = CoreNode.UserSettings.Voice;
-		//request.Pitch = 1;
-		//request.Rate = 1;
-		//request.Volume = 1;
+		request.Pitch = CoreNode.UserSettings.VoicePitch;
+		request.Rate = CoreNode.UserSettings.VoiceRate;
+		request.Volume = CoreNode.UserSettings.SynthesisVolume;
 
 		// Send request
 		CoreNode.SpeechDaemon.DispatchRequest(

@@ -27,12 +27,15 @@ public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 
 		// Voices
 		SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
+		SetupInputSpinBox(CoreNode.UserSettings.VoicePitch, "%VoicePitchInput");
+		SetupInputSpinBox(CoreNode.UserSettings.VoiceRate, "%VoiceRateInput");
 
 		// Input
 		SetupInputSpinBox(CoreNode.UserSettings.HistorySlots, "%HistorySlotsInput");
 
 		// Audio
 		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+		SetupInputSpinBox(CoreNode.UserSettings.SynthesisVolume, "%SynthesisVolumeInput");
 		SetupInputSpinBox(CoreNode.UserSettings.MaxConcurrentStreams, "%MaxConcurentInput");
 	}
 
