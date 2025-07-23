@@ -136,7 +136,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 		// Add to history and speak
 		GD.Print("Speaking.");
-		historyTracker.AddHistoryEntry(messageTextEdit.Text, CoreNode.UserSettings.HistorySlots);
+		historyTracker.AddHistoryEntry(messageTextEdit.Text);
 		historyTracker.NavigateReset();
 		messageTextEdit.Clear();
 
