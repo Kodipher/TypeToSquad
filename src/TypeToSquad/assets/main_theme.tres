@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=28 format=3 uid="uid://cg2oy1w7gxbkx"]
+[gd_resource type="Theme" load_steps=33 format=3 uid="uid://cg2oy1w7gxbkx"]
 
 [ext_resource type="StyleBox" uid="uid://mfx8a888qb7g" path="res://assets/panel_stylebox.tres" id="1_d80jv"]
 [ext_resource type="FontFile" uid="uid://edw88ex55cqt" path="res://assets/KurintoSans-Rg.ttf" id="1_xgdp2"]
@@ -174,6 +174,56 @@ corner_detail = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_upuy7"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yo0da"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.560784, 0.639216, 0.792157, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jtuga"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.7, 0.8, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2jknw"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.56, 0.64, 0.8, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3eb2u"]
+content_margin_left = 4.0
+content_margin_top = 0.0
+content_margin_right = 4.0
+content_margin_bottom = 0.0
+bg_color = Color(0.21, 0.24, 0.3, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 6
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3sd6w"]
+
 [resource]
 default_font = ExtResource("1_xgdp2")
 default_font_size = 16
@@ -213,3 +263,8 @@ TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_mfaqg")
 TextEdit/styles/focus = SubResource("StyleBoxEmpty_611f8")
 TextEdit/styles/normal = ExtResource("1_d80jv")
 Tree/styles/focus = SubResource("StyleBoxEmpty_upuy7")
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_yo0da")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_jtuga")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_2jknw")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_3eb2u")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_3sd6w")
