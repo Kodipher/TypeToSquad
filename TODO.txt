@@ -1,7 +1,6 @@
 TODO:
-- main window
--- speak
--- shut
+- main window: check min size
+- advanced settings: add pitch, rate, volume
 - feature: sfml
 -- IPA replacements
 -- language changes
@@ -11,8 +10,8 @@ TODO:
 - feature: direct hardware shortcuts (like DCSB)
 - min window sizes for all windows
 - check tab order in all windows
-- themes
 - hover information
 
 TO TEST:
 - AudioManager: Max concurrent streams
+- Speech synthesis (incl. settings)
