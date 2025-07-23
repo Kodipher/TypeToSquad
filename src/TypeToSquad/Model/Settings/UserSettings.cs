@@ -38,7 +38,7 @@ public record class UserSettings {
 	public readonly FieldOptionsRuntime Device = new();
 
 	/// <summary>The volume of the voice.</summary>
-	public readonly FieldNumericRange<double> SynthesisVolume = new(0, 1, defaultValue: 1);
+	public readonly FieldNumericRange<int> SynthesisVolumePercent = new(0, 100, defaultValue: 100);
 
 	/// <summary>Max number of outputs played at the same time.</summary>
 	public readonly FieldNumericRange<int> MaxConcurrentStreams = new(1, 64, defaultValue: 6);

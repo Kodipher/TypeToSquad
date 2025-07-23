@@ -35,7 +35,7 @@ public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 
 		// Audio
 		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
-		SetupInputSpinBox(CoreNode.UserSettings.SynthesisVolume, "%SynthesisVolumeInput");
+		SetupInputSpinBox(CoreNode.UserSettings.SynthesisVolumePercent, "%SynthesisVolumeInput");
 		SetupInputSpinBox(CoreNode.UserSettings.MaxConcurrentStreams, "%MaxConcurentInput");
 	}
 
