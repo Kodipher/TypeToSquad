@@ -102,7 +102,7 @@ public class SpeechSynthesisWrapper : IDisposable {
 	}
 
 	public SyntesisResultResponse SynthesizeFromRequest(SynthesizeRequest request) {
-		return Task.Run(() => SynthesizeFromRequest(request)).GetAwaiter().GetResult();
+		return Task.Run(() => SynthesizeFromRequestAsync(request)).GetAwaiter().GetResult();
 	}
 
 	/// <summary>
