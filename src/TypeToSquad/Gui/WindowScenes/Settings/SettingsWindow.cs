@@ -95,7 +95,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		fieldInput.FocusExited += () => OnTextSubmit(fieldInput.Text ?? "");
 	}
 
-	protected void SetupInputSpinBox(FieldIntRange field, NodePath inputPath) {
+	protected void SetupInputSpinBox(FieldNumericRange<int> field, NodePath inputPath) {
 
 		var fieldInput = this.GetNodeNotNull<SpinBox>(inputPath);
 		fieldInput.MinValue = field.MinInclusive;

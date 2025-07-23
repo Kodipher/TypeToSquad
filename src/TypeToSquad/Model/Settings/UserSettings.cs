@@ -23,7 +23,7 @@ public record class UserSettings {
 	// ===== ===== ===== INPUT ===== ===== =====
 
 	/// <summary>Number of previous inputs held in memory.</summary>
-	public readonly FieldIntRange HistorySlots = new(0, short.MaxValue, defaultValue: 32);
+	public readonly FieldNumericRange<int> HistorySlots = new(0, short.MaxValue, defaultValue: 32);
 
 
 	// ===== ===== ===== AUDIO ===== ===== =====
@@ -32,6 +32,6 @@ public record class UserSettings {
 	public readonly FieldOptionsRuntime Device = new();
 
 	/// <summary>Max number of outputs played at the same time.</summary>
-	public readonly FieldIntRange MaxConcurrentStreams = new(1, 64, defaultValue: 6);
+	public readonly FieldNumericRange<int> MaxConcurrentStreams = new(1, 64, defaultValue: 6);
 
 }
