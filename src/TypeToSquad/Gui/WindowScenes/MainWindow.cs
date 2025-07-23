@@ -1,11 +1,8 @@
 using Godot;
 using System;
-using System.Linq;
 
 using TypeToSquad.Model;
 using TypeToSquad.Utils;
-using Rephidock.GeneralUtilities.Collections;
-using WinRTSpeechSynthServer.Protocol.Messages;
 
 
 namespace TypeToSquad.Gui.WindowScenes;
@@ -134,12 +131,16 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		// Skip empty messages
 		if (string.IsNullOrWhiteSpace(messageTextEdit.Text)) return;
 
-		// Add to history and speak
+		// Add to history
 		GD.Print("Speaking.");
 		historyTracker.AddHistoryEntry(messageTextEdit.Text);
 		historyTracker.NavigateReset();
-		messageTextEdit.Clear();
 
+		// Speak
+		CoreNode.MessageSender.SendMessage(messageTextEdit.Text);
+
+		// Reset textbox
+		messageTextEdit.Clear();
 		messageTextEdit.GrabFocus();
 	}
 

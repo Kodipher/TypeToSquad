@@ -36,6 +36,7 @@ public partial class CoreNode : Node {
 	public UserSettings UserSettings { get; private set; } = null!;
 	public LogMonitor LogMonitor { get; private set; } = null!;
 
+	public MessageSender MessageSender { get; private set; } = null!;
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!;
 	public AudioManagerNode AudioManager { get; private set; } = null!;
 
@@ -55,6 +56,10 @@ public partial class CoreNode : Node {
 		AudioManager.RecieveCoreReference(this);
 		AudioManager.InitOutputDeviceOptions();
 		AudioManager.SetOutputDeviceFromSettings();
+
+		// Init message sender and parser
+		MessageSender = new MessageSender();
+		MessageSender.RecieveCoreReference(this);
 
 		// Start Daemon
 		SpeechDaemon = new SpeechDaemon();
