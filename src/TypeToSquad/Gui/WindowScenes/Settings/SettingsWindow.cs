@@ -111,6 +111,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		fieldInput.ValueChanged += newValue => field.Value = (int)newValue;
 	}
 
+	/// <remarks>There is a precision limit of 6 decimal places to avoid rounding errors.</remarks>
 	protected void SetupInputSpinBox(FieldNumericRange<double> field, NodePath inputPath, double valueStep = 0.1f) {
 
 		var fieldInput = this.GetNodeNotNull<SpinBox>(inputPath);
@@ -125,7 +126,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		fieldInput.Value = field.Value;
 
 		// Connect input
-		fieldInput.ValueChanged += newValue => field.Value = (double)newValue;
+		fieldInput.ValueChanged += newValue => field.Value = System.Math.Round(newValue, 6);
 	}
 
 	protected void SetupInputToggle(Field<bool> toggle, NodePath inputPath) {
