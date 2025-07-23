@@ -13,5 +13,3 @@ TODO:
 - hover information
 
 TO TEST:
-- AudioManager: Max concurrent streams
-- Speech synthesis (incl. settings)
