@@ -25,6 +25,7 @@ boot_splash/bg_color=Color(0.105, 0.12, 0.15, 1)
 boot_splash/show_image=false
 boot_splash/fullsize=false
 boot_splash/use_filter=false
+config/icon="uid://g03we4p304wj"
 
 [copy_files_on_export]
 
