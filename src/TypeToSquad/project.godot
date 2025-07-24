@@ -19,6 +19,7 @@ config/use_custom_user_dir=true
 config/custom_user_dir_name="Kodipher/TypeToSquad"
 config/auto_accept_quit=false
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
+run/flush_stdout_on_print=true
 run/max_fps=60
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.105, 0.12, 0.15, 1)
