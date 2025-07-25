@@ -50,18 +50,21 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 			historyTracker.MaxHistorySize = CoreNode.UserSettings.HistorySlots;
 		};
 
+		// Init syntax highlighter
+		messageTextEdit.SyntaxHighlighter = new MessageSender.SyntaxHighligher();
+
 		// Init error indicator
 		errorIndicator.Hide();
 		if (CoreNode is not null) {
 			CoreNode.LogMonitor.OnErrorFound += errorIndicator.Show;
 			if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 		}
+		errorIndicator.Pressed += OnErrorIndicatorPressed;
 
 		// Connect button signals
 		speakButton.Pressed += OnSpeakPressed;
 		shutButton.Pressed += OnShutPressed;
 		settingsButton.Pressed += OnSettingsPressed;
-		errorIndicator.Pressed += OnErrorIndicatorPressed;
 
 		// Connect focus
 		this.FocusEntered += messageTextEdit.GrabFocus;

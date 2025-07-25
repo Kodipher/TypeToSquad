@@ -4,6 +4,8 @@ using System.Text;
 
 using WinRTSpeechSynthServer.Protocol.Messages;
 
+using GodotDictionary = Godot.Collections.Dictionary;
+
 
 namespace TypeToSquad.Model;
 
@@ -12,7 +14,7 @@ namespace TypeToSquad.Model;
 /// Handles messgae parsing (into requests)
 /// and sending those rerequest via <see cref="SpeechDaemon"/>.
 /// </summary>
-public class MessageSender : IRefrencesCore {
+public partial class MessageSender : IRefrencesCore {
 
 	#region //// Core Node
 
@@ -61,6 +63,17 @@ public class MessageSender : IRefrencesCore {
 	void ParseMessageText(in SynthesizeRequest request, string message) {
 		request.InputString = message;
 		request.IsSsml = false;
+	}
+
+	public partial class SyntaxHighligher : Godot.SyntaxHighlighter {
+
+		public override GodotDictionary _GetLineSyntaxHighlighting(int line) {
+		}
+
+		public override void _ClearHighlightingCache() {
+			
+		}
+
 	}
 
 }
