@@ -30,4 +30,25 @@ public static class GodotExtensions {
 		textEditNode.SetCaretColumn(textEditNode.GetLine(lastLineIndex).Length, caretIndex: caretIndex);
 	}
 
+	/// <summary>
+	/// Returns the start index of a specific line
+	/// in the <see cref="TextEdit.Text"/> string.
+	/// An out of bounds line returns -1.
+	/// </summary>
+	public static int GetLineStartIndex(this TextEdit textEditNode, int lineIndex) {
+
+		if (lineIndex < 0) return -1;
+
+		int totalLines = textEditNode.GetLineCount();
+		if (lineIndex >= totalLines) return -1;
+
+		int startIndex = 0;
+		for (int i = 0; i < lineIndex; i++) {
+			startIndex += textEditNode.GetLine(i).Length;
+			startIndex += 1; // The engine separates lines by "\n"
+		}
+
+		return startIndex;
+	}
+
 }
