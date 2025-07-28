@@ -307,20 +307,15 @@ public partial class MessageSender : IRefrencesCore {
 					continue;
 				}
 
-				int? topMostIpaDepth = null;
-				for (int j = 0; j < checkedContextHintStack.Count; j++) {
-					if (checkedContextHintStack[j] is null) break;
-					if (checkedContextHintStack[j] == buildinHintIpa) {
-						topMostIpaDepth = j;
-						break;
-					}
-				}
+				int topMostInvalid = checkedContextHintStack.IndexOf(null);
+				int topMostIpa = checkedContextHintStack.IndexOf(buildinHintIpa);
+				string? currentHint = checkedContextHintStack[^1];
 
-				if (checkedContextHintStack[^1] is null) {
+				if (topMostInvalid != -1) {
 					segmentColors[i] = colorSkipped;
-				} else if (topMostIpaDepth == checkedContextHintStack.Count - 1) {
+				} else if (topMostIpa == checkedContextHintStack.Count - 1) {
 					segmentColors[i] = colorIpa;
-				} else if (topMostIpaDepth is not null) {
+				} else if (topMostIpa != -1) {
 					segmentColors[i] = colorSkipped;
 				}
 
