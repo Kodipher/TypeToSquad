@@ -1,11 +1,11 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Text;
+
+using TypeToSquad.Utils;
+using GodotDictionary = Godot.Collections.Dictionary;
 
 using WinRTSpeechSynthServer.Protocol.Messages;
-
-using GodotDictionary = Godot.Collections.Dictionary;
 
 
 namespace TypeToSquad.Model;
@@ -93,7 +93,7 @@ public partial class MessageSender : IRefrencesCore {
 	/// Empty <see cref="ContextEnd"/> segments may be appended to return to depth 0.
 	/// Depth is never negative.
 	/// </remarks>
-	List<DepthSegment> SegmentMessage(string message) {
+	static List<DepthSegment> SegmentMessage(string message) {
 
 		List<DepthSegment> depthSegments = new();
 
@@ -248,11 +248,56 @@ public partial class MessageSender : IRefrencesCore {
 
 	public partial class SyntaxHighligher : Godot.SyntaxHighlighter {
 
+		string? cacheText = null;
+		List<DepthSegment>? segmentsCache = null;
+
+		void PopulateCache(string message) {
+			if (cacheText == message) return;
+			cacheText = message;
+			segmentsCache = SegmentMessage(message);
+		}
+
 		public override GodotDictionary _GetLineSyntaxHighlighting(int line) {
+
+			TextEdit source = this.GetTextEdit();
+
+			// Segment the text
+			PopulateCache(source.Text);
+			if (segmentsCache is null) {
+				GD.PushError("Failed to populate highlighter cache");
+				return new();
+			} 
+
+			// Find start index
+			int startCharI = source.GetLineStartIndex(line);
+			int lineLength = source.GetLine(line).Length;
+
+			// Define return object according to docs
+			GodotDictionary colors = new();
+
+			void AddColorChange(int col, Color color) {
+				colors[col] = new GodotDictionary() { ["color"] = color };
+			}
+
+			// Process colors
+			// DEBUG: BASED ON DEPTH ONLY
+			Color[] colorsByDepth = [new Color(1, 1, 1), new Color(1, 1, 0), new Color(0, 1, 1), new Color(1, 0, 1)];
+
+			for (int segmentI = 0; segmentI < segmentsCache.Count; segmentI++) {
+				var currentSegment = segmentsCache[segmentI];
+
+				if (startCharI >= currentSegment.EndExclusive) continue;
+				if (startCharI + lineLength <= currentSegment.Start) break;
+
+				AddColorChange(Math.Max(startCharI, currentSegment.Start) - startCharI, colorsByDepth[currentSegment.Depth]);
+			}
+
+			return colors;
 		}
 
 		public override void _ClearHighlightingCache() {
-			
+			cacheText = null;
+			segmentsCache = null;
 		}
 
 	}
