@@ -75,6 +75,10 @@ public partial class MessageSender : IRefrencesCore {
 		public required int TextStart { get; init; }
 	}
 
+	/// <remarks>
+	/// Inherits <see cref="ContextStartSegment"/> 
+	/// but <b>not</b> <see cref="ContextEnd"/>.
+	/// </remarks>
 	record class ContextFullSegment : ContextStartSegment {
 		public required int TextEndExclusive { get; init; }
 	}
@@ -216,6 +220,8 @@ public partial class MessageSender : IRefrencesCore {
 
 	#region //// Pasing
 
+	const string buildinHintIpa = "ipa";
+
 	string SegmentedMessageToSsml(IReadOnlyList<DepthSegment> segments, string message) {
 		return "";
 	}
@@ -224,23 +230,17 @@ public partial class MessageSender : IRefrencesCore {
 
 		var segments = SegmentMessage(message);
 
-		// DEBUG
-		GD.Print("==============");
-		foreach (var item in segments) {
-			GD.Print($"\"{message[item.Start..item.EndExclusive]}\" D={item.Depth} | {item}");
-		}
-		GD.Print("==============");
-
-		request.InputString = "";
-		request.IsSsml = false;
-		return;
-
 		// Text-only message
 		if (segments.Count == 1) {
 			request.InputString = message;
 			request.IsSsml = false;
 			return;
 		}
+
+		// DEBUG
+		request.InputString = "";
+		request.IsSsml = false;
+		return;
 
 		// Message with contexts
 		request.InputString = SegmentedMessageToSsml(segments, message);
@@ -257,14 +257,80 @@ public partial class MessageSender : IRefrencesCore {
 		string? cacheText = null;
 		List<DepthSegment>? segmentsCache = null;
 
-		void PopulateCache(string message) {
+		void PopulateSegmentCache(string message) {
 			if (cacheText == message) return;
 			cacheText = message;
 			segmentsCache = SegmentMessage(message);
+			segmentColors = null;
 		}
 		public override void _ClearHighlightingCache() {
 			cacheText = null;
 			segmentsCache = null;
+			segmentColors = null;
+		}
+
+		#endregion
+
+		#region //// Colors
+
+		readonly static Color colorDefault = new(1, 1, 1);
+		readonly static Color colorSkipped = new(colorDefault, 0.5f);
+		readonly static Color colorIpa = new(0.5f, 1, 1);
+
+		Color[]? segmentColors = null;
+
+		void PopulateColors() {
+
+			if (segmentsCache is null || cacheText is null) {
+				GD.PushError("Failed to populate colors. Segment cache is empty.");
+				return;
+			}
+
+			segmentColors = new Color[segmentsCache.Count];
+			List<string?> checkedContextHintStack = new();
+
+			for (int i = 0; i < segmentsCache.Count; i++) {
+
+				// Context enter
+				if (segmentsCache[i] is ContextStartSegment conextStart) {
+					string hint = cacheText[conextStart.HintStart..conextStart.HintEndExclusive];
+					if (hint.Equals(buildinHintIpa, StringComparison.InvariantCultureIgnoreCase)) {
+						checkedContextHintStack.Add(buildinHintIpa);
+					} else {
+						checkedContextHintStack.Add(null);
+					}
+				}
+
+				// Check current context
+				if (checkedContextHintStack.Count == 0) {
+					segmentColors[i] = colorDefault;
+					continue;
+				}
+
+				int? topMostIpaDepth = null;
+				for (int j = 0; j < checkedContextHintStack.Count; j++) {
+					if (checkedContextHintStack[j] is null) break;
+					if (checkedContextHintStack[j] == buildinHintIpa) {
+						topMostIpaDepth = j;
+						break;
+					}
+				}
+
+				if (checkedContextHintStack[^1] is null) {
+					segmentColors[i] = colorSkipped;
+				} else if (topMostIpaDepth == checkedContextHintStack.Count - 1) {
+					segmentColors[i] = colorIpa;
+				} else if (topMostIpaDepth is not null) {
+					segmentColors[i] = colorSkipped;
+				}
+
+
+				// Context exit
+				if (segmentsCache[i] is ContextEnd or ContextFullSegment) {
+					checkedContextHintStack.RemoveAt(checkedContextHintStack.Count - 1);
+				}
+
+			}
 		}
 
 		#endregion
@@ -273,10 +339,12 @@ public partial class MessageSender : IRefrencesCore {
 
 			TextEdit source = this.GetTextEdit();
 
-			// Segment the text
-			PopulateCache(source.Text);
-			if (segmentsCache is null) {
-				GD.PushError("Failed to populate highlighter cache");
+			// Segment the text, process colors
+			PopulateSegmentCache(source.Text);
+			PopulateColors();
+			if (segmentsCache is null || segmentColors is null) {
+				GD.PushError("Failed to populate highlighter or color cache.");
+				this.ClearHighlightingCache();
 				return new();
 			} 
 
@@ -284,24 +352,24 @@ public partial class MessageSender : IRefrencesCore {
 			int startCharI = source.GetLineStartIndex(line);
 			int lineLength = source.GetLine(line).Length;
 
-			// Define return object according to docs
+			// Relay colors in the correct format
 			GodotDictionary colors = new();
 
 			void AddColorChange(int col, Color color) {
 				colors[col] = new GodotDictionary() { ["color"] = color };
 			}
 
-			// Process colors
-			// DEBUG: BASED ON DEPTH ONLY
-			Color[] colorsByDepth = [new Color(1, 1, 1), new Color(1, 1, 0), new Color(0, 1, 1), new Color(1, 0, 1)];
-
 			for (int segmentI = 0; segmentI < segmentsCache.Count; segmentI++) {
 				var currentSegment = segmentsCache[segmentI];
 
+				// Bounds check
 				if (startCharI >= currentSegment.EndExclusive) continue;
 				if (startCharI + lineLength <= currentSegment.Start) break;
 
-				AddColorChange(Math.Max(startCharI, currentSegment.Start) - startCharI, colorsByDepth[currentSegment.Depth]);
+				AddColorChange(
+					Math.Max(startCharI, currentSegment.Start) - startCharI,
+					segmentColors[segmentI]
+				);
 			}
 
 			return colors;
