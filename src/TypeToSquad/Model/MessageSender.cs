@@ -132,8 +132,8 @@ public partial class MessageSender : IRefrencesCore {
 
 		}
 
-		// Add the last block if not empty
-		if (currentBlockStartI != message.Length) {
+		// Add the last block if only block or last block is not empty
+		if (depthSegments.Count == 0 || currentBlockStartI != message.Length) {
 			depthSegments.Add(new DepthSegment() {
 				Depth = currentDepth,
 				Start = currentBlockStartI,
