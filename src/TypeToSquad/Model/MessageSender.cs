@@ -61,7 +61,7 @@ public partial class MessageSender : IRefrencesCore {
 		);
 	}
 
-	#region //// Parsing
+	#region //// Segmenting
 
 	record class DepthSegment {
 		public required int Start { get; init; }
@@ -212,6 +212,10 @@ public partial class MessageSender : IRefrencesCore {
 		return depthSegments;
 	}
 
+	#endregion
+
+	#region //// Pasing
+
 	string SegmentedMessageToSsml(IReadOnlyList<DepthSegment> segments, string message) {
 		return "";
 	}
@@ -248,6 +252,8 @@ public partial class MessageSender : IRefrencesCore {
 
 	public partial class SyntaxHighligher : Godot.SyntaxHighlighter {
 
+		#region //// Cache
+
 		string? cacheText = null;
 		List<DepthSegment>? segmentsCache = null;
 
@@ -256,6 +262,12 @@ public partial class MessageSender : IRefrencesCore {
 			cacheText = message;
 			segmentsCache = SegmentMessage(message);
 		}
+		public override void _ClearHighlightingCache() {
+			cacheText = null;
+			segmentsCache = null;
+		}
+
+		#endregion
 
 		public override GodotDictionary _GetLineSyntaxHighlighting(int line) {
 
@@ -293,11 +305,6 @@ public partial class MessageSender : IRefrencesCore {
 			}
 
 			return colors;
-		}
-
-		public override void _ClearHighlightingCache() {
-			cacheText = null;
-			segmentsCache = null;
 		}
 
 	}
