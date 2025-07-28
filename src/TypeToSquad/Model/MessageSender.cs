@@ -88,9 +88,9 @@ public partial class MessageSender : IRefrencesCore {
 	/// split by depth of nesting.
 	/// </summary>
 	/// <remarks>
-	/// The first segment is always at depth 0.
-	/// The first segment may have a length of 0.
-	/// The last segment may end at a depth above 0.
+	/// Segments may have a length of 0.
+	/// The first and last segments are always at depth 0.
+	/// Empty <see cref="ContextEnd"/> segments may be appended to return to depth 0.
 	/// Depth is never negative.
 	/// </remarks>
 	List<DepthSegment> SegmentMessage(string message) {
