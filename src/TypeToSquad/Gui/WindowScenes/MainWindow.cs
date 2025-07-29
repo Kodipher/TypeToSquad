@@ -51,7 +51,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		};
 
 		// Init syntax highlighter
-		messageTextEdit.SyntaxHighlighter = new MessageSender.SyntaxHighligher();
+		messageTextEdit.SyntaxHighlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighligher();
 
 		// Init error indicator
 		errorIndicator.Hide();
