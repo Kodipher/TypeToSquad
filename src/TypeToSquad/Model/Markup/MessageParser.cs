@@ -5,7 +5,15 @@ using System.Collections.Generic;
 namespace TypeToSquad.Model.Markup;
 
 
-internal class MessageParser {
+public class MessageParser : IRefrencesCore {
+
+	#region //// Core Node
+
+	public CoreNode? CoreNode { get; set; } = null;
+
+	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+
+	#endregion
 
 	/// <summary>
 	/// Returns a list of segments in the message, 

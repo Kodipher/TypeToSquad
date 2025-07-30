@@ -9,6 +9,7 @@ using TypeToSquad.Gui;
 using TypeToSquad.Gui.WindowScenes;
 using TypeToSquad.Model;
 using TypeToSquad.Model.Settings;
+using TypeToSquad.Model.Markup;
 using TypeToSquad.Utils;
 
 
@@ -37,6 +38,7 @@ public partial class CoreNode : Node {
 	public LogMonitor LogMonitor { get; private set; } = null!;
 
 	public MessageSender MessageSender { get; private set; } = null!;
+	public MessageParser MessageParser { get; private set; } = null!;
 	public HistoryTracker HistoryTracker { get; private set; } = null!;
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!;
 
@@ -66,6 +68,9 @@ public partial class CoreNode : Node {
 		// Init message stuff
 		HistoryTracker = new HistoryTracker();
 		HistoryTracker.MaxHistorySize = UserSettings.HistorySlots;
+
+		MessageParser = new MessageParser();
+		MessageParser.RecieveCoreReference(this);
 
 		MessageSender = new MessageSender();
 		MessageSender.RecieveCoreReference(this);
