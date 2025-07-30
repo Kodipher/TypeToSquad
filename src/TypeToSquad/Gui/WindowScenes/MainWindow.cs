@@ -20,9 +20,6 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	#region //// Setup
 
-	// Misc. state
-	public readonly HistoryTracker historyTracker = new();
-
 	// Nodes
 	BaseButton speakButton = null!;
 	BaseButton shutButton = null!;
@@ -44,11 +41,6 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		settingsButton = this.GetNodeNotNull<BaseButton>("%SettingsButton");
 
 		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
-
-		// Init history
-		if (CoreNode is not null) {
-			historyTracker.MaxHistorySize = CoreNode.UserSettings.HistorySlots;
-		};
 
 		// Init syntax highlighter
 		messageTextEdit.SyntaxHighlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighligher();
@@ -136,8 +128,8 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 		// Add to history
 		GD.Print("Speaking.");
-		historyTracker.AddHistoryEntry(messageTextEdit.Text);
-		historyTracker.NavigateReset();
+		CoreNode.HistoryTracker.AddHistoryEntry(messageTextEdit.Text);
+		CoreNode.HistoryTracker.NavigateReset();
 
 		// Speak
 		CoreNode.MessageSender.SendMessage(messageTextEdit.Text);
@@ -156,14 +148,16 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	}
 
 	public void OnHistoryPrevRequest() {
-		if (historyTracker.TryNavigatePrevious(messageTextEdit.Text, out string queryResult)) {
+		if (CoreNode is null) return;
+		if (CoreNode.HistoryTracker.TryNavigatePrevious(messageTextEdit.Text, out string queryResult)) {
 			messageTextEdit.Text = queryResult; // also clears carets
 			messageTextEdit.SetCaretPositionToEnd();
 		}
 	}
 
 	public void OnHistoryNextRequest() {
-		if (historyTracker.TryNavigateNext(messageTextEdit.Text, out string queryResult)) {
+		if (CoreNode is null) return;
+		if (CoreNode.HistoryTracker.TryNavigateNext(messageTextEdit.Text, out string queryResult)) {
 			messageTextEdit.Text = queryResult; // also clears carets
 			messageTextEdit.SetCaretPositionToEnd();
 		}

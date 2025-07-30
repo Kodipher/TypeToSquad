@@ -37,7 +37,9 @@ public partial class CoreNode : Node {
 	public LogMonitor LogMonitor { get; private set; } = null!;
 
 	public MessageSender MessageSender { get; private set; } = null!;
+	public HistoryTracker HistoryTracker { get; private set; } = null!;
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!;
+
 	public AudioManagerNode AudioManager { get; private set; } = null!;
 
 	public WindowManager WindowManager { get; private set; } = null!;
@@ -57,7 +59,10 @@ public partial class CoreNode : Node {
 		AudioManager.InitOutputDeviceOptions();
 		AudioManager.SetOutputDeviceFromSettings();
 
-		// Init message sender and parser
+		// Init message stuff
+		HistoryTracker = new HistoryTracker();
+		HistoryTracker.MaxHistorySize = UserSettings.HistorySlots;
+
 		MessageSender = new MessageSender();
 		MessageSender.RecieveCoreReference(this);
 
@@ -136,8 +141,8 @@ public partial class CoreNode : Node {
 		AudioManager.SetOutputDeviceFromSettings();
 		AudioManager.EnsureConcurrentNodeMax();
 
-		MainWindow.historyTracker.MaxHistorySize = UserSettings.HistorySlots;
-		MainWindow.historyTracker.EnforceHistoryCountMax();
+		HistoryTracker.MaxHistorySize = UserSettings.HistorySlots;
+		HistoryTracker.EnforceHistoryCountMax();
 
 		if (UserSettings.EnableErrorMonitoring) LogMonitor.CheckLog();
 	}
