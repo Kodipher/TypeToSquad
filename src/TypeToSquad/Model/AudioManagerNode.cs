@@ -25,21 +25,10 @@ public partial class AudioManagerNode : Node, IRefrencesCore {
 
 	#endregion
 
-	#region //// Output devices
-
-	public void InitOutputDeviceOptions() {
-		if (CoreNode is null) return;
-		CoreNode.UserSettings.Device.SetOptions(AudioServer.GetOutputDeviceList());
-	}
-
 	public void SetOutputDeviceFromSettings() {
 		if (CoreNode is null) return;
 		AudioServer.OutputDevice = CoreNode.UserSettings.Device;
 	}
-
-	#endregion
-
-	#region //// Data playback
 
 	/// <summary>
 	/// Plays PCM Wav data in a new <see cref="AudioStreamPlayer"/>.
@@ -112,7 +101,5 @@ public partial class AudioManagerNode : Node, IRefrencesCore {
 			OnPlaybackFinished(oldestNode);
 		}
 	}
-
-	#endregion
 
 }

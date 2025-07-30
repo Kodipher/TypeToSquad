@@ -42,6 +42,10 @@ public partial class CoreNode : Node {
 
 	public AudioManagerNode AudioManager { get; private set; } = null!;
 
+	#endregion
+
+	#region //// UI (window) Components and parts
+
 	public WindowManager WindowManager { get; private set; } = null!;
 	public MainWindow MainWindow { get; private set; } = null!;
 
@@ -56,7 +60,7 @@ public partial class CoreNode : Node {
 		// Init Audio 
 		AudioManager = this.GetNodeNotNull<AudioManagerNode>("%AudioManager");
 		AudioManager.RecieveCoreReference(this);
-		AudioManager.InitOutputDeviceOptions();
+		UserSettings.Device.SetOptions(AudioServer.GetOutputDeviceList());
 		AudioManager.SetOutputDeviceFromSettings();
 
 		// Init message stuff
@@ -69,9 +73,7 @@ public partial class CoreNode : Node {
 		// Start Daemon
 		SpeechDaemon = new SpeechDaemon();
 		SpeechDaemon.StartDaemon();
-
-		// find voices
-		SpeechDaemon.DispatchRequest(
+		SpeechDaemon.DispatchRequest( // find voices
 			new GetVoicesRequest(),
 			(resp) => {
 
@@ -82,9 +84,6 @@ public partial class CoreNode : Node {
 
 				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
 				SpeechDaemon.StoreVoiceInfos(voicesResponse);
-
-				// Update settings
-				UserSettingsLoader.Save(UserSettings);
 			}
 		);
 
@@ -96,8 +95,12 @@ public partial class CoreNode : Node {
 	}
 
 	public void PostReady() {
+		// Instantiate main window
 		MainWindow = (MainWindow)WindowManager.CreateWindowIntoRoot(WindowType.Main);
 		MainWindow._Ready(); // Call ready again manually after the new script is attached
+
+		// Update settings
+		UserSettingsLoader.Save(UserSettings);
 	}
 
 	public override void _Process(double delta) {
