@@ -18,7 +18,7 @@ public static class UserSettingsLoader {
 	readonly static IReadOnlyList<FieldInfo> UserSettingsFields = 
 									typeof(UserSettings)
 									.GetFields(BindingFlags.Instance | BindingFlags.Public)
-									.Where(fi => fi.FieldType.IsSubclassOrSelfOf(typeof(Field<>)))
+									.Where(fi => fi.FieldType.IsAssignableTo(typeof(IVariantSavable)))
 									.ToArray()
 									.AsReadOnly();
 
@@ -28,7 +28,7 @@ public static class UserSettingsLoader {
 		// Find saveable data
 		Godot.Collections.Dictionary<string, Variant> settingsDict = new();
 
-		foreach (FieldInfo fieldInfo in UserSettingsFields) {
+		foreach (FieldInfo fieldInfo in UserSettingsSavableFields) {
 
 			IVariantSavable? savable = fieldInfo.GetValue(settings) as IVariantSavable;
 			Variant saveValue = savable?.ValueAsSavable ?? new Variant();
@@ -45,7 +45,6 @@ public static class UserSettingsLoader {
 		string settingsJson = Json.Stringify(settingsDict, indent: "\t");
 		string settingsPath = Path.Combine(OS.GetUserDataDir(), settingsFilepath);
 		File.WriteAllText(settingsPath, settingsJson);
-
 	}
 
 	/// <summary>Loads settings from disk</summary>
@@ -77,7 +76,7 @@ public static class UserSettingsLoader {
 
 		// Apply data
 		var settings = new UserSettings();
-		foreach (FieldInfo fieldInfo in UserSettingsFields) {
+		foreach (FieldInfo fieldInfo in UserSettingsSavableFields) {
 			if (settingsDict.TryGetValue(fieldInfo.Name, out Variant fieldSaveValue)) {
 				IVariantSavable? savable = fieldInfo.GetValue(settings) as IVariantSavable;
 				if (savable is not null) savable.ValueAsSavable = fieldSaveValue;
