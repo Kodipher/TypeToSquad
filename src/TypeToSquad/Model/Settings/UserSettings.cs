@@ -3,6 +3,13 @@
 namespace TypeToSquad.Model.Settings;
 
 
+/// <summary>
+/// A storage for all user settings.
+/// </summary>
+/// <remarks>
+/// Only fields implementing <see cref="IVariantSavable"/> are saved.
+/// Properties are ignored.
+/// </remarks>
 public record class UserSettings {
 
 	// ===== ===== ===== GENERAL ===== ===== =====

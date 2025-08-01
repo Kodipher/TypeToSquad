@@ -6,8 +6,6 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
-using Rephidock.GeneralUtilities.Reflection;
-
 
 namespace TypeToSquad.Model.Settings;
 
@@ -62,14 +60,14 @@ public static class UserSettingsLoader {
 		var result = jsonReader.Parse(settingsJson);
 
 		if (result != Error.Ok) {
-			GD.PushError($"Cannot load settings: file is malformed.\n{jsonReader.GetErrorMessage()}");
+			GD.PushError($"Could not load settings: file is malformed.\n{jsonReader.GetErrorMessage()}");
 			return new UserSettings();
 		}
 
 		Variant parsedJson = jsonReader.Data;
 
 		if (parsedJson.VariantType != Variant.Type.Dictionary) {
-			GD.PushError("Cannot load settings: root value is not an object.");
+			GD.PushError("Could not load settings: root value is not an object.");
 			return new UserSettings();
 		}
 
@@ -85,20 +83,6 @@ public static class UserSettingsLoader {
 		}
 
 		return settings;
-	}
-
-
-	static UserSettingsLoader() {
-
-		// (debug) check if there are properties
-		if (
-			typeof(UserSettings)
-			.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-			.Where(pi => pi.PropertyType.IsSubclassOrSelfOf(typeof(Field<>)))
-			.Any()
-		) {
-			GD.PushWarning($"{nameof(UserSettings)} has a Field storing property. Properties are not supported by {nameof(UserSettingsLoader)}");
-		}
 	}
 
 }
