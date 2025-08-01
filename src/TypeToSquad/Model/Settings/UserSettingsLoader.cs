@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.IO;
 using System.Reflection;
@@ -15,7 +16,7 @@ public static class UserSettingsLoader {
 
 	public const string settingsFilepath = "user_settings.json";
 
-	readonly static IReadOnlyList<FieldInfo> UserSettingsFields = 
+	readonly static ReadOnlyCollection<FieldInfo> UserSettingsSavableFields = 
 									typeof(UserSettings)
 									.GetFields(BindingFlags.Instance | BindingFlags.Public)
 									.Where(fi => fi.FieldType.IsAssignableTo(typeof(IVariantSavable)))
