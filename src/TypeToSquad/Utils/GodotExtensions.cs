@@ -35,6 +35,21 @@ public static class GodotExtensions {
 	}
 
 	/// <summary>
+	/// <para>
+	/// An unsafe version of <see cref="Variant.As{T}()"/>.
+	/// Takes a <see cref="Type"/> parameter for reflection purposes.
+	/// </para>
+	/// <para>
+	/// <b>NOTE:</b> only intended to be used with variant compatible types.
+	///  Prefer to use <see cref="Variant.As{T}()"/> when possible.
+	/// </para>
+	/// </summary>
+	public static object? AsUnsafe(this Variant variant, Type type) {
+		var asMethod = typeof(Variant).GetMethod(nameof(Variant.As)) ?? throw new InvalidOperationException($"Could not find Varaint.As method");
+		return asMethod.MakeGenericMethod([type]).Invoke(variant, []);
+	}
+
+	/// <summary>
 	/// Sets caret position to end of the text:
 	/// after the last chracter of the last line.
 	/// </summary>
