@@ -5,6 +5,23 @@ using System.Collections.Generic;
 namespace TypeToSquad.Model.Markup;
 
 
+/// <summary>
+/// <para>
+/// A special parser to allow user "lexicon" (implemented via regex replacements),
+/// as well certain SSML features.
+/// </para>
+/// <para>
+/// The message may have tags in it, indicated by square brackets.
+/// A tag can be a context change.
+/// or is part of a message that is not direct text (like ipa phonetic spelling).
+/// </para>
+/// <para>
+/// There are multiple separate contexts tracked:
+/// - voice
+/// - text replacement
+/// </para>
+/// <para>Tags are not allowed to be inside tags.</para>
+/// </summary>
 public class MessageParser : IRefrencesCore {
 
 	#region //// Core Node
@@ -16,135 +33,176 @@ public class MessageParser : IRefrencesCore {
 	#endregion
 
 	/// <summary>
-	/// Returns a list of segments in the message, 
-	/// split by depth of nesting.
+	/// Returns a list of segments that make up the message.
+	/// Segments cannot be nested.
 	/// </summary>
-	/// <remarks>
-	/// Segments may have a length of 0.
-	/// The first and last segments are always at depth 0.
-	/// Empty <see cref="ContextEnd"/> segments may be appended to return to depth 0.
-	/// Depth is never negative.
-	/// </remarks>
-	public static List<DepthSegment> SegmentMessage(string message) {
+	public static List<MessageSegment> SegmentMessage(string message) {
 
-		List<DepthSegment> depthSegments = new();
+		List<MessageSegment> segments = new();
 
-		int currentDepth = 0;
-		int currentBlockStartI = 0;
+		/// <summary>
+		/// Iterates message string index until 
+		/// the tag is closed or the message is over.
+		/// </summary>
+		/// <remarks>
+		/// <paramref name="i"/> is assumed to start 
+		/// at the openign of the tag.
+		/// </remarks>
+		void ScanUntilClosed(ref int i, out bool hasNested) {
+
+			int additionalDepth = 0;
+			hasNested = false;
+
+			i++; // "consume" tag opening
+			for (; i < message.Length; i++) {
+
+				if (message[i] == '[') {
+					additionalDepth++;
+					hasNested = true;
+					continue;
+				}
+
+				if (message[i] == ']') {
+					if (additionalDepth == 0) break;
+					additionalDepth--;
+					continue;
+				}
+
+			}
+		}
+
+		bool IsSegmentContent(int openingI, int closingI, out int hintExclusiveEndI) {
+
+			// A tag is a content if there is whitesapce
+			// separating non-whitespace on either side
+			int firstNonWhitespace = -1;
+			int lastNonWhitespace = -1;
+			hintExclusiveEndI = -1;	// first whitespace after first nonwhitespace
+
+			for (int i = openingI + 1; i <= closingI - 1; i++) {
+
+				if (char.IsWhiteSpace(message[i])) {
+
+					if (hintExclusiveEndI != -1) continue;
+					if (firstNonWhitespace == -1) continue;
+					hintExclusiveEndI = i;
+
+				} else {
+
+					if (firstNonWhitespace == -1) firstNonWhitespace = i;
+					lastNonWhitespace = i;
+				}
+
+			}
+
+			// No non-whitespace
+			if (firstNonWhitespace == -1) return false;
+
+			// No whitespace after first non-whitespace
+			if (hintExclusiveEndI == -1) return false;
+
+			// No non-whitespace in the middle
+			if (hintExclusiveEndI > lastNonWhitespace) return false;
+
+			return true;
+		}
+
+		int currentSegmentStartI = 0;
 
 		for (int i = 0; i < message.Length; i++) {
 
 			if (message[i] == '[') {
-				// End block and go deeper
-				depthSegments.Add(new DepthSegment() {
-					Depth = currentDepth,
-					Start = currentBlockStartI,
-					EndExclusive = i
-				});
 
-				currentBlockStartI = i;
-				currentDepth++;
-				continue;
+				// Add text before tag
+				if (i != currentSegmentStartI) {
+					segments.Add(
+						new MessageSegment(
+							start: currentSegmentStartI,
+							endExclusive: i,
+							originalMessage: message
+						)
+					);
+
+					currentSegmentStartI = i;
+				}
+
+				// Find closing (assuming nesting)
+				ScanUntilClosed(ref i, out bool hasNested);
+
+				// Closed segment
+				if (i < message.Length) {
+
+					if (hasNested) {
+						segments.Add(
+							new InvalidSegment(
+								start: currentSegmentStartI,
+								endExclusive: i + 1,
+								originalMessage: message
+							)
+						);
+						currentSegmentStartI = i + 1;
+						continue;
+					}
+
+					bool isContent = IsSegmentContent(currentSegmentStartI, i, out int hintEndExclusive);
+
+					// Content
+					if (isContent) {
+						segments.Add(
+							new ContentSegment(
+								start: currentSegmentStartI,
+								endExclusive: i + 1,
+								hintEndExclusive: hintEndExclusive,
+								originalMessage: message
+							)
+						);
+						currentSegmentStartI = i + 1;
+						continue;
+					}
+
+					// Hint with no content
+					segments.Add(
+						new HintSegment(
+							start: currentSegmentStartI,
+							endExclusive: i + 1,
+							originalMessage: message
+						)
+					);
+					currentSegmentStartI = i + 1;
+					continue;
+				}
+
+				// Unclosed segment
+				segments.Add(
+					new InvalidSegment(
+						start: currentSegmentStartI,
+						endExclusive: message.Length,
+						originalMessage: message
+					)
+				);
+				currentSegmentStartI = message.Length;
+				break;
+
 			}
-
-			if (message[i] == ']' && currentDepth > 0) {
-
-				// End block and go up
-				depthSegments.Add(new ContextEnd() {
-					Depth = currentDepth,
-					Start = currentBlockStartI,
-					EndExclusive = i + 1,
-					TextEndExclusive = i
-				});
-
-				currentBlockStartI = i + 1;
-				currentDepth--;
-				continue;
-			}
-
+			
+			// [continue]
 		}
 
-		// Add the last block if only block or last block is not empty
-		if (depthSegments.Count == 0 || currentBlockStartI != message.Length) {
-			depthSegments.Add(new DepthSegment() {
-				Depth = currentDepth,
-				Start = currentBlockStartI,
-				EndExclusive = message.Length
-			});
+		// Add a segment lasting till the end if not there
+		if (currentSegmentStartI < message.Length) {
+			segments.Add(
+				new MessageSegment(
+					start: currentSegmentStartI,
+					endExclusive: message.Length,
+					originalMessage: message
+				)
+			);
 		}
 
-		// Parse context starts and fulls
-		for (int i = 1; i < depthSegments.Count; i++) {
-
-			// Skip if not context start
-			if (depthSegments[i].Depth <= depthSegments[i - 1].Depth) {
-				continue;
-			}
-
-			ContextEnd? unfinishedFullSegemnt = depthSegments[i] as ContextEnd;
-
-			// Find enclosed substring
-			int enclosedStartI = depthSegments[i].Start + 1;
-			ReadOnlySpan<char> enclosedSubstr;
-			if (unfinishedFullSegemnt is not null) {
-				enclosedSubstr = message.AsSpan()[enclosedStartI..unfinishedFullSegemnt.TextEndExclusive];
-			} else {
-				enclosedSubstr = message.AsSpan()[enclosedStartI..(depthSegments[i].EndExclusive)];
-			}
-
-			// Find hint bounds
-			int hintEndExclusiveSubstrI;
-			bool hasSpace;
-
-			int spaceSubstrI = enclosedSubstr.IndexOf(' ');
-			if (spaceSubstrI < 0) {
-				hasSpace = false;
-				hintEndExclusiveSubstrI = enclosedSubstr.Length;
-			} else {
-				hasSpace = true;
-				hintEndExclusiveSubstrI = spaceSubstrI;
-			}
-
-			// Convert segment
-			if (unfinishedFullSegemnt is not null) {
-				depthSegments[i] = new ContextFullSegment() {
-					Depth = unfinishedFullSegemnt.Depth,
-					Start = unfinishedFullSegemnt.Start,
-					EndExclusive = unfinishedFullSegemnt.EndExclusive,
-					HintStart = enclosedStartI,
-					HintEndExclusive = enclosedStartI + hintEndExclusiveSubstrI,
-					TextStart = hasSpace ? enclosedStartI + hintEndExclusiveSubstrI + 1 : unfinishedFullSegemnt.TextEndExclusive,
-					TextEndExclusive = unfinishedFullSegemnt.TextEndExclusive
-				};
-			} else {
-				// start of a conext
-				depthSegments[i] = new ContextStartSegment() {
-					Depth = depthSegments[i].Depth,
-					Start = depthSegments[i].Start,
-					EndExclusive = depthSegments[i].EndExclusive,
-					HintStart = enclosedStartI,
-					HintEndExclusive = enclosedStartI + hintEndExclusiveSubstrI,
-					TextStart = hasSpace ? enclosedStartI + hintEndExclusiveSubstrI + 1 : depthSegments[i].EndExclusive
-
-				};
-			}
-
-		}
-
-		// Pad with empty segments to return to depth 0
-		while (depthSegments[^1].Depth != 0) {
-			depthSegments.Add(new ContextEnd() {
-				Depth = depthSegments[^1].Depth - 1,
-				Start = message.Length,
-				EndExclusive = message.Length,
-				TextEndExclusive = message.Length
-			});
-		}
-
-		return depthSegments;
+		return segments;
 	}
 
-	public static string SegmentedMessageToSsml(IReadOnlyList<DepthSegment> segments, string message) {
+	public static string SegmentedMessageToSsml(IReadOnlyList<MessageSegment> segments, string message) {
 		return "";
 	}
 

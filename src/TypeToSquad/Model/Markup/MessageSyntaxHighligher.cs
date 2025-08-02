@@ -10,6 +10,8 @@ namespace TypeToSquad.Model.Markup;
 
 
 public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter {
+	
+	/*
 
 	#region //// Cache
 
@@ -136,5 +138,5 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter {
 
 		return colors;
 	}
-
+	*/
 }
