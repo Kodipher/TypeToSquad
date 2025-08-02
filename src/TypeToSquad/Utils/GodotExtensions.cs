@@ -1,4 +1,5 @@
 using Godot;
+using Godot.NativeInterop;
 using System;
 
 
@@ -17,6 +18,20 @@ public static class GodotExtensions {
 	/// <exception cref="InvalidCastException">Node could not be cast to requested type.</exception>
 	public static T GetNodeNotNull<T>(this Node thisNode, NodePath path) where T : notnull, Node {
 		return thisNode.GetNode<T>(path) ?? throw new NodeNullException(path);
+	}
+
+	/// <summary>
+	/// <para>
+	/// Try to a convert any generic object into a <see cref="Variant"/>.
+	/// </para>
+	/// <para>
+	/// <b>NOTE:</b> only intended to be used with variant compatible types.
+	/// Prefer to use <see cref="Variant.From{T}(in T)"/> when possible.
+	/// </para>
+	/// </summary>
+	public static Variant VariantFromUnsafe<T>(in T from) {
+		godot_variant nativeValueToOwn = VariantUtils.CreateFrom(in from);
+		return Variant.CreateTakingOwnershipOfDisposableValue(in nativeValueToOwn);
 	}
 
 	/// <summary>
