@@ -1,0 +1,137 @@
+using Godot;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
+using TypeToSquad.Utils;
+
+
+namespace TypeToSquad.Model.Settings;
+
+
+/// <summary>
+/// A savable array of value tuples.
+/// Only <see cref="ValueTuple"/>s of <see cref="Variant"/> comparible values
+/// are supported.
+/// </summary>
+public class Table<TRowTuple> : IVariantSavable, IList<TRowTuple>, IReadOnlyList<TRowTuple> 
+where TRowTuple: struct, ITuple 
+{
+
+	#region //// Storage, IList
+
+	readonly List<TRowTuple> rows = new();
+
+	public TRowTuple this[int index] {
+		get => rows[index];
+		set => rows[index] = RowForceValid(value);
+	}
+
+	public int Count => rows.Count;
+
+	public void Add(TRowTuple row) => rows.Add(RowForceValid(row));
+	public void Insert(int index, TRowTuple row) => rows.Insert(index, RowForceValid(row));
+
+	public void RemoveAt(int index) => rows.RemoveAt(index);
+	public bool Remove(TRowTuple row) => rows.Remove(row);
+	public void Clear() => rows.Clear();
+
+	public int IndexOf(TRowTuple row) => rows.IndexOf(row);
+	public bool Contains(TRowTuple row) => rows.Contains(row);
+
+	public void CopyTo(TRowTuple[] array, int arrayIndex) => rows.CopyTo(array, arrayIndex);
+
+	public IEnumerator<TRowTuple> GetEnumerator() => rows.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => rows.GetEnumerator();
+
+	public bool IsReadOnly => false;
+
+	#endregion
+
+	public Variant ValueAsSavable {
+		get {
+			Godot.Collections.Array savableArray = new();
+
+			foreach (var row in rows) {
+
+				// Create rowSource
+				Godot.Collections.Array rowArray = new();
+				savableArray.Add(rowArray);
+
+				// Fill rowSource
+				for (int i = 0; i < row.Length; i++) {
+					var tupleItem = row[i];
+					rowArray.Add(GodotExtensions.VariantFromUnsafe(tupleItem));
+				}
+
+			}
+
+			return savableArray;
+		}
+		set {
+			GD.Print(value);
+			foreach (var rowSource in value.AsGodotArray()) {
+				GD.Print("ROW!");
+				GD.Print(rowSource);
+				this.Add(ArrayToTuple(rowSource.AsGodotArray()));
+			}
+		}
+	}
+
+
+	readonly static Lazy<Type[]> tupleTypes = new(() => {
+		if (typeof(TRowTuple).IsGenericType) return typeof(TRowTuple).GenericTypeArguments;
+		return Array.Empty<Type>();
+	});
+
+	readonly static Lazy<MethodInfo> tupleCreateMethod = new(() => {
+		return typeof(ValueTuple)
+			.GetMethods()
+			.Where(method => method.Name == nameof(ValueTuple.Create))
+			.Where(method => method.IsStatic)
+			.Where(method => method.GetGenericArguments().Length == tupleTypes.Value.Length)
+			.Single()
+			.MakeGenericMethod(tupleTypes.Value);
+	});
+
+	static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
+
+		// Get values
+		Variant[] tupleValuesVaraint = new Variant[tupleTypes.Value.Length];
+
+		int n = Math.Min(array.Count, tupleValuesVaraint.Length);
+		for (int i = 0; i < n; i++) {
+			tupleValuesVaraint[i] = array[i];
+		}
+
+		// Convert values to objects
+		object?[] tupleValues = new object?[tupleTypes.Value.Length];
+		for (int i = 0; i < tupleValues.Length; i++) {
+			tupleValues[i] = tupleValuesVaraint[i].AsUnsafe(tupleTypes.Value[i]);
+		}
+
+		// Create tuple
+		if (tupleCreateMethod.Value is null) {
+			throw new InvalidOperationException($"No ValueTuple.Create method found for {typeof(TRowTuple)}");
+		}
+
+		return (TRowTuple)(
+					tupleCreateMethod
+					.Value
+					.Invoke(null, tupleValues) 
+					?? default(TRowTuple)
+				);
+	}
+
+	public virtual TRowTuple RowForceValid(TRowTuple value) => value;
+
+	public virtual bool IsRowValid(TRowTuple value) => true;
+
+	public Table() { 
+
+	}
+
+}
