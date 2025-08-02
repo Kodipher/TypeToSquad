@@ -114,10 +114,6 @@ where TRowTuple: struct, ITuple
 		}
 
 		// Create tuple
-		if (tupleCreateMethod.Value is null) {
-			throw new InvalidOperationException($"No ValueTuple.Create method found for {typeof(TRowTuple)}");
-		}
-
 		return (TRowTuple)(
 					tupleCreateMethod
 					.Value
