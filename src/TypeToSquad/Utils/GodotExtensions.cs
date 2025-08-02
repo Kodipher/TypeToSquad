@@ -1,5 +1,4 @@
 using Godot;
-using Godot.NativeInterop;
 using System;
 
 
@@ -29,9 +28,14 @@ public static class GodotExtensions {
 	/// Prefer to use <see cref="Variant.From{T}(in T)"/> when possible.
 	/// </para>
 	/// </summary>
-	public static Variant VariantFromUnsafe<T>(in T from) {
-		godot_variant nativeValueToOwn = VariantUtils.CreateFrom(in from);
-		return Variant.CreateTakingOwnershipOfDisposableValue(in nativeValueToOwn);
+	public static Variant VariantFromUnsafe(object? from) {
+		if (from is null) return new Variant();
+
+		var fromMethod = typeof(Variant).GetMethod(nameof(Variant.From)) ?? throw new InvalidOperationException($"Could not find Varaint.From method");
+		return (Variant)(
+			fromMethod.MakeGenericMethod(from.GetType()).Invoke(null, [from]) 
+			?? throw new ArgumentException($"Variant.From returned null")
+		);
 	}
 
 	/// <summary>
