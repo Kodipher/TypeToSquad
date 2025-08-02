@@ -72,10 +72,7 @@ where TRowTuple: struct, ITuple
 			return savableArray;
 		}
 		set {
-			GD.Print(value);
 			foreach (var rowSource in value.AsGodotArray()) {
-				GD.Print("ROW!");
-				GD.Print(rowSource);
 				this.Add(ArrayToTuple(rowSource.AsGodotArray()));
 			}
 		}
