@@ -68,12 +68,14 @@ public class MessageSender : IRefrencesCore {
 		// Text replacements
 		for (int i = 0; i < CoreNode.UserSettings.MaxReplacementPasses; i++) {
 			segments = parser.ReplaceTextSinglePass(segments, out bool anyReplaced);
+			segments = parser.JoinPlainTextSegements(segments);
 			if (!anyReplaced) break;
 		}
 
 		// Stip non-content stuff
 		parser.StripInvalidSegments(segments);
 		parser.StripReplacementContextSegments(segments);
+		segments = parser.JoinPlainTextSegements(segments);
 
 		// Text-only message
 		if (segments.All(seg => seg is Markup.PlainTextSegment)) {

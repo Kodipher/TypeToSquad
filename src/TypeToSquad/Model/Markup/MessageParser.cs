@@ -293,7 +293,7 @@ public class MessageParser : IRefrencesCore {
 
 	/// <summary>
 	/// Creates a new list of segments by performing 1 pass of text replacements in current segments.
-	/// <b>Note:</b> the indexes in the returned segments may no longer correspond to the original message!
+	/// <b>Note:</b> the indexes in the returned segments may become invalid.
 	/// </summary>
 	public List<MessageSegment> ReplaceTextSinglePass(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
 		anyTextReplaced = false;
@@ -351,6 +351,36 @@ public class MessageParser : IRefrencesCore {
 			// Some replacement applied
 			anyTextReplaced = true;
 			newSegments.AddRange(SegmentMessage(newText));
+		}
+
+		return newSegments;
+	}
+
+	/// <summary>
+	/// Returns a new list of segments where adjacent <see cref="PlainTextSegment"/>s
+	/// in the source <paramref name="segments"/> array are joined into one.
+	/// <b>Note:</b> the indexes in the returned segments may become invalid.
+	/// </summary>
+	public List<MessageSegment> JoinPlainTextSegements(List<MessageSegment> segments) {
+
+		List<MessageSegment> newSegments = new();
+
+		foreach (MessageSegment seg in segments) {
+			
+			// Add non-text segments directly
+			if (seg is not PlainTextSegment) {
+				newSegments.Add(seg);
+				continue;
+			}
+
+			// Add text segments not after text segments
+			if (newSegments.Count == 0 || newSegments[^1] is not PlainTextSegment) {
+				newSegments.Add(seg);
+				continue;
+			}
+
+			// Join text segments
+			newSegments[^1] = PlainTextSegment.CreateFromText(newSegments[^1].Text + seg.Text);
 		}
 
 		return newSegments;

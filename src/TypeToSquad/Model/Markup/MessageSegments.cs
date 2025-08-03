@@ -28,6 +28,10 @@ public record class PlainTextSegment : MessageSegment {
 		return MessageSegment.CreateAsSubstring<PlainTextSegment>(start, endExclusive, str);
 	}
 
+	public static PlainTextSegment CreateFromText(string text) {
+		return new PlainTextSegment() { Text = text };
+	}
+
 }
 
 
