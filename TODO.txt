@@ -3,15 +3,12 @@ TODO:
 - main window: check min size
 - tab shortcuts for context changes
 -- letter after autocompletes the context
-- feature: sfml
--- IPA replacements
--- language changes
--- tone
--- sounds
--- syntax highlight
+- feature: smml audio tag usage
+-- if only 1 audio tag exists: shortcut to loading the sound directly
 - feature: direct hardware shortcuts (like DCSB)
 - min window sizes for all windows
 - check tab order in all windows
 - hover information
 
 TO TEST:
+- ssml: ipa

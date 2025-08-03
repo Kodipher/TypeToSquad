@@ -404,8 +404,11 @@ public class MessageParser : IRefrencesCore {
 """;
 
 	const string ssmlFooter = """</speak>""";
+
 	const string ssmlVoiceOpen = """<voice name="{0}" xml:lang="{1}">""";
 	const string ssmlVoiceClose = """</voice>""";
+
+	const string ssmlIpa = """<phoneme alphabet="ipa" ph="{0}"></phoneme>""";
 
 	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
@@ -454,6 +457,26 @@ public class MessageParser : IRefrencesCore {
 				}
 			}
 
+			// Content
+			if (seg is ContentSegment contentSegment) {
+
+				switch (contentSegment.ContentType) {
+
+					case ContentType.Ipa:
+						sb.AppendFormat(ssmlIpa, SecurityElement.Escape(contentSegment.Payload));
+						break;
+
+					case ContentType.Audio:
+						throw new NotImplementedException("Inserting audio is not implemented.");
+						break;
+
+					default:
+						throw new ArgumentException("Invalid inline content segmet.");
+				}
+
+			}
+
+			// [continue]
 		}
 
 		if (isInsideVoice) sb.Append(ssmlVoiceClose);
