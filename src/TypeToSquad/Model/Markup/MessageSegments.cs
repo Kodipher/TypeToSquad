@@ -37,6 +37,7 @@ public record class InvalidSegment : MessageSegment {
 
 public record class HintSegment : MessageSegment {
 
+	public HintType HintType { get; private set; } = HintType.Unknown;
 
 	public string Hint { get; private set; } = "";
 
@@ -46,8 +47,8 @@ public record class HintSegment : MessageSegment {
 		return ret;
 	}
 
-	public static HintSegment CreateWithContext(HintSegment other, ContextType contextType) {
-		return other with { ContextType = contextType };
+	public static HintSegment CreateWithType(HintSegment other, HintType contextType) {
+		return other with { HintType = contextType };
 	}
 
 }

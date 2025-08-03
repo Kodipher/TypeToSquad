@@ -84,11 +84,11 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 				AddColorChange(currentSegment.Start, colorInvalid);
 
 			} else if (currentSegment is HintSegment hintSegment) {
-				switch (hintSegment.ContextType) {
-					case ContextType.Replacement:
+				switch (hintSegment.HintType) {
+					case HintType.ReplacementContext:
 						AddColorChange(currentSegment.Start, colorHintReplacement);
 						break;
-					case ContextType.Voice:
+					case HintType.VoiceChange:
 						AddColorChange(currentSegment.Start, colorHintLanguage);
 						break;
 					default:

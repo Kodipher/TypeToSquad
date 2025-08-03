@@ -6,10 +6,10 @@ using System.Linq;
 namespace TypeToSquad.Model.Markup;
 
 
-public enum ContextType {
+public enum HintType {
 	Unknown = 0,
-	Replacement,
-	Voice,
+	ReplacementContext,
+	VoiceChange,
 
 	/// <summary>The size of the enum</summary>
 	Max
@@ -23,13 +23,10 @@ public enum ContextType {
 /// </para>
 /// <para>
 /// The message may have tags in it, indicated by square brackets.
-/// A tag can be a context change.
-/// or is part of a message that is not direct text (like ipa phonetic spelling).
-/// </para>
-/// <para>
-/// There are multiple separate contexts tracked:
-/// - voice
-/// - text replacement
+/// A tag can be
+/// - a voice change
+/// - a replacement context change (including empty context)
+/// - a part of a message that is not direct text (like ipa phonetic spelling).
 /// </para>
 /// <para>Tags are not allowed to be inside tags.</para>
 /// </summary>
@@ -45,15 +42,15 @@ public class MessageParser : IRefrencesCore {
 
 	/// <summary>
 	/// Given a <see cref="HintSegment"/>, returns a new <see cref="HintSegment"/> 
-	/// with <see cref="HintSegment.ContextType"/> set.
+	/// with <see cref="HintSegment.HintType"/> set.
 	/// </summary>
 	public HintSegment CreateTypedHintSegment(HintSegment segment) {
 
-		if (CoreNode is null) return HintSegment.CreateWithContext(segment, ContextType.Unknown);
+		if (CoreNode is null) return HintSegment.CreateWithType(segment, HintType.Unknown);
 
 		// Check for empty context
 		if (string.IsNullOrWhiteSpace(segment.Hint)) {
-			return HintSegment.CreateWithContext(segment, ContextType.Replacement);
+			return HintSegment.CreateWithType(segment, HintType.ReplacementContext);
 		}
 
 		// Check for languages
@@ -61,17 +58,17 @@ public class MessageParser : IRefrencesCore {
 								.UserSettings
 								.VoiceChanges
 								.Any(row => row.hint.Trim() == segment.Hint);
-		if (hintInLanguages) return HintSegment.CreateWithContext(segment, ContextType.Voice);
+		if (hintInLanguages) return HintSegment.CreateWithType(segment, HintType.VoiceChange);
 
 		// Check for replacements
 		bool hintInReplacements = CoreNode
 								.UserSettings
 								.TextReplacements
 								.Any(row => row.context.Trim() == segment.Hint);
-		if (hintInReplacements) return HintSegment.CreateWithContext(segment, ContextType.Replacement);
+		if (hintInReplacements) return HintSegment.CreateWithType(segment, HintType.ReplacementContext);
 
 		// Nothing found
-		return HintSegment.CreateWithContext(segment, ContextType.Unknown);
+		return HintSegment.CreateWithType(segment, HintType.Unknown);
 	}
 
 
