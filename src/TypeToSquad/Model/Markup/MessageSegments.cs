@@ -39,11 +39,11 @@ public record class HintSegment : MessageSegment {
 
 	public HintType HintType { get; private set; } = HintType.Unset;
 
-	public string Hint { get; private set; } = "";
+	public string HintText { get; private set; } = "";
 
 	public static new HintSegment CreateAsSubstring(int start, int endExclusive, string str) {
 		var ret = MessageSegment.CreateAsSubstring<HintSegment>(start, endExclusive, str);
-		ret.Hint = str[(start + 1)..(endExclusive - 1)].Trim();
+		ret.HintText = str[(start + 1)..(endExclusive - 1)].Trim();
 		return ret;
 	}
 
@@ -57,15 +57,21 @@ public record class HintSegment : MessageSegment {
 public record class ContentSegment : MessageSegment {
 
 	public int HintEndExclusive { get; private set; } = -1;
-	public string Hint { get; private set; } = "";
+	public string HintText { get; private set; } = "";
+	public ContentType ContentType { get; private set; } = ContentType.Invalid;
+
 	public string Payload { get; private set; } = "";
 
 	public static ContentSegment CreateAsSubstring(int start, int hintEndExclusive, int endExclusive, string str) {
 		var ret = MessageSegment.CreateAsSubstring<ContentSegment>(start, endExclusive, str);
 		ret.HintEndExclusive = hintEndExclusive;
-		ret.Hint = str[(start + 1)..hintEndExclusive].Trim().ToLower();
+		ret.HintText = str[(start + 1)..hintEndExclusive].Trim().ToLower();
 		ret.Payload = str[(hintEndExclusive + 1)..(endExclusive - 1)];
 		return ret;
+	}
+
+	public static ContentSegment CreateWithType(ContentSegment other, ContentType contextType) {
+		return other with { ContentType = contextType };
 	}
 
 }

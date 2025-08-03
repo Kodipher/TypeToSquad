@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -17,6 +18,12 @@ public enum HintType {
 	Max
 }
 
+public enum ContentType {
+	Invalid = 0,
+	Ipa = 1,
+	Audio = 2
+}
+
 
 /// <summary>
 /// <para>
@@ -30,6 +37,8 @@ public enum HintType {
 /// - a replacement context change (including empty context)
 /// - a part of a message that is not direct text (like ipa phonetic spelling).
 /// </para>
+/// <para>An empty tag is a replacement context reset.</para>
+/// <para>voice changes have priority over replacement contexts.</para>
 /// <para>Tags are not allowed to be inside tags.</para>
 /// </summary>
 public class MessageParser : IRefrencesCore {
@@ -42,16 +51,41 @@ public class MessageParser : IRefrencesCore {
 
 	#endregion
 
+	#region //// Typed hint and content segment
+
+	readonly static ReadOnlyDictionary<string, ContentType> contextHintStrings =
+		new Dictionary<string, ContentType>() {
+			["ipa"] = ContentType.Ipa,
+			["snd"] = ContentType.Audio,
+			["audio"] = ContentType.Audio
+		}.AsReadOnly();
+
+	/// <summary>
+	/// Given a <see cref="ContentSegment"/>, returns a new <see cref="ContentSegment"/> 
+	/// with <see cref="ContentSegment.ContentType"/> set.
+	/// </summary>
+	public ContentSegment CreateTypedContentSegment(ContentSegment segment) {
+		if (CoreNode is null) return ContentSegment.CreateWithType(segment, ContentType.Invalid);
+
+		var contextType = 
+			contextHintStrings
+			.FirstOrDefault(
+				pair => pair.Key == segment.HintText,
+				KeyValuePair.Create("", ContentType.Invalid)
+			).Value;
+		
+		return ContentSegment.CreateWithType(segment, contextType);
+	}
+
 	/// <summary>
 	/// Given a <see cref="HintSegment"/>, returns a new <see cref="HintSegment"/> 
 	/// with <see cref="HintSegment.HintType"/> set.
 	/// </summary>
 	public HintSegment CreateTypedHintSegment(HintSegment segment) {
-
 		if (CoreNode is null) return HintSegment.CreateWithType(segment, HintType.Unset);
 
 		// Check for empty context
-		if (string.IsNullOrWhiteSpace(segment.Hint)) {
+		if (string.IsNullOrWhiteSpace(segment.HintText)) {
 			return HintSegment.CreateWithType(segment, HintType.ReplacementContext);
 		}
 
@@ -59,19 +93,21 @@ public class MessageParser : IRefrencesCore {
 		bool hintInLanguages = CoreNode
 								.UserSettings
 								.VoiceChanges
-								.Any(row => row.hint.Trim() == segment.Hint);
+								.Any(row => row.hint.Trim() == segment.HintText);
 		if (hintInLanguages) return HintSegment.CreateWithType(segment, HintType.VoiceChange);
 
 		// Check for replacements
 		bool hintInReplacements = CoreNode
 								.UserSettings
 								.TextReplacements
-								.Any(row => row.context.Trim() == segment.Hint);
+								.Any(row => row.context.Trim() == segment.HintText);
 		if (hintInReplacements) return HintSegment.CreateWithType(segment, HintType.ReplacementContext);
 
 		// Nothing found
 		return HintSegment.CreateWithType(segment, HintType.UnknownReplacementContext);
 	}
+
+	#endregion
 
 	/// <summary>Returns a list of segments that make up the message.</summary>
 	public List<MessageSegment> SegmentMessage(string message) {
@@ -187,11 +223,13 @@ public class MessageParser : IRefrencesCore {
 					// Content
 					if (isContent) {
 						segments.Add(
-							ContentSegment.CreateAsSubstring(
-								start: currentSegmentStartI,
-								endExclusive: i + 1,
-								hintEndExclusive: hintEndExclusive,
-								str: message
+							CreateTypedContentSegment(
+								ContentSegment.CreateAsSubstring(
+									start: currentSegmentStartI,
+									endExclusive: i + 1,
+									hintEndExclusive: hintEndExclusive,
+									str: message
+								)
 							)
 						);
 						currentSegmentStartI = i + 1;
@@ -242,9 +280,13 @@ public class MessageParser : IRefrencesCore {
 		return segments;
 	}
 
-	/// <summary>Removes invalid segments.</summary>
+	/// <summary>Removes invalid segments and invalid content segments</summary>
 	public void StripInvalidSegments(List<MessageSegment> segments) {
-		segments.RemoveAll(seg => seg is InvalidSegment);
+		segments.RemoveAll(seg => {
+			if (seg is InvalidSegment) return true;
+			if (seg is ContentSegment conSeg && conSeg.ContentType == ContentType.Invalid) return true;
+			return false;
+		});
 	}
 
 	/// <summary>Removes replacement context segments.</summary>

@@ -103,9 +103,13 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 				}
 
 			} else if (currentSegment is ContentSegment contentSegment) {
-				AddColorChange(contentSegment.Start, colorContent);
-				AddColorChange(contentSegment.HintEndExclusive, colorContentPayload);
-				AddColorChange(contentSegment.EndExclusive - 1, colorContent);
+				if (contentSegment.ContentType == ContentType.Invalid) {
+					AddColorChange(currentSegment.Start, colorInvalid);
+				} else {
+					AddColorChange(contentSegment.Start, colorContent);
+					AddColorChange(contentSegment.HintEndExclusive, colorContentPayload);
+					AddColorChange(contentSegment.EndExclusive - 1, colorContent);
+				}
 
 			} else /* if (currentSegment is MessageSegment) */ {
 				AddColorChange(currentSegment.Start, colorDefault);
