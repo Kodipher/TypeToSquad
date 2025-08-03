@@ -37,12 +37,17 @@ public record class InvalidSegment : MessageSegment {
 
 public record class HintSegment : MessageSegment {
 
+
 	public string Hint { get; private set; } = "";
 
 	public static new HintSegment CreateAsSubstring(int start, int endExclusive, string str) {
 		var ret = MessageSegment.CreateAsSubstring<HintSegment>(start, endExclusive, str);
 		ret.Hint = str[(start + 1)..(endExclusive - 1)].Trim();
 		return ret;
+	}
+
+	public static HintSegment CreateWithContext(HintSegment other, ContextType contextType) {
+		return other with { ContextType = contextType };
 	}
 
 }

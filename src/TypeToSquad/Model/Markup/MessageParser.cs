@@ -1,8 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace TypeToSquad.Model.Markup;
+
+
+public enum ContextType {
+	Unknown = 0,
+	Replacement,
+	Voice,
+
+	/// <summary>The size of the enum</summary>
+	Max
+}
 
 
 /// <summary>
@@ -33,9 +44,38 @@ public class MessageParser : IRefrencesCore {
 	#endregion
 
 	/// <summary>
-	/// Returns a list of segments that make up the message.
-	/// Segments cannot be nested.
+	/// Given a <see cref="HintSegment"/>, returns a new <see cref="HintSegment"/> 
+	/// with <see cref="HintSegment.ContextType"/> set.
 	/// </summary>
+	public HintSegment CreateTypedHintSegment(HintSegment segment) {
+
+		if (CoreNode is null) return HintSegment.CreateWithContext(segment, ContextType.Unknown);
+
+		// Check for empty context
+		if (string.IsNullOrWhiteSpace(segment.Hint)) {
+			return HintSegment.CreateWithContext(segment, ContextType.Replacement);
+		}
+
+		// Check for languages
+		bool hintInLanguages = CoreNode
+								.UserSettings
+								.VoiceChanges
+								.Any(row => row.hint.Trim() == segment.Hint);
+		if (hintInLanguages) return HintSegment.CreateWithContext(segment, ContextType.Voice);
+
+		// Check for replacements
+		bool hintInReplacements = CoreNode
+								.UserSettings
+								.TextReplacements
+								.Any(row => row.context.Trim() == segment.Hint);
+		if (hintInReplacements) return HintSegment.CreateWithContext(segment, ContextType.Replacement);
+
+		// Nothing found
+		return HintSegment.CreateWithContext(segment, ContextType.Unknown);
+	}
+
+
+	/// <summary>Returns a list of segments that make up the message.</summary>
 	public List<MessageSegment> SegmentMessage(string message) {
 
 		List<MessageSegment> segments = new();
@@ -162,10 +202,12 @@ public class MessageParser : IRefrencesCore {
 
 					// Hint with no content
 					segments.Add(
+						CreateTypedHintSegment(
 							HintSegment.CreateAsSubstring(
 								start: currentSegmentStartI,
 								endExclusive: i + 1,
 								str: message
+							)
 						)
 					);
 					currentSegmentStartI = i + 1;
