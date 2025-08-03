@@ -65,6 +65,13 @@ public class MessageSender : IRefrencesCore {
 
 		var segments = parser.SegmentMessage(message);
 
+		// Text replacements
+		for (int i = 0; i < CoreNode.UserSettings.MaxReplacementPasses; i++) {
+			segments = parser.ReplaceTextSinglePass(segments, out bool anyReplaced);
+			if (!anyReplaced) break;
+		}
+
+		// Stip non-content stuff
 		parser.StripInvalidSegments(segments);
 		parser.StripReplacementContextSegments(segments);
 

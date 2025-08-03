@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace TypeToSquad.Model.Markup;
@@ -286,6 +287,76 @@ public class MessageParser : IRefrencesCore {
 		});
 	}
 
+	#region //// Text replacements
+
+	const string allContextsMarker = "*";
+
+	/// <summary>
+	/// Creates a new list of segments by performing 1 pass of text replacements in current segments.
+	/// <b>Note:</b> the indexes in the returned segments may no longer correspond to the original message!
+	/// </summary>
+	public List<MessageSegment> ReplaceTextSinglePass(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
+		anyTextReplaced = false;
+
+		if (CoreNode is null) return segments.ToList();
+
+		string currentContext = "";
+		List<MessageSegment> newSegments = new();
+
+		foreach (MessageSegment seg in segments) {
+
+			// Handle context changes
+			if (seg is HintSegment hintSeg) {
+				if (hintSeg.HintType is HintType.ReplacementContext or HintType.UnknownReplacementContext) {
+					currentContext = hintSeg.HintText;
+				}
+			}
+
+			// Handle everything but text
+			if (seg is not PlainTextSegment) {
+				newSegments.Add(seg);
+				continue;
+			}
+
+			// Perform replacements in text
+			string newText = seg.Text;
+			foreach (var (context, pattern, replacement) in CoreNode.UserSettings.TextReplacements) {
+
+				// Context check
+				string contextTrimmed = context.Trim();
+				if (
+					contextTrimmed != allContextsMarker &&
+					contextTrimmed != currentContext
+				) {
+					continue;
+				}
+
+				// Empty pattern
+				if (string.IsNullOrWhiteSpace(pattern)) continue;
+
+				// Try replace
+				Regex patternRegex = new Regex(pattern, RegexOptions.Singleline);
+				newText = patternRegex.Replace(seg.Text, replacement);
+				
+				// Exit on first replacement
+				if (newText != seg.Text) break;
+			}
+
+			// No replacement
+			if (newText == seg.Text) {
+				newSegments.Add(seg);
+				continue;
+			}
+
+			// Some replacement applied
+			anyTextReplaced = true;
+			newSegments.AddRange(SegmentMessage(newText));
+		}
+
+		return newSegments;
+	}
+
+	#endregion
 
 	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToPlainText(IEnumerable<MessageSegment> segments) {

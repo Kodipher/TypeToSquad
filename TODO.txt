@@ -1,7 +1,6 @@
 TODO:
 - Settings.Table validation
 - main window: check min size
-- feature: regex input replacements
 - tab shortcuts for context changes
 -- letter after autocompletes the context
 - feature: sfml
@@ -16,3 +15,4 @@ TODO:
 - hover information
 
 TO TEST:
+- regex input replacements
