@@ -51,7 +51,7 @@ public class MessageParser : IRefrencesCore {
 
 	#endregion
 
-	#region //// Typed hint and content segment
+	#region //// Typed hint and content segments
 
 	readonly static ReadOnlyDictionary<string, ContentType> contextHintStrings =
 		new Dictionary<string, ContentType>() {
@@ -64,7 +64,7 @@ public class MessageParser : IRefrencesCore {
 	/// Given a <see cref="ContentSegment"/>, returns a new <see cref="ContentSegment"/> 
 	/// with <see cref="ContentSegment.ContentType"/> set.
 	/// </summary>
-	public ContentSegment CreateTypedContentSegment(ContentSegment segment) {
+	ContentSegment CreateTypedContentSegment(ContentSegment segment) {
 		if (CoreNode is null) return ContentSegment.CreateWithType(segment, ContentType.Invalid);
 
 		var contextType = 
@@ -81,7 +81,7 @@ public class MessageParser : IRefrencesCore {
 	/// Given a <see cref="HintSegment"/>, returns a new <see cref="HintSegment"/> 
 	/// with <see cref="HintSegment.HintType"/> set.
 	/// </summary>
-	public HintSegment CreateTypedHintSegment(HintSegment segment) {
+	HintSegment CreateTypedHintSegment(HintSegment segment) {
 		if (CoreNode is null) return HintSegment.CreateWithType(segment, HintType.Unset);
 
 		// Check for empty context
@@ -203,45 +203,42 @@ public class MessageParser : IRefrencesCore {
 				// Find closing (assuming nesting)
 				ScanUntilClosed(ref i, out bool hasNested);
 
-				// Closed segment
-				if (i < message.Length) {
-
-					if (hasNested) {
-						segments.Add(
-							InvalidSegment.CreateAsSubstring(
-								start: currentSegmentStartI,
-								endExclusive: i + 1,
-								str: message
-							)
-						);
-						currentSegmentStartI = i + 1;
-						continue;
-					}
-
-					bool isContent = IsSegmentContent(currentSegmentStartI, i, out int hintEndExclusive);
-
-					// Content
-					if (isContent) {
-						segments.Add(
-							CreateTypedContentSegment(
-								ContentSegment.CreateAsSubstring(
-									start: currentSegmentStartI,
-									endExclusive: i + 1,
-									hintEndExclusive: hintEndExclusive,
-									str: message
-								)
-							)
-						);
-						currentSegmentStartI = i + 1;
-						continue;
-					}
-
-					// Hint with no content
+				// Unclosed tag
+				if (i >= message.Length) {
 					segments.Add(
-						CreateTypedHintSegment(
-							HintSegment.CreateAsSubstring(
+						InvalidSegment.CreateAsSubstring(
+							start: currentSegmentStartI,
+							endExclusive: message.Length,
+							str: message
+						)
+					);
+					currentSegmentStartI = message.Length;
+					break;
+				}
+
+				// Closed tag but has nesting
+				if (hasNested) {
+					segments.Add(
+						InvalidSegment.CreateAsSubstring(
+							start: currentSegmentStartI,
+							endExclusive: i + 1,
+							str: message
+						)
+					);
+					currentSegmentStartI = i + 1;
+					continue;
+				}
+
+				bool isContent = IsSegmentContent(currentSegmentStartI, i, out int hintEndExclusive);
+
+				// Content
+				if (isContent) {
+					segments.Add(
+						CreateTypedContentSegment(
+							ContentSegment.CreateAsSubstring(
 								start: currentSegmentStartI,
 								endExclusive: i + 1,
+								hintEndExclusive: hintEndExclusive,
 								str: message
 							)
 						)
@@ -250,19 +247,20 @@ public class MessageParser : IRefrencesCore {
 					continue;
 				}
 
-				// Unclosed segment
+				// Hint with no content
 				segments.Add(
-					InvalidSegment.CreateAsSubstring(
-						start: currentSegmentStartI,
-						endExclusive: message.Length,
-						str: message
+					CreateTypedHintSegment(
+						HintSegment.CreateAsSubstring(
+							start: currentSegmentStartI,
+							endExclusive: i + 1,
+							str: message
+						)
 					)
 				);
-				currentSegmentStartI = message.Length;
-				break;
+				currentSegmentStartI = i + 1;
 
 			}
-			
+
 			// [continue]
 		}
 
@@ -311,15 +309,22 @@ public class MessageParser : IRefrencesCore {
 		return true;
 	}
 
+	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToPlainText(IEnumerable<MessageSegment> segments) {
 		StringBuilder sb = new StringBuilder();
 		foreach (var seg in segments) sb.Append(seg.Text);
 		return sb.ToString();
 	}
 
+	#region //// SSML
+
+	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
+		throw new NotImplementedException();
 		// reminder: escape xml characters
 		return "";
 	}
+
+	#endregion
 
 }
