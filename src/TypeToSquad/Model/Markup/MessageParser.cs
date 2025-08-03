@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Security;
 
 
 namespace TypeToSquad.Model.Markup;
@@ -13,10 +14,7 @@ public enum HintType {
 	Unset = 0,
 	ReplacementContext,
 	UnknownReplacementContext,
-	VoiceChange,
-
-	/// <summary>The size of the enum</summary>
-	Max
+	VoiceChange
 }
 
 public enum ContentType {
@@ -400,11 +398,43 @@ public class MessageParser : IRefrencesCore {
 
 	#region //// SSML
 
+	const string ssmlHeaderFormat = """
+<speak version="1.0"
+	xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="{0}">
+""";
+
+	const string ssmlFooter = """</speak>""";
+
 	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
-		throw new NotImplementedException();
-		// reminder: escape xml characters
-		return "";
+		if (CoreNode is null) throw new InvalidOperationException("Cannot compile SSML without CoreNode");
+		if (CoreNode.SpeechDaemon.VoicesByName is null) throw new InvalidOperationException("Cannot find voice information.");
+
+		StringBuilder sb = new StringBuilder();
+
+		// Header
+		string defaultVoiceName = CoreNode.UserSettings.Voice;
+		string defaultVoiceLang = CoreNode.SpeechDaemon.VoicesByName[defaultVoiceName].Language;
+		sb.AppendFormat(ssmlHeaderFormat, defaultVoiceLang);
+
+		// Segments
+		bool isInsideVoice = false;
+
+		foreach (var seg in segments) {
+
+			if (seg is PlainTextSegment) {
+				string segText = seg.Text;
+				segText = SecurityElement.Escape(segText);
+				sb.Append(segText);
+			}
+
+
+		}
+
+		if (isInsideVoice) sb.Append(ssmlVoiceClose);
+		sb.Append(ssmlFooter);
+
+		return sb.ToString();
 	}
 
 	#endregion
