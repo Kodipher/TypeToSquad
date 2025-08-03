@@ -86,11 +86,6 @@ public class MessageSender : IRefrencesCore {
 			return;
 		}
 
-		// DEBUG
-		request.InputString = "";
-		request.IsSsml = false;
-		return;
-
 		// Message with contexts
 		request.InputString = parser.SegmentedMessageToSsml(segments);
 		request.IsSsml = true;
