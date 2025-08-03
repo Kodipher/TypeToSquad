@@ -1,6 +1,9 @@
 TODO:
+- Settings.Table validation
 - main window: check min size
-- advanced settings: add pitch, rate, volume
+- feature: regex input replacements
+- tab shortcuts for context changes
+-- letter after autocompletes the context
 - feature: sfml
 -- IPA replacements
 -- language changes
