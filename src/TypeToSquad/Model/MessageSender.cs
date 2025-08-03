@@ -61,11 +61,16 @@ public class MessageSender : IRefrencesCore {
 	void ParseMessageText(in SynthesizeRequest request, string message) {
 		if (CoreNode is null) return;
 
-		var segments = CoreNode.MessageParser.SegmentMessage(message);
+		var parser = CoreNode.MessageParser;
+
+		var segments = parser.SegmentMessage(message);
+
+		parser.StripInvalidSegments(segments);
+		parser.StripReplacementContextSegments(segments);
 
 		// Text-only message
-		if (segments.Count == 1) {
-			request.InputString = message;
+		if (parser.CanBePlainText(segments)) {
+			request.InputString = parser.SegmentedMessageToPlainText(segments);
 			request.IsSsml = false;
 			return;
 		}
@@ -76,7 +81,7 @@ public class MessageSender : IRefrencesCore {
 		return;
 
 		// Message with contexts
-		request.InputString = Markup.MessageParser.SegmentedMessageToSsml(segments, message);
+		request.InputString = parser.SegmentedMessageToSsml(segments);
 		request.IsSsml = true;
 	}
 

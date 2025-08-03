@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 
 namespace TypeToSquad.Model.Markup;
@@ -70,7 +71,6 @@ public class MessageParser : IRefrencesCore {
 		// Nothing found
 		return HintSegment.CreateWithType(segment, HintType.Unknown);
 	}
-
 
 	/// <summary>Returns a list of segments that make up the message.</summary>
 	public List<MessageSegment> SegmentMessage(string message) {
@@ -241,7 +241,40 @@ public class MessageParser : IRefrencesCore {
 		return segments;
 	}
 
-	public static string SegmentedMessageToSsml(IReadOnlyList<MessageSegment> segments, string message) {
+	/// <summary>Removes invalid segments.</summary>
+	public void StripInvalidSegments(List<MessageSegment> segments) {
+		segments.RemoveAll(seg => seg is InvalidSegment);
+	}
+
+	/// <summary>Removes replacement context segments.</summary>
+	public void StripReplacementContextSegments(List<MessageSegment> segments) {
+		segments.RemoveAll(seg => {
+			if (seg is not HintSegment hintSeg) return false;
+			if (hintSeg.HintType == HintType.ReplacementContext) return true;
+			return false;
+		});
+	}
+
+	/// <summary>
+	/// Determines if a message can be safely converted to plain text.
+	/// Assumes context and invalid segments were stripped.
+	/// </summary>
+	public bool CanBePlainText(List<MessageSegment> segments) {
+		foreach (var seg in segments) {
+			if (seg is ContentSegment) return false;
+			if (seg is HintSegment) return false;
+		}
+		return true;
+	}
+
+	public string SegmentedMessageToPlainText(IEnumerable<MessageSegment> segments) {
+		StringBuilder sb = new StringBuilder();
+		foreach (var seg in segments) sb.Append(seg.Text);
+		return sb.ToString();
+	}
+
+	public string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
+		// reminder: escape xml characters
 		return "";
 	}
 
