@@ -21,7 +21,7 @@ public static class GodotExtensions {
 
 	/// <summary>
 	/// <para>
-	/// Try to a convert any generic object into a <see cref="Variant"/>.
+	/// Try to a convert any object into a <see cref="Variant"/>.
 	/// </para>
 	/// <para>
 	/// <b>NOTE:</b> only intended to be used with variant compatible types.
