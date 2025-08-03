@@ -59,8 +59,9 @@ public class MessageSender : IRefrencesCore {
 	}
 
 	void ParseMessageText(in SynthesizeRequest request, string message) {
+		if (CoreNode is null) return;
 
-		var segments = Markup.MessageParser.SegmentMessage(message);
+		var segments = CoreNode.MessageParser.SegmentMessage(message);
 
 		// Text-only message
 		if (segments.Count == 1) {

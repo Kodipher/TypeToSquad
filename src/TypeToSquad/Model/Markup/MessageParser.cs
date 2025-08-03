@@ -36,7 +36,7 @@ public class MessageParser : IRefrencesCore {
 	/// Returns a list of segments that make up the message.
 	/// Segments cannot be nested.
 	/// </summary>
-	public static List<MessageSegment> SegmentMessage(string message) {
+	public List<MessageSegment> SegmentMessage(string message) {
 
 		List<MessageSegment> segments = new();
 
