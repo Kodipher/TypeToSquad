@@ -5,16 +5,12 @@ namespace TypeToSquad.Model.Markup;
 
 public record class MessageSegment {
 
-	public int Start { get; private set; } = -1;
-	public int EndExclusive { get; private set; } = -1;
-	public string Text { get; private set; } = "";
+	public int Start { get; protected set; } = -1;
+	public int EndExclusive { get; protected set; } = -1;
+	public string Text { get; protected set; } = "";
 
 	public static MessageSegment CreateAsSubstring(int start, int endExclusive, string str) {
-		return new MessageSegment {
-			Start = start,
-			EndExclusive = endExclusive,
-			Text = str[start..endExclusive],
-		};
+		return CreateAsSubstring<MessageSegment>(start, endExclusive, str);
 	}
 
 	protected static T CreateAsSubstring<T>(int start, int endExclusive, string str) 
@@ -29,25 +25,28 @@ public record class MessageSegment {
 
 }
 
+
 public record class InvalidSegment : MessageSegment {
 
 	public static new InvalidSegment CreateAsSubstring(int start, int endExclusive, string str) {
-		return CreateAsSubstring<InvalidSegment>(start, endExclusive, str);
+		return MessageSegment.CreateAsSubstring<InvalidSegment>(start, endExclusive, str);
 	}
 
 }
+
 
 public record class HintSegment : MessageSegment {
 
 	public string Hint { get; private set; } = "";
 
 	public static new HintSegment CreateAsSubstring(int start, int endExclusive, string str) {
-		var ret = CreateAsSubstring<HintSegment>(start, endExclusive, str);
+		var ret = MessageSegment.CreateAsSubstring<HintSegment>(start, endExclusive, str);
 		ret.Hint = str[(start + 1)..(endExclusive - 1)].Trim();
 		return ret;
 	}
 
 }
+
 
 public record class ContentSegment : MessageSegment {
 
@@ -55,8 +54,8 @@ public record class ContentSegment : MessageSegment {
 	public string Hint { get; private set; } = "";
 	public string Payload { get; private set; } = "";
 
-	public static new ContentSegment CreateAsSubstring(int start, int hintEndExclusive, int endExclusive, string str) {
-		var ret = CreateAsSubstring<ContentSegment>(start, endExclusive, str);
+	public static ContentSegment CreateAsSubstring(int start, int hintEndExclusive, int endExclusive, string str) {
+		var ret = MessageSegment.CreateAsSubstring<ContentSegment>(start, endExclusive, str);
 		ret.HintEndExclusive = hintEndExclusive;
 		ret.Hint = str[(start + 1)..hintEndExclusive].Trim().ToLower();
 		ret.Payload = str[(hintEndExclusive + 1)..(endExclusive - 1)];

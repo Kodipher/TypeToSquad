@@ -43,8 +43,10 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
 
 		// Init syntax highlighter
-		messageTextEdit.SyntaxHighlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighligher();
-
+		var highlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighligher();
+		highlighter.RecieveCoreReference(this.CoreNode);
+		messageTextEdit.SyntaxHighlighter = highlighter;
+		
 		// Init error indicator
 		errorIndicator.Hide();
 		if (CoreNode is not null) {

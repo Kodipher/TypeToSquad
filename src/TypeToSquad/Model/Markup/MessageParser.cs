@@ -116,10 +116,10 @@ public class MessageParser : IRefrencesCore {
 				// Add text before tag
 				if (i != currentSegmentStartI) {
 					segments.Add(
-						new MessageSegment(
+						MessageSegment.CreateAsSubstring(
 							start: currentSegmentStartI,
 							endExclusive: i,
-							originalMessage: message
+							str: message
 						)
 					);
 
@@ -134,10 +134,10 @@ public class MessageParser : IRefrencesCore {
 
 					if (hasNested) {
 						segments.Add(
-							new InvalidSegment(
+							InvalidSegment.CreateAsSubstring(
 								start: currentSegmentStartI,
 								endExclusive: i + 1,
-								originalMessage: message
+								str: message
 							)
 						);
 						currentSegmentStartI = i + 1;
@@ -149,11 +149,11 @@ public class MessageParser : IRefrencesCore {
 					// Content
 					if (isContent) {
 						segments.Add(
-							new ContentSegment(
+							ContentSegment.CreateAsSubstring(
 								start: currentSegmentStartI,
 								endExclusive: i + 1,
 								hintEndExclusive: hintEndExclusive,
-								originalMessage: message
+								str: message
 							)
 						);
 						currentSegmentStartI = i + 1;
@@ -162,10 +162,10 @@ public class MessageParser : IRefrencesCore {
 
 					// Hint with no content
 					segments.Add(
-						new HintSegment(
-							start: currentSegmentStartI,
-							endExclusive: i + 1,
-							originalMessage: message
+							HintSegment.CreateAsSubstring(
+								start: currentSegmentStartI,
+								endExclusive: i + 1,
+								str: message
 						)
 					);
 					currentSegmentStartI = i + 1;
@@ -174,10 +174,10 @@ public class MessageParser : IRefrencesCore {
 
 				// Unclosed segment
 				segments.Add(
-					new InvalidSegment(
+					InvalidSegment.CreateAsSubstring(
 						start: currentSegmentStartI,
 						endExclusive: message.Length,
-						originalMessage: message
+						str: message
 					)
 				);
 				currentSegmentStartI = message.Length;
@@ -191,10 +191,10 @@ public class MessageParser : IRefrencesCore {
 		// Add a segment lasting till the end if not there
 		if (currentSegmentStartI < message.Length) {
 			segments.Add(
-				new MessageSegment(
+				MessageSegment.CreateAsSubstring(
 					start: currentSegmentStartI,
 					endExclusive: message.Length,
-					originalMessage: message
+					str: message
 				)
 			);
 		}
