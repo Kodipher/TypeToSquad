@@ -28,6 +28,10 @@ boot_splash/fullsize=false
 boot_splash/use_filter=false
 config/icon="uid://g03we4p304wj"
 
+[audio]
+
+driver/output_latency=30
+
 [copy_files_on_export]
 
 files=Array[PackedStringArray]([PackedStringArray("res://WinRTSpeechDaemon", "WinRTSpeechDaemon", "windows")])
