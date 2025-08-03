@@ -66,10 +66,12 @@ public class MessageSender : IRefrencesCore {
 		var segments = parser.SegmentMessage(message);
 
 		// Text replacements
-		for (int i = 0; i < CoreNode.UserSettings.MaxReplacementPasses; i++) {
+		for (int i = 0, n = CoreNode.UserSettings.MaxReplacementPasses; i < n; i++) {
 			segments = parser.ReplaceTextSinglePass(segments, out bool anyReplaced);
 			segments = parser.JoinPlainTextSegements(segments);
 			if (!anyReplaced) break;
+
+			if (i == n - 1) GD.PushError("Text replacement passes limit reached.");
 		}
 
 		// Stip non-content stuff

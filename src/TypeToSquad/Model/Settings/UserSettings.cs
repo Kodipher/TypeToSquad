@@ -42,7 +42,7 @@ public record class UserSettings {
 	public readonly FieldNumericRange<int> HistorySlots = new(0, short.MaxValue, defaultValue: 32);
 
 	/// <summary>Max number times text substitutions may run.</summary>
-	public readonly FieldNumericRange<int> MaxReplacementPasses = new(0, 300, defaultValue: 50);
+	public readonly FieldNumericRange<int> MaxReplacementPasses = new(0, 100, defaultValue: 20);
 
 	/// <summary>A table of text replacements to perform. Patterns are written using regex.</summary>
 	public readonly Table<(string context, string pattern, string replacement)> TextReplacements = new();

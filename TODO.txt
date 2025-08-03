@@ -15,4 +15,3 @@ TODO:
 - hover information
 
 TO TEST:
-- regex input replacements
