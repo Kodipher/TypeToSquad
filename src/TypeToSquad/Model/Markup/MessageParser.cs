@@ -404,6 +404,8 @@ public class MessageParser : IRefrencesCore {
 """;
 
 	const string ssmlFooter = """</speak>""";
+	const string ssmlVoiceOpen = """<voice name="{0}" xml:lang="{1}">""";
+	const string ssmlVoiceClose = """</voice>""";
 
 	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
@@ -428,6 +430,29 @@ public class MessageParser : IRefrencesCore {
 				sb.Append(segText);
 			}
 
+			if (seg is HintSegment hintSegment) {
+
+				// Voice changes
+				if (hintSegment.HintType == HintType.VoiceChange) {
+					if (isInsideVoice) sb.Append(ssmlVoiceClose);
+
+					string voiceNameKey = CoreNode
+						.UserSettings
+						.VoiceChanges
+						.FirstOrDefault(row => row.hint == hintSegment.HintText)
+						.voiceName;
+
+					if (!CoreNode.SpeechDaemon.VoicesByName.TryGetValue(voiceNameKey, out var voiceInfo)) {
+						continue;
+					}
+
+					string voiceName = SecurityElement.Escape(voiceInfo.Name);
+					string voiceLang = SecurityElement.Escape(voiceInfo.Language);
+
+					sb.AppendFormat(ssmlVoiceOpen, voiceName, voiceLang);
+					isInsideVoice = true;
+				}
+			}
 
 		}
 
