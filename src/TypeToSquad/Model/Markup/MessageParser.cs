@@ -26,20 +26,9 @@ public enum ContentType {
 
 
 /// <summary>
-/// <para>
 /// A special parser to allow user "lexicon" (implemented via regex replacements),
 /// as well certain SSML features.
-/// </para>
-/// <para>
-/// The message may have tags in it, indicated by square brackets.
-/// A tag can be
-/// - a voice change
-/// - a replacement context change (including empty context)
-/// - a part of a message that is not direct text (like ipa phonetic spelling).
-/// </para>
-/// <para>An empty tag is a replacement context reset.</para>
-/// <para>voice changes have priority over replacement contexts.</para>
-/// <para>Tags are not allowed to be inside tags.</para>
+/// See docs folder for details.
 /// </summary>
 public class MessageParser : IRefrencesCore {
 
