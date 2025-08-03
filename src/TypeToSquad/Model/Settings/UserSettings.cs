@@ -32,11 +32,17 @@ public record class UserSettings {
 	/// <summary>The speaking rate (speed multiplier) of the voice.</summary>
 	public readonly FieldNumericRange<double> VoiceRate = new(0.5, 6, defaultValue: 1);
 
+	/// <summary>A table of voices change hints and voices they correspond to.</summary>
+	public readonly Table<(string hint, string voiceName)> VoiceChanges = new();
+
 
 	// ===== ===== ===== INPUT ===== ===== =====
 
 	/// <summary>Number of previous inputs held in memory.</summary>
 	public readonly FieldNumericRange<int> HistorySlots = new(0, short.MaxValue, defaultValue: 32);
+
+	/// <summary>A table of text replacements to perform. Patterns are written using regex.</summary>
+	public readonly Table<(string context, string pattern, string replacement)> TextReplacements = new();
 
 
 	// ===== ===== ===== AUDIO ===== ===== =====
