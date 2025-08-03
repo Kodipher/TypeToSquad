@@ -42,8 +42,11 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 
 	readonly static Color colorDefault = new(1, 1, 1);
 	readonly static Color colorInvalid = new(colorDefault, 0.5f);
+
 	readonly static Color colorHintReplacement = new(1, 1, 0);
+	readonly static Color colorHintUnknownReplacement = new(colorHintReplacement, 0.5f);
 	readonly static Color colorHintLanguage = new(0, 1, 1);
+
 	readonly static Color colorContent = new(1, 0, 1);
 	readonly static Color colorContentPayload = new(1, 0.5f, 1);
 
@@ -85,6 +88,9 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 
 			} else if (currentSegment is HintSegment hintSegment) {
 				switch (hintSegment.HintType) {
+					case HintType.UnknownReplacementContext:
+						AddColorChange(currentSegment.Start, colorHintUnknownReplacement);
+						break;
 					case HintType.ReplacementContext:
 						AddColorChange(currentSegment.Start, colorHintReplacement);
 						break;

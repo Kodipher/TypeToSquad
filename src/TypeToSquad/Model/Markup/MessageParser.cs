@@ -8,8 +8,9 @@ namespace TypeToSquad.Model.Markup;
 
 
 public enum HintType {
-	Unknown = 0,
+	Unset = 0,
 	ReplacementContext,
+	UnknownReplacementContext,
 	VoiceChange,
 
 	/// <summary>The size of the enum</summary>
@@ -47,7 +48,7 @@ public class MessageParser : IRefrencesCore {
 	/// </summary>
 	public HintSegment CreateTypedHintSegment(HintSegment segment) {
 
-		if (CoreNode is null) return HintSegment.CreateWithType(segment, HintType.Unknown);
+		if (CoreNode is null) return HintSegment.CreateWithType(segment, HintType.Unset);
 
 		// Check for empty context
 		if (string.IsNullOrWhiteSpace(segment.Hint)) {
@@ -69,7 +70,7 @@ public class MessageParser : IRefrencesCore {
 		if (hintInReplacements) return HintSegment.CreateWithType(segment, HintType.ReplacementContext);
 
 		// Nothing found
-		return HintSegment.CreateWithType(segment, HintType.Unknown);
+		return HintSegment.CreateWithType(segment, HintType.UnknownReplacementContext);
 	}
 
 	/// <summary>Returns a list of segments that make up the message.</summary>
@@ -251,6 +252,7 @@ public class MessageParser : IRefrencesCore {
 		segments.RemoveAll(seg => {
 			if (seg is not HintSegment hintSeg) return false;
 			if (hintSeg.HintType == HintType.ReplacementContext) return true;
+			if (hintSeg.HintType == HintType.UnknownReplacementContext) return true;
 			return false;
 		});
 	}

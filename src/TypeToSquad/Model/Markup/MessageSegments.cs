@@ -37,7 +37,7 @@ public record class InvalidSegment : MessageSegment {
 
 public record class HintSegment : MessageSegment {
 
-	public HintType HintType { get; private set; } = HintType.Unknown;
+	public HintType HintType { get; private set; } = HintType.Unset;
 
 	public string Hint { get; private set; } = "";
 
