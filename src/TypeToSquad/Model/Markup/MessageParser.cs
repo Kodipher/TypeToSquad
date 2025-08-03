@@ -55,13 +55,13 @@ public class MessageParser : IRefrencesCore {
 	ContentSegment CreateTypedContentSegment(ContentSegment segment) {
 		if (CoreNode is null) return ContentSegment.CreateWithType(segment, ContentType.Invalid);
 
-		var contextType = 
+		var contextType =
 			contextHintStrings
 			.FirstOrDefault(
 				pair => pair.Key == segment.HintText,
 				KeyValuePair.Create("", ContentType.Invalid)
 			).Value;
-		
+
 		return ContentSegment.CreateWithType(segment, contextType);
 	}
 
@@ -139,7 +139,7 @@ public class MessageParser : IRefrencesCore {
 			// separating non-whitespace on either side
 			int firstNonWhitespace = -1;
 			int lastNonWhitespace = -1;
-			hintExclusiveEndI = -1;	// first whitespace after first nonwhitespace
+			hintExclusiveEndI = -1; // first whitespace after first nonwhitespace
 
 			for (int i = openingI + 1; i <= closingI - 1; i++) {
 
@@ -335,7 +335,7 @@ public class MessageParser : IRefrencesCore {
 				// Try replace
 				Regex patternRegex = new Regex(pattern, RegexOptions.Singleline);
 				newText = patternRegex.Replace(seg.Text, replacement);
-				
+
 				// Exit on first replacement
 				if (newText != seg.Text) break;
 			}
@@ -364,7 +364,7 @@ public class MessageParser : IRefrencesCore {
 		List<MessageSegment> newSegments = new();
 
 		foreach (MessageSegment seg in segments) {
-			
+
 			// Add non-text segments directly
 			if (seg is not PlainTextSegment) {
 				newSegments.Add(seg);
