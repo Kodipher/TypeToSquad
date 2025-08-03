@@ -3,15 +3,11 @@
 namespace TypeToSquad.Model.Markup;
 
 
-public record class MessageSegment {
+public abstract record class MessageSegment {
 
 	public int Start { get; protected set; } = -1;
 	public int EndExclusive { get; protected set; } = -1;
 	public string Text { get; protected set; } = "";
-
-	public static MessageSegment CreateAsSubstring(int start, int endExclusive, string str) {
-		return CreateAsSubstring<MessageSegment>(start, endExclusive, str);
-	}
 
 	protected static T CreateAsSubstring<T>(int start, int endExclusive, string str) 
 	where T : MessageSegment, new()
@@ -26,9 +22,18 @@ public record class MessageSegment {
 }
 
 
+public record class PlainTextSegment : MessageSegment {
+
+	public static PlainTextSegment CreateAsSubstring(int start, int endExclusive, string str) {
+		return MessageSegment.CreateAsSubstring<PlainTextSegment>(start, endExclusive, str);
+	}
+
+}
+
+
 public record class InvalidSegment : MessageSegment {
 
-	public static new InvalidSegment CreateAsSubstring(int start, int endExclusive, string str) {
+	public static InvalidSegment CreateAsSubstring(int start, int endExclusive, string str) {
 		return MessageSegment.CreateAsSubstring<InvalidSegment>(start, endExclusive, str);
 	}
 
@@ -41,7 +46,7 @@ public record class HintSegment : MessageSegment {
 
 	public string HintText { get; private set; } = "";
 
-	public static new HintSegment CreateAsSubstring(int start, int endExclusive, string str) {
+	public static HintSegment CreateAsSubstring(int start, int endExclusive, string str) {
 		var ret = MessageSegment.CreateAsSubstring<HintSegment>(start, endExclusive, str);
 		ret.HintText = str[(start + 1)..(endExclusive - 1)].Trim();
 		return ret;

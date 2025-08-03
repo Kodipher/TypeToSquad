@@ -1,6 +1,6 @@
 using Godot;
 using System;
-
+using System.Linq;
 
 using WinRTSpeechSynthServer.Protocol.Messages;
 
@@ -69,7 +69,7 @@ public class MessageSender : IRefrencesCore {
 		parser.StripReplacementContextSegments(segments);
 
 		// Text-only message
-		if (parser.CanBePlainText(segments)) {
+		if (segments.All(seg => seg is Markup.PlainTextSegment)) {
 			request.InputString = parser.SegmentedMessageToPlainText(segments);
 			request.IsSsml = false;
 			return;

@@ -83,7 +83,10 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 			if (curLineEndExclusive <= currentSegment.Start) break;
 
 			// Add color change
-			if (currentSegment is InvalidSegment) {
+			if (currentSegment is PlainTextSegment) {
+				AddColorChange(currentSegment.Start, colorDefault);
+
+			} else if (currentSegment is InvalidSegment) {
 				AddColorChange(currentSegment.Start, colorInvalid);
 
 			} else if (currentSegment is HintSegment hintSegment) {
@@ -111,8 +114,8 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 					AddColorChange(contentSegment.EndExclusive - 1, colorContent);
 				}
 
-			} else /* if (currentSegment is MessageSegment) */ {
-				AddColorChange(currentSegment.Start, colorDefault);
+			} else {
+				AddColorChange(currentSegment.Start, colorInvalid);
 			}
 
 		}

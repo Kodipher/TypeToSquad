@@ -190,7 +190,7 @@ public class MessageParser : IRefrencesCore {
 				// Add text before tag
 				if (i != currentSegmentStartI) {
 					segments.Add(
-						MessageSegment.CreateAsSubstring(
+						PlainTextSegment.CreateAsSubstring(
 							start: currentSegmentStartI,
 							endExclusive: i,
 							str: message
@@ -267,7 +267,7 @@ public class MessageParser : IRefrencesCore {
 		// Add a segment lasting till the end if not there
 		if (currentSegmentStartI < message.Length) {
 			segments.Add(
-				MessageSegment.CreateAsSubstring(
+				PlainTextSegment.CreateAsSubstring(
 					start: currentSegmentStartI,
 					endExclusive: message.Length,
 					str: message
@@ -297,22 +297,14 @@ public class MessageParser : IRefrencesCore {
 		});
 	}
 
-	/// <summary>
-	/// Determines if a message can be safely converted to plain text.
-	/// Assumes context and invalid segments were stripped.
-	/// </summary>
-	public bool CanBePlainText(List<MessageSegment> segments) {
-		foreach (var seg in segments) {
-			if (seg is ContentSegment) return false;
-			if (seg is HintSegment) return false;
-		}
-		return true;
-	}
 
 	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToPlainText(IEnumerable<MessageSegment> segments) {
 		StringBuilder sb = new StringBuilder();
-		foreach (var seg in segments) sb.Append(seg.Text);
+		foreach (var seg in segments) {
+			if (seg is not PlainTextSegment) continue;
+			sb.Append(seg.Text);
+		}
 		return sb.ToString();
 	}
 
