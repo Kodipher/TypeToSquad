@@ -5,45 +5,62 @@ namespace TypeToSquad.Model.Markup;
 
 public record class MessageSegment {
 
-	public int Start { get; init; }
-	public int EndExclusive { get; init; }
-	public string Text { get; }
+	public int Start { get; private set; } = -1;
+	public int EndExclusive { get; private set; } = -1;
+	public string Text { get; private set; } = "";
 
-	public MessageSegment(int start, int endExclusive, string originalMessage) {
-		Start = start;
-		EndExclusive = endExclusive;
-		Text = originalMessage[start..endExclusive];
+	public static MessageSegment CreateAsSubstring(int start, int endExclusive, string str) {
+		return new MessageSegment {
+			Start = start,
+			EndExclusive = endExclusive,
+			Text = str[start..endExclusive],
+		};
 	}
+
+	protected static T CreateAsSubstring<T>(int start, int endExclusive, string str) 
+	where T : MessageSegment, new()
+	{
+		return new T {
+			Start = start,
+			EndExclusive = endExclusive,
+			Text = str[start..endExclusive],
+		};
+	}
+
 }
 
 public record class InvalidSegment : MessageSegment {
-	public InvalidSegment(int start, int endExclusive, string originalMessage) 
-	: base(start, endExclusive, originalMessage) { }
+
+	public static new InvalidSegment CreateAsSubstring(int start, int endExclusive, string str) {
+		return CreateAsSubstring<InvalidSegment>(start, endExclusive, str);
+	}
+
 }
 
 public record class HintSegment : MessageSegment {
 
-	public string Hint { get; }
+	public string Hint { get; private set; } = "";
 
-	public HintSegment(int start, int endExclusive, string originalMessage)
-	: base(start, endExclusive, originalMessage) 
-	{ 
-		Hint = originalMessage[(start+1)..(endExclusive-1)].Trim();
+	public static new HintSegment CreateAsSubstring(int start, int endExclusive, string str) {
+		var ret = CreateAsSubstring<HintSegment>(start, endExclusive, str);
+		ret.Hint = str[(start + 1)..(endExclusive - 1)].Trim();
+		return ret;
 	}
+
 }
 
 public record class ContentSegment : MessageSegment {
 
-	public int HintEndExclusive { get; }
-	public string Hint { get; }
-	public string Payload { get; }
+	public int HintEndExclusive { get; private set; } = -1;
+	public string Hint { get; private set; } = "";
+	public string Payload { get; private set; } = "";
 
-	public ContentSegment(int start, int hintEndExclusive, int endExclusive, string originalMessage)
-	: base(start, endExclusive, originalMessage) 
-	{
-		HintEndExclusive = hintEndExclusive;
-		Hint = originalMessage[(start + 1)..hintEndExclusive].Trim();
-		Payload = originalMessage[(hintEndExclusive+1).. (endExclusive-1)];
+	public static new ContentSegment CreateAsSubstring(int start, int hintEndExclusive, int endExclusive, string str) {
+		var ret = CreateAsSubstring<ContentSegment>(start, endExclusive, str);
+		ret.HintEndExclusive = hintEndExclusive;
+		ret.Hint = str[(start + 1)..hintEndExclusive].Trim().ToLower();
+		ret.Payload = str[(hintEndExclusive + 1)..(endExclusive - 1)];
+		return ret;
 	}
 
 }
