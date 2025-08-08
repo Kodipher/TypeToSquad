@@ -32,6 +32,7 @@ public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 
 		// Input
 		SetupInputSpinBox(CoreNode.UserSettings.HistorySlots, "%HistorySlotsInput");
+		SetupInputSpinBox(CoreNode.UserSettings.MaxReplacementPasses, "%ReplacementPassesInput");
 
 		// Audio
 		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
