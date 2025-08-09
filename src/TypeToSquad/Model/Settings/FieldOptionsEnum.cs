@@ -42,6 +42,10 @@ public class FieldOptionsEnum<[MustBeVariant] TEnum> : Field<TEnum> where TEnum 
 		return value;
 	}
 
-	public FieldOptionsEnum(TEnum defaultValue) : base(defaultValue) { }
+	public FieldOptionsEnum(TEnum defaultValue) : base(defaultValue) {
+		if (!Enum.IsDefined(DefaultValue)) {
+			throw new ArgumentException("Default value is not defined in the enum.");
+		}
+	}
 
 }
