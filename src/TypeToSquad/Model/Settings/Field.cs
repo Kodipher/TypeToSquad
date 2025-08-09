@@ -61,9 +61,10 @@ public class Field<[MustBeVariant] T> : IVariantSavable where T : notnull {
 	/// Returns given value if it is valid.
 	/// Otherwise returns some valid value, usually the default.
 	/// </summary>
-	public virtual T ValueForceValid(T value) => IsValid(value) ? value : DefaultValue;
-
-	public virtual bool IsValid(T value) => value is not null;
+	/// <remarks>
+	/// Does not set <see cref="Value"/> on its own.
+	/// </remarks>
+	public virtual T ValueForceValid(T value) => value is not null ? value : DefaultValue;
 
 	#endregion
 

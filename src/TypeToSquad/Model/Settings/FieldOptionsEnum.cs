@@ -37,7 +37,10 @@ public class FieldOptionsEnum<[MustBeVariant] TEnum> : Field<TEnum> where TEnum 
 		}
 	}
 
-	public override bool IsValid(TEnum value) => Enum.IsDefined(typeof(TEnum), value);
+	public override TEnum ValueForceValid(TEnum value) {
+		if (!Enum.IsDefined(value)) return DefaultValue;
+		return value;
+	}
 
 	public FieldOptionsEnum(TEnum defaultValue) : base(defaultValue) { }
 

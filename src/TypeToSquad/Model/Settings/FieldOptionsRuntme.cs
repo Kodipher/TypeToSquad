@@ -59,9 +59,9 @@ public class FieldOptionsRuntime : Field<string> {
 		if (!IsValid(value)) value = ValueForceValid(value);
 	}
 
-	public override bool IsValid(string value) {
-		if (Options is null) return base.IsValid(value);
+	public bool IsValid(string value) {
 		if (value is null) return false;
+		if (Options is null) return true;
 		return Options.Contains(value);
 	}
 
