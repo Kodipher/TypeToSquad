@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Reflection;
 
 
 namespace TypeToSquad.Utils;
@@ -21,7 +22,7 @@ public static class GodotExtensions {
 
 	/// <summary>
 	/// <para>
-	/// Try to a convert any object into a <see cref="Variant"/>.
+	/// Tries to a convert any object into a <see cref="Variant"/>.
 	/// </para>
 	/// <para>
 	/// <b>NOTE:</b> only intended to be used with variant compatible types.
@@ -31,12 +32,17 @@ public static class GodotExtensions {
 	public static Variant VariantFromUnsafe(object? from) {
 		if (from is null) return new Variant();
 
-		var fromMethod = typeof(Variant).GetMethod(nameof(Variant.From)) ?? throw new InvalidOperationException($"Could not find Varaint.From method");
 		return (Variant)(
-			fromMethod.MakeGenericMethod(from.GetType()).Invoke(null, [from]) 
+			variantFromMethod.Value.MakeGenericMethod(from.GetType()).Invoke(null, [from]) 
 			?? throw new ArgumentException($"Variant.From returned null")
 		);
 	}
+
+	readonly static Lazy<MethodInfo> variantFromMethod = new(
+		() => typeof(Variant)
+				.GetMethod(nameof(Variant.From)) 
+				?? throw new InvalidOperationException($"Could not find Varaint.From method")
+	);
 
 	/// <summary>
 	/// <para>
@@ -45,13 +51,18 @@ public static class GodotExtensions {
 	/// </para>
 	/// <para>
 	/// <b>NOTE:</b> only intended to be used with variant compatible types.
-	///  Prefer to use <see cref="Variant.As{T}()"/> when possible.
+	/// Prefer to use <see cref="Variant.As{T}()"/> when possible.
 	/// </para>
 	/// </summary>
 	public static object? AsUnsafe(this Variant variant, Type type) {
-		var asMethod = typeof(Variant).GetMethod(nameof(Variant.As)) ?? throw new InvalidOperationException($"Could not find Varaint.As method");
-		return asMethod.MakeGenericMethod([type]).Invoke(variant, []);
+		return variantAsMethod.Value.MakeGenericMethod([type]).Invoke(variant, []);
 	}
+
+	readonly static Lazy<MethodInfo> variantAsMethod = new(
+		() => typeof(Variant)
+				.GetMethod(nameof(Variant.As))
+				?? throw new InvalidOperationException($"Could not find Varaint.As method")
+	);
 
 	/// <summary>
 	/// Sets caret position to end of the text:
