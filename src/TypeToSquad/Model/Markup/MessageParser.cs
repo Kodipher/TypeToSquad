@@ -333,7 +333,7 @@ public class MessageParser : IRefrencesCore {
 				if (string.IsNullOrWhiteSpace(pattern)) continue;
 
 				// Try replace
-				Regex patternRegex = new Regex(pattern, RegexOptions.Singleline);
+				Regex patternRegex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 				newText = patternRegex.Replace(seg.Text, replacement);
 
 				// Exit on first replacement
