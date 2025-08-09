@@ -7,7 +7,7 @@ namespace TypeToSquad.Model.Settings;
 
 
 /// <summary>A <see cref="Field{T}"/> that stores integers in inclusive range.</summary>
-public class FieldNumericRange<[MustBeVariant] T> : Field<T> where T: INumber<T> {
+public class FieldNumericRange<[MustBeVariant] T> : Field<T> where T: struct, INumber<T> {
 
 	public T MinInclusive { get; private init; }
 	public T MaxInclusive { get; private init; }
