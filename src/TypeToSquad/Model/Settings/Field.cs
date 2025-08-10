@@ -12,6 +12,12 @@ interface IVariantSavable {
 }
 
 
+public abstract class Field : IVariantSavable { 
+	public abstract Variant ValueAsSavable { get; set; }
+	public abstract Variant ValueForceValid(Variant value);
+}
+
+
 /// <summary>
 /// A storage for a value, together with a validator.
 /// The stored value should always be valid.
@@ -20,7 +26,7 @@ interface IVariantSavable {
 /// <para>Default <see cref="ValueAsSavable"/> looses information for more complex times.</para>
 /// <para>Default validation check only blocks <see langword="null"/>.</para>
 /// </remarks>
-public class Field<[MustBeVariant] T> : IVariantSavable where T : notnull {
+public class Field<[MustBeVariant] T> : Field where T : notnull {
 
 	#region //// Value
 
@@ -43,7 +49,7 @@ public class Field<[MustBeVariant] T> : IVariantSavable where T : notnull {
 	/// Gets or sets <see cref="Value"/> as if it was <see cref="Variant"/>.
 	/// Used for saving and loading.
 	/// </summary>
-	public virtual Variant ValueAsSavable {
+	public override Variant ValueAsSavable {
 		get => Variant.From(in this.value);
 		set => Value = value.As<T>();
 	}
@@ -65,6 +71,12 @@ public class Field<[MustBeVariant] T> : IVariantSavable where T : notnull {
 	/// Does not set <see cref="Value"/> on its own.
 	/// </remarks>
 	public virtual T ValueForceValid(T value) => value is not null ? value : DefaultValue;
+	
+	/// <summary>
+	/// Equivalent of <see cref="ValueForceValid(T)"/> 
+	/// but for <see cref="Variant"/> values.
+	/// </summary>
+	public override Variant ValueForceValid(Variant value) => Variant.From(ValueForceValid(value.As<T>()));
 
 	#endregion
 
