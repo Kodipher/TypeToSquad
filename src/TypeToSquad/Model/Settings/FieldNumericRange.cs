@@ -12,7 +12,7 @@ public class FieldNumericRange<[MustBeVariant] T> : Field<T> where T: struct, IN
 	public T MinInclusive { get; private init; }
 	public T MaxInclusive { get; private init; }
 
-	public override T ValueForceValid(T value) {
+	public override T ReturnValid(T value) {
 		if (T.IsNaN(value)) value = T.Zero;
 		if (value < MinInclusive) return MinInclusive;
 		if (value > MaxInclusive) return MaxInclusive;

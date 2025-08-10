@@ -56,7 +56,7 @@ public class FieldOptionsRuntime : Field<string> {
 		DefaultOption = Options[defaultOptionIndex];
 
 		// Force validity under the new condition
-		if (!IsValid(value)) value = ValueForceValid(value);
+		if (!IsValid(value)) value = ReturnValid(value);
 	}
 
 	public bool IsValid(string value) {
@@ -65,7 +65,7 @@ public class FieldOptionsRuntime : Field<string> {
 		return Options.Contains(value);
 	}
 
-	public override string ValueForceValid(string value) {
+	public override string ReturnValid(string value) {
 		return IsValid(value) ? value : (DefaultOption ?? DefaultValue);
 	}
 

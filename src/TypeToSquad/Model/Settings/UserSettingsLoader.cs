@@ -30,7 +30,7 @@ public static class UserSettingsLoader {
 		foreach (FieldInfo fieldInfo in UserSettingsSavableFields) {
 
 			IVariantSavable? savable = fieldInfo.GetValue(settings) as IVariantSavable;
-			Variant saveValue = savable?.ValueAsSavable ?? new Variant();
+			Variant saveValue = savable?.ToSavableVariant() ?? new Variant();
 
 			if (saveValue.VariantType == Variant.Type.Nil) {
 				GD.PushWarning($"Settings field \"{fieldInfo.Name}\" gave null when saving");
@@ -78,7 +78,7 @@ public static class UserSettingsLoader {
 		foreach (FieldInfo fieldInfo in UserSettingsSavableFields) {
 			if (settingsDict.TryGetValue(fieldInfo.Name, out Variant fieldSaveValue)) {
 				IVariantSavable? savable = fieldInfo.GetValue(settings) as IVariantSavable;
-				if (savable is not null) savable.ValueAsSavable = fieldSaveValue;
+				if (savable is not null) savable.SetFromVariant(fieldSaveValue);
 			}
 		}
 

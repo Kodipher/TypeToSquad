@@ -87,8 +87,8 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 		// Connect input
 		void OnTextSubmit(string text) {
-			settingsField.ValueAsSavable = text; // a bit of a hack to parse input
-			fieldInput.Text = settingsField.ValueAsSavable.ToString();
+			settingsField.SetFromVariant(text); // a bit of a hack to parse input
+			fieldInput.Text = settingsField.ToSavableVariant().ToString();
 		}
 
 		fieldInput.TextSubmitted += OnTextSubmit;

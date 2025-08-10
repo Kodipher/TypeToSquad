@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+
 using TypeToSquad.Utils;
 
 
@@ -27,13 +28,13 @@ where TRowTuple: struct, ITuple
 
 	public TRowTuple this[int index] {
 		get => rows[index];
-		set => rows[index] = RowForceValid(value);
+		set => rows[index] = ReturnValidRow(value);
 	}
 
 	public int Count => rows.Count;
 
-	public void Add(TRowTuple row) => rows.Add(RowForceValid(row));
-	public void Insert(int index, TRowTuple row) => rows.Insert(index, RowForceValid(row));
+	public void Add(TRowTuple row) => rows.Add(ReturnValidRow(row));
+	public void Insert(int index, TRowTuple row) => rows.Insert(index, ReturnValidRow(row));
 
 	public void RemoveAt(int index) => rows.RemoveAt(index);
 	public bool Remove(TRowTuple row) => rows.Remove(row);
@@ -51,20 +52,19 @@ where TRowTuple: struct, ITuple
 
 	#endregion
 
-	public Variant ValueAsSavable {
-		get {
-			Godot.Collections.Array savableArray = new();
+	public Variant ToSavableVariant() {
+		Godot.Collections.Array savableArray = new();
 
-			foreach (var row in rows) {
-				savableArray.Add(TupleToArray(row));
-			}
-
-			return savableArray;
+		foreach (var row in rows) {
+			savableArray.Add(TupleToArray(row));
 		}
-		set {
-			foreach (var rowSource in value.AsGodotArray()) {
-				this.Add(ArrayToTuple(rowSource.AsGodotArray()));
-			}
+
+		return savableArray;
+	}
+
+	public void SetFromVariant(Variant value) {
+		foreach (var rowSource in value.AsGodotArray()) {
+			this.Add(ArrayToTuple(rowSource.AsGodotArray()));
 		}
 	}
 
@@ -129,8 +129,6 @@ where TRowTuple: struct, ITuple
 
 	#endregion
 
-
-
-	public virtual TRowTuple RowForceValid(TRowTuple value) => value;
+	public virtual TRowTuple ReturnValidRow(TRowTuple value) => value;
 
 }

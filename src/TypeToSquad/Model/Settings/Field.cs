@@ -8,22 +8,35 @@ namespace TypeToSquad.Model.Settings;
 // A non-generic inhertiance root
 // to avoid getting data via reflection
 interface IVariantSavable {
-	public Variant ValueAsSavable { get; set; }
-}
 
+	/// <summary>Gets content as <see cref="Variant"/> for purposes of saving.</summary>
+	Variant ToSavableVariant();
 
-public abstract class Field : IVariantSavable { 
-	public abstract Variant ValueAsSavable { get; set; }
-	public abstract Variant ValueForceValid(Variant value);
+	/// <summary>Sets content from <see cref="Variant"/>. Used for loading.</summary>
+	void SetFromVariant(Variant value);
 }
 
 
 /// <summary>
 /// A storage for a value, together with a validator.
 /// The stored value should always be valid.
+/// The validator is independnat of the stored value.
 /// </summary>
+public abstract class Field : IVariantSavable {
+	public abstract Variant ToSavableVariant();
+	public abstract void SetFromVariant(Variant value);
+
+	/// <summary>
+	/// Given an input value, returns a valid value.
+	/// If the input itself is valid, a value equal to it is returned.
+	/// </summary>
+	public abstract Variant ReturnValid(Variant value);
+}
+
+
+/// <inheritdoc cref="Field"/>
 /// <remarks>
-/// <para>Default <see cref="ValueAsSavable"/> looses information for more complex times.</para>
+/// <para>Default <see cref="ToSavableVariant()"/> looses information for more complex times.</para>
 /// <para>Default validation check only blocks <see langword="null"/>.</para>
 /// </remarks>
 public class Field<[MustBeVariant] T> : Field where T : notnull {
@@ -42,17 +55,11 @@ public class Field<[MustBeVariant] T> : Field where T : notnull {
 	/// </summary>
 	public T Value { 
 		get => this.value;
-		set => this.value = ValueForceValid(value);
+		set => this.value = ReturnValid(value);
 	}
 
-	/// <summary>
-	/// Gets or sets <see cref="Value"/> as if it was <see cref="Variant"/>.
-	/// Used for saving and loading.
-	/// </summary>
-	public override Variant ValueAsSavable {
-		get => Variant.From(in this.value);
-		set => Value = value.As<T>();
-	}
+	public override Variant ToSavableVariant() => Variant.From(in this.value);
+	public override void SetFromVariant(Variant value) => Value = value.As<T>();
 
 
 	public static implicit operator T(Field<T> field) => field.Value;
@@ -64,19 +71,13 @@ public class Field<[MustBeVariant] T> : Field where T : notnull {
 	public T DefaultValue { get; private init; }
 
 	/// <summary>
-	/// Returns given value if it is valid.
-	/// Otherwise returns some valid value, usually the default.
+	/// Equivalent of <see cref="ReturnValid(Variant)"/> 
+	/// but for the specific type of this field.
 	/// </summary>
-	/// <remarks>
-	/// Does not set <see cref="Value"/> on its own.
-	/// </remarks>
-	public virtual T ValueForceValid(T value) => value is not null ? value : DefaultValue;
+	public virtual T ReturnValid(T value) => value is not null ? value : DefaultValue;
 	
-	/// <summary>
-	/// Equivalent of <see cref="ValueForceValid(T)"/> 
-	/// but for <see cref="Variant"/> values.
-	/// </summary>
-	public override Variant ValueForceValid(Variant value) => Variant.From(ValueForceValid(value.As<T>()));
+	
+	public override Variant ReturnValid(Variant value) => Variant.From(ReturnValid(value.As<T>()));
 
 	#endregion
 
