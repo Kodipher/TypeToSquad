@@ -56,17 +56,7 @@ where TRowTuple: struct, ITuple
 			Godot.Collections.Array savableArray = new();
 
 			foreach (var row in rows) {
-
-				// Create rowSource
-				Godot.Collections.Array rowArray = new();
-				savableArray.Add(rowArray);
-
-				// Fill rowSource
-				for (int i = 0; i < row.Length; i++) {
-					var tupleItem = row[i];
-					rowArray.Add(GodotExtensions.VariantFromUnsafe(tupleItem));
-				}
-
+				savableArray.Add(TupleToArray(row));
 			}
 
 			return savableArray;
@@ -78,6 +68,7 @@ where TRowTuple: struct, ITuple
 		}
 	}
 
+	#region //// Array Conversion
 
 	readonly static Lazy<Type[]> tupleTypes = new(() => {
 		if (typeof(TRowTuple).IsGenericType) return typeof(TRowTuple).GenericTypeArguments;
@@ -94,7 +85,8 @@ where TRowTuple: struct, ITuple
 			.MakeGenericMethod(tupleTypes.Value);
 	});
 
-	static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
+	/// <summary>Converts a variant array into a tupple row of this table.</summary>
+	public static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
 
 		// Get values
 		Variant[] tupleValuesVaraint = new Variant[tupleTypes.Value.Length];
@@ -111,20 +103,34 @@ where TRowTuple: struct, ITuple
 		}
 
 		// Create tuple
+		return ArrayToTuple(tupleValues);
+	}
+
+	protected static TRowTuple ArrayToTuple(object?[] tupleValues) {
 		return (TRowTuple)(
 					tupleCreateMethod
 					.Value
-					.Invoke(null, tupleValues) 
+					.Invoke(null, tupleValues)
 					?? default(TRowTuple)
 				);
 	}
 
-	public virtual TRowTuple RowForceValid(TRowTuple value) => value;
+	/// <summary>Converts a tuple into a variant array.</summary>
+	static Godot.Collections.Array TupleToArray(TRowTuple tuple) {
+		Godot.Collections.Array rowArray = new();
 
-	public virtual bool IsRowValid(TRowTuple value) => true;
+		for (int i = 0; i < tuple.Length; i++) {
+			var tupleItem = tuple[i];
+			rowArray.Add(GodotExtensions.VariantFromUnsafe(tupleItem));
+		}
 
-	public Table() { 
-
+		return rowArray;
 	}
+
+	#endregion
+
+
+
+	public virtual TRowTuple RowForceValid(TRowTuple value) => value;
 
 }
