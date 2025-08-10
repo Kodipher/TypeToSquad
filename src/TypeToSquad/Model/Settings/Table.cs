@@ -56,7 +56,7 @@ where TRowTuple: struct, ITuple
 		Godot.Collections.Array savableArray = new();
 
 		foreach (var row in rows) {
-			savableArray.Add(TupleToArray(row));
+			savableArray.Add(new Godot.Collections.Array(TupleToArray(row)));
 		}
 
 		return savableArray;
@@ -86,12 +86,12 @@ where TRowTuple: struct, ITuple
 	});
 
 	/// <summary>Converts a variant array into a tupple row of this table.</summary>
-	public static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
+	public static TRowTuple ArrayToTuple(Variant[] array) {
 
 		// Get values
 		Variant[] tupleValuesVaraint = new Variant[tupleTypes.Value.Length];
 
-		int n = Math.Min(array.Count, tupleValuesVaraint.Length);
+		int n = Math.Min(array.Length, tupleValuesVaraint.Length);
 		for (int i = 0; i < n; i++) {
 			tupleValuesVaraint[i] = array[i];
 		}
@@ -103,10 +103,6 @@ where TRowTuple: struct, ITuple
 		}
 
 		// Create tuple
-		return ArrayToTuple(tupleValues);
-	}
-
-	protected static TRowTuple ArrayToTuple(object?[] tupleValues) {
 		return (TRowTuple)(
 					tupleCreateMethod
 					.Value
@@ -115,13 +111,18 @@ where TRowTuple: struct, ITuple
 				);
 	}
 
+	/// <inheritdoc cref="ArrayToTuple(Variant[])"/>
+	public static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
+		return ArrayToTuple(array.ToArray());
+	}
+
 	/// <summary>Converts a tuple into a variant array.</summary>
-	static Godot.Collections.Array TupleToArray(TRowTuple tuple) {
-		Godot.Collections.Array rowArray = new();
+	public static Variant[] TupleToArray(TRowTuple tuple) {
+		Variant[] rowArray = new Variant[tuple.Length];
 
 		for (int i = 0; i < tuple.Length; i++) {
 			var tupleItem = tuple[i];
-			rowArray.Add(GodotExtensions.VariantFromUnsafe(tupleItem));
+			rowArray[i] = GodotExtensions.VariantFromUnsafe(tupleItem);
 		}
 
 		return rowArray;
