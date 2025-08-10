@@ -5,9 +5,9 @@ using System;
 namespace TypeToSquad.Model.Settings;
 
 
+// A non-generic inhertiance root
+// to avoid getting data via reflection
 interface IVariantSavable {
-	// A non-generic inhertiance root
-	// to avoid getting properties via reflection
 	public Variant ValueAsSavable { get; set; }
 }
 
@@ -81,7 +81,7 @@ public class Field<[MustBeVariant] T> : Field where T : notnull {
 	#endregion
 
 	/// <remarks>
-	/// <paramref name="defaultValue"/> must be valid. Checked using <see cref="IsValid(T)"/>.
+	/// <paramref name="defaultValue"/> is assumed to be valid.
 	/// </remarks>
 	public Field(T defaultValue) {
 		DefaultValue = defaultValue;

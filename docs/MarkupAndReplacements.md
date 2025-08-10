@@ -3,7 +3,7 @@
 Some advanced features are accessible via tags, denoted by square brackets (`[` and `]`).
 
 A tag can denote:
-- a **voice change**, if it matches a hint in voice changes table;
+- a **voice change**, if it matches a non-empty hint in voice changes table;
 - a text **replacement context change**, if it does not match a voice change hint;
 - **inline content** that is not plain text, if its any of the following:
   - `[ipa {text}]` - Phonetic spelling
