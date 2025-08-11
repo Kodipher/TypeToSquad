@@ -152,6 +152,8 @@ public partial class CoreNode : Node {
 		HistoryTracker.MaxHistorySize = UserSettings.HistorySlots;
 		HistoryTracker.EnforceHistoryCountMax();
 
+		MainWindow.ClearHighlighterCache();
+
 		if (UserSettings.EnableErrorMonitoring) LogMonitor.CheckLog();
 	}
 
