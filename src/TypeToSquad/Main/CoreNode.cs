@@ -107,7 +107,7 @@ public partial class CoreNode : Node {
 		MainWindow._Ready(); // Call ready again manually after the new script is attached
 
 		// Update settings
-		UserSettingsLoader.Save(UserSettings);
+		//UserSettingsLoader.Save(UserSettings); // Disable automatic resaving to prevent data loss
 	}
 
 	public override void _Process(double delta) {
