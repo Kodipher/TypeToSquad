@@ -11,7 +11,6 @@ public class FieldStringContextHint : Field<string> {
 		return value
 				.Trim()
 				.Where(c => !(char.IsWhiteSpace(c) || c == '[' || c == ']'))
-				.ToArray()
 				.JoinString();
 	}
 
