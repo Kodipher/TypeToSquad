@@ -88,6 +88,8 @@ public partial class CoreNode : Node {
 				}
 
 				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
+				UserSettings.VoiceChanges.RevalidateAllRows(); // Because Voices validator changed state
+				
 				SpeechDaemon.StoreVoiceInfos(voicesResponse);
 			}
 		);

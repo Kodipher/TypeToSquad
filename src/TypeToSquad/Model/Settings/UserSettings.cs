@@ -59,4 +59,15 @@ public record class UserSettings {
 	/// <summary>Max number of outputs played at the same time.</summary>
 	public readonly FieldNumericRange<int> MaxConcurrentStreams = new(1, 64, defaultValue: 6);
 
+
+	// ===== ===== ===== ===== ===== =====
+
+
+	public UserSettings() {
+		// Init table validators
+		FieldStringContextHint contextHintValidator = new("");
+		TextReplacements.SetValidationProxies(contextHintValidator, null, null);
+		VoiceChanges.SetValidationProxies(contextHintValidator, Voice);
+	}
+
 }
