@@ -15,7 +15,7 @@ namespace TypeToSquad.Model.Settings;
 
 /// <summary>
 /// A savable array of value tuples.
-/// Only <see cref="ValueTuple"/>s of <see cref="Variant"/> comparible values
+/// Only <see cref="ValueTuple"/>s of <see cref="Variant"/> compatible values
 /// are supported.
 /// </summary>
 public class Table<TRowTuple> : IVariantSavable, IList<TRowTuple>, IReadOnlyList<TRowTuple> 
@@ -89,17 +89,17 @@ where TRowTuple: struct, ITuple
 	public static TRowTuple ArrayToTuple(Variant[] array) {
 
 		// Get values
-		Variant[] tupleValuesVaraint = new Variant[tupleTypes.Value.Length];
+		Variant[] legnthCheckedArray = new Variant[tupleTypes.Value.Length];
 
-		int n = Math.Min(array.Length, tupleValuesVaraint.Length);
+		int n = Math.Min(array.Length, legnthCheckedArray.Length);
 		for (int i = 0; i < n; i++) {
-			tupleValuesVaraint[i] = array[i];
+			legnthCheckedArray[i] = array[i];
 		}
 
 		// Convert values to objects
 		object?[] tupleValues = new object?[tupleTypes.Value.Length];
 		for (int i = 0; i < tupleValues.Length; i++) {
-			tupleValues[i] = tupleValuesVaraint[i].AsUnsafe(tupleTypes.Value[i]);
+			tupleValues[i] = legnthCheckedArray[i].AsUnsafe(tupleTypes.Value[i]);
 		}
 
 		// Create tuple
@@ -130,6 +130,89 @@ where TRowTuple: struct, ITuple
 
 	#endregion
 
-	public virtual TRowTuple ReturnValidRow(TRowTuple value) => value;
+	#region //// Validation
+
+	Field?[]? validators = null; // is same length as tuple, checked in SetValidationProxies
+
+	public void ClearValidationProxies() => validators = null;
+
+	/// <summary>
+	/// Sets validators to be used for specific columns.
+	/// A <see langword="null"/> means the column is not validated.
+	/// </summary>
+	/// <remarks>
+	/// Only <see cref="Field.ReturnValid(Variant)"/> is used.
+	/// Values inside <see cref="Field"/>s are not written to or read.
+	///	</remarks>
+	public void SetValidationProxies(params Field?[] validators) {
+
+		// Guards
+		ArgumentNullException.ThrowIfNull(validators);
+		
+		if (validators.Length != tupleTypes.Value.Length) {
+			throw new ArgumentException($"Validators length mismatch. Expected length of {tupleTypes.Value.Length}, got {validators.Length}");
+		}
+
+		// Set validators (copy array)
+		this.validators = validators.ToArray();
+
+		// Ensure rows are valid
+		RevalidateAllRows();
+	}
+
+	public virtual TRowTuple ReturnValidRow(TRowTuple value) {
+
+		// No validators sets
+		if (validators is null) return value;
+
+		// Define simple equality test for later
+		// No built-in == exists for Variants
+		// so this is a simple implementation for most common types.
+		//
+		// Returns true if variants are known to equal
+		// Returns false if variants are known to not equal or equality is unknown		
+		static bool VariantsKnownEqual(in Variant v1, in Variant v2) {
+			
+			if (v1.VariantType != v2.VariantType) return false;
+
+			return v1.VariantType switch {
+				Variant.Type.Nil => true,
+				Variant.Type.Bool => v1.AsBool() == v2.AsBool(),
+				Variant.Type.Int => v1.AsInt64() == v2.AsInt64(),
+				Variant.Type.Float => v1.AsDouble() == v2.AsDouble(),
+				Variant.Type.String => v1.AsString() == v2.AsString(),
+				_ => false
+			};
+		}
+
+		// Perform validation
+		bool anyChanged = false;
+		Variant[] rowValues = TupleToArray(value);
+
+		for (int i = 0; i < rowValues.Length; i++) {
+			if (validators[i] is null) continue;
+
+			Variant oldValue = rowValues[i];
+			Variant newValue = validators[i]!.ReturnValid(oldValue);
+
+			// basic ref comparison
+			// because there is no == between Variants
+			anyChanged = anyChanged || !VariantsKnownEqual(in oldValue, in newValue);
+
+			rowValues[i] = newValue;
+		}
+
+		if (anyChanged) return ArrayToTuple(rowValues);
+		return value;
+	}
+
+	/// <summary>Forces all current rows through <see cref="ReturnValidRow(TRowTuple)"/>.</summary>
+	public void RevalidateAllRows() {
+		for (int i = 0; i < this.Count; i++) {
+			this[i] = ReturnValidRow(this[i]);
+		}
+	}
+
+	#endregion
 
 }

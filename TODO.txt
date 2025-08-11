@@ -1,5 +1,5 @@
 TODO:
-- Settings.Table validation
+- change how/when log file is monitored
 - main window: check min size
 - tab shortcuts for context changes
 -- letter after autocompletes the context
@@ -12,3 +12,4 @@ TODO:
 
 TO TEST:
 - ssml: ipa
+- Settings.Table validation

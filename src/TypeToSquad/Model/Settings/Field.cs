@@ -30,6 +30,9 @@ public abstract class Field : IVariantSavable {
 	/// Given an input value, returns a valid value.
 	/// If the input itself is valid, a value equal to it is returned.
 	/// </summary>
+	/// <remarks>
+	/// Assumes <paramref name="value"/> is immutable.
+	/// </remarks>
 	public abstract Variant ReturnValid(Variant value);
 }
 
