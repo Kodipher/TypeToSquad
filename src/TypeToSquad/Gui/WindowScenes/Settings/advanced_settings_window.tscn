@@ -49,7 +49,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Enable Error Monitoring"
 
-[node name="EnableMonitoringInput" type="CheckBox" parent="MarginContainer/VBoxContainer/TabContainer/General"]
+[node name="EnableMonitoringInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/General"]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -64,19 +64,17 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Main Voice"
 
-[node name="MainVoiceInput" type="OptionButton" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+[node name="MainVoiceInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-fit_to_longest_item = false
-allow_reselect = true
 
 [node name="VoicePitchLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Voice Pitch"
 
-[node name="VoicePitchInput" type="SpinBox" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+[node name="VoicePitchInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -86,7 +84,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Speaking Rate"
 
-[node name="VoiceRateInput" type="SpinBox" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+[node name="VoiceRateInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -117,7 +115,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "History Slots"
 
-[node name="HistorySlotsInput" type="SpinBox" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+[node name="HistorySlotsInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -138,7 +136,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Replacement Passes Limit"
 
-[node name="ReplacementPassesInput" type="SpinBox" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+[node name="ReplacementPassesInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -161,19 +159,17 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Output Device"
 
-[node name="OutputDeviceInput" type="OptionButton" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+[node name="OutputDeviceInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-fit_to_longest_item = false
-allow_reselect = true
 
 [node name="MaxConcurentLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Max Concurent Outputs"
 
-[node name="MaxConcurentInput" type="SpinBox" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+[node name="MaxConcurentInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -183,11 +179,10 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Audio Volume"
 
-[node name="SynthesisVolumeInput" type="SpinBox" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+[node name="SynthesisVolumeInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-suffix = "%"
 
 [node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
