@@ -1,7 +1,7 @@
 using System;
-using TypeToSquad.Utils;
-using TypeToSquad.Model.Settings;
 using Godot;
+
+using TypeToSquad.Model.Settings;
 
 
 namespace TypeToSquad.Gui.WindowScenes.Settings;
@@ -19,6 +19,7 @@ public static class FieldInputCreator {
 	/// is created but will not set its <see cref="Field{T}.Value"/> automatically.
 	/// </para>
 	/// </summary>
+	/// <exception cref="NotSupportedException"/>
 	public static Control CreateFor(Field field, bool isUnlinked = false) {
 	
 		if (field is FieldOptionsRuntime fieldOptions) {
@@ -49,6 +50,7 @@ public static class FieldInputCreator {
 	/// Returns the user input from any <see cref="Control"/> node
 	/// created by <see cref="CreateFor(Field, bool)"/>.
 	/// </summary>
+	/// <exception cref="NotSupportedException"/>
 	public static Variant GetControlInput(Control node) {
 		
 		if (node is OptionButton optionButton) {
