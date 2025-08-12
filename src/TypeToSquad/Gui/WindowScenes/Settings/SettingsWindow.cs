@@ -68,91 +68,32 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		this.QueueFree();
 	}
 
+	/// <returns>The new node that was placed at the location of the old one.</returns>
+	protected Control ImplaceByProperInput(Field settingsField, NodePath inputPath) {
+
+		Control newNode = FieldInputCreator.CreateFor(settingsField);
+		Control oldNode = this.GetNodeNotNull<Control>(inputPath);
+
+		oldNode.ReplaceBy(newNode);
+		newNode.SizeFlagsHorizontal = oldNode.SizeFlagsHorizontal;
+		newNode.SizeFlagsVertical = oldNode.SizeFlagsVertical;
+		newNode.SizeFlagsStretchRatio = oldNode.SizeFlagsStretchRatio;
+
+		oldNode.QueueFree();
+
+		return newNode;
+	}
+
+	/// <summary>
+	/// Sets up inputs for user settings.
+	/// Overriden in derived <see cref="AdvancedSettingsWindow"/>.
+	/// </summary>
 	protected virtual void SetupSettingInputs() {
 
 		if (CoreNode is null) return;
 
-		SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
-		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+		ImplaceByProperInput(CoreNode.UserSettings.Voice, "%MainVoiceInput");
+		ImplaceByProperInput(CoreNode.UserSettings.Device, "%OutputDeviceInput");
 	}
-
-	#region //// Input Setup
-
-	protected void SetupInputLineEdit<[MustBeVariant] T>(Field<T> settingsField, NodePath inputPath)
-	where T : notnull 
-	{
-
-		var fieldInput = this.GetNodeNotNull<LineEdit>(inputPath);
-		fieldInput.Text = settingsField.Value.ToString();
-
-		// Connect input
-		void OnTextSubmit(string text) {
-			settingsField.SetFromVariant(text); // a bit of a hack to parse input
-			fieldInput.Text = settingsField.ToSavableVariant().ToString();
-		}
-
-		fieldInput.TextSubmitted += OnTextSubmit;
-		fieldInput.FocusExited += () => OnTextSubmit(fieldInput.Text ?? "");
-	}
-
-	protected void SetupInputSpinBox(FieldNumericRange<int> field, NodePath inputPath) {
-
-		var fieldInput = this.GetNodeNotNull<SpinBox>(inputPath);
-		fieldInput.MinValue = field.MinInclusive;
-		fieldInput.MaxValue = field.MaxInclusive;
-		fieldInput.AllowLesser = false;
-		fieldInput.AllowGreater = false;
-
-		fieldInput.Rounded = true;
-		fieldInput.Step = 1;
-		fieldInput.Value = field.Value;
-
-		// Connect input
-		fieldInput.ValueChanged += newValue => field.Value = (int)newValue;
-	}
-
-	/// <remarks>There is a precision limit of 6 decimal places to avoid rounding errors.</remarks>
-	protected void SetupInputSpinBox(FieldNumericRange<double> field, NodePath inputPath, double valueStep = 0.1f) {
-
-		var fieldInput = this.GetNodeNotNull<SpinBox>(inputPath);
-
-		fieldInput.MinValue = field.MinInclusive;
-		fieldInput.MaxValue = field.MaxInclusive;
-		fieldInput.AllowLesser = false;
-		fieldInput.AllowGreater = false;
-
-		fieldInput.Rounded = false;
-		fieldInput.Step = valueStep;
-		fieldInput.Value = field.Value;
-
-		// Connect input
-		fieldInput.ValueChanged += newValue => field.Value = System.Math.Round(newValue, 6);
-	}
-
-	protected void SetupInputToggle(Field<bool> toggle, NodePath inputPath) {
-		var inputToggle = this.GetNodeNotNull<Button>(inputPath);
-		if (toggle.Value) inputToggle.ButtonPressed = true;
-		inputToggle.Toggled += newValue => toggle.Value = newValue;
-	}
-
-	protected void SetupInputOption(FieldOptionsRuntime options, NodePath inputPath) {
-		
-		// Options not set guard
-		if (options.Options is null) return;
-
-		// Set up items
-		var inputField = this.GetNodeNotNull<OptionButton>(inputPath);
-		inputField.Clear();
-
-		foreach (string option in options.Options) {
-			inputField.AddItem(option);
-			if (options.Value == option) inputField.Select(inputField.ItemCount - 1);
-		}
-
-		// Connect input
-		inputField.ItemSelected += index => options.Value = inputField.GetItemText((int)index);
-	}
-
-	#endregion
 
 }

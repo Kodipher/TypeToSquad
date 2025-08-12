@@ -22,22 +22,26 @@ public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 
 		if (CoreNode is null) return;
 
+		var settings = CoreNode.UserSettings;
+
 		// General
-		SetupInputToggle(CoreNode.UserSettings.EnableErrorMonitoring, "%EnableMonitoringInput");
+		ImplaceByProperInput(settings.EnableErrorMonitoring, "%EnableMonitoringInput");
 
 		// Voices
-		SetupInputOption(CoreNode.UserSettings.Voice, "%MainVoiceInput");
-		SetupInputSpinBox(CoreNode.UserSettings.VoicePitch, "%VoicePitchInput");
-		SetupInputSpinBox(CoreNode.UserSettings.VoiceRate, "%VoiceRateInput");
+		ImplaceByProperInput(settings.Voice, "%MainVoiceInput");
+		ImplaceByProperInput(settings.VoicePitch, "%VoicePitchInput");
+		ImplaceByProperInput(settings.VoiceRate, "%VoiceRateInput");
 
 		// Input
-		SetupInputSpinBox(CoreNode.UserSettings.HistorySlots, "%HistorySlotsInput");
-		SetupInputSpinBox(CoreNode.UserSettings.MaxReplacementPasses, "%ReplacementPassesInput");
+		ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
+		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
 
 		// Audio
-		SetupInputOption(CoreNode.UserSettings.Device, "%OutputDeviceInput");
-		SetupInputSpinBox(CoreNode.UserSettings.SynthesisVolumePercent, "%SynthesisVolumeInput");
-		SetupInputSpinBox(CoreNode.UserSettings.MaxConcurrentStreams, "%MaxConcurentInput");
+		ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
+		ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
+
+		var volumeInput = ImplaceByProperInput(settings.SynthesisVolumePercent, "%SynthesisVolumeInput");
+		((SpinBox)volumeInput).Suffix = "%";
 	}
 
 }
