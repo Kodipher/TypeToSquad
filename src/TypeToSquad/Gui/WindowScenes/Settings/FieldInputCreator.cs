@@ -139,7 +139,7 @@ public static class FieldInputCreator {
 
 		// Link
 		fieldInput.Value = field.Value;
-		fieldInput.ValueChanged += newValue => field.Value = System.Math.Round(newValue, 6);
+		fieldInput.ValueChanged += newValue => field.Value = newValue;
 
 		return fieldInput;
 	}

@@ -27,10 +27,10 @@ public record class UserSettings {
 	public readonly FieldOptionsRuntime Voice = new();
 
 	/// <summary>The relative pitch of the voice.</summary>
-	public readonly FieldNumericRange<double> VoicePitch = new(0, 2, defaultValue: 1);
+	public readonly FieldNumeticRangeRounded<double> VoicePitch = new(0, 2, defaultValue: 1);
 
 	/// <summary>The speaking rate (speed multiplier) of the voice.</summary>
-	public readonly FieldNumericRange<double> VoiceRate = new(0.5, 6, defaultValue: 1);
+	public readonly FieldNumeticRangeRounded<double> VoiceRate = new(0.5, 6, defaultValue: 1);
 
 	/// <summary>A table of voices change hints and voices they correspond to.</summary>
 	public readonly Table<(string hint, string voiceName)> VoiceChanges = new();
