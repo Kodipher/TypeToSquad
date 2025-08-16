@@ -165,6 +165,11 @@ where TRowTuple: struct, ITuple
 		RevalidateAllRows();
 	}
 
+	public Field?[] GetValidationProxies() {
+		if (this.validators is null) throw new InvalidOperationException("Validation proxies were not set.");
+		return this.validators.ToArray();
+	}
+
 	public virtual TRowTuple ReturnValidRow(TRowTuple value) {
 
 		// No validators sets
