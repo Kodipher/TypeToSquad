@@ -88,18 +88,23 @@ where TRowTuple: struct, ITuple
 	/// <summary>Converts a variant array into a tupple row of this table.</summary>
 	public static TRowTuple ArrayToTuple(Variant[] array) {
 
-		// Get values
-		Variant[] legnthCheckedArray = new Variant[tupleTypes.Value.Length];
+		// Force correct size
+		if (array.Length != tupleTypes.Value.Length) {
 
-		int n = Math.Min(array.Length, legnthCheckedArray.Length);
-		for (int i = 0; i < n; i++) {
-			legnthCheckedArray[i] = array[i];
+			Variant[] legnthCheckedArray = new Variant[tupleTypes.Value.Length];
+
+			int n = Math.Min(array.Length, legnthCheckedArray.Length);
+			for (int i = 0; i < n; i++) {
+				legnthCheckedArray[i] = array[i];
+			}
+
+			array = legnthCheckedArray;
 		}
 
 		// Convert values to objects
 		object?[] tupleValues = new object?[tupleTypes.Value.Length];
 		for (int i = 0; i < tupleValues.Length; i++) {
-			tupleValues[i] = legnthCheckedArray[i].AsUnsafe(tupleTypes.Value[i]);
+			tupleValues[i] = array[i].AsUnsafe(tupleTypes.Value[i]);
 		}
 
 		// Create tuple
@@ -165,45 +170,16 @@ where TRowTuple: struct, ITuple
 		// No validators sets
 		if (validators is null) return value;
 
-		// Define simple equality test for later
-		// No built-in == exists for Variants
-		// so this is a simple implementation for most common types.
-		//
-		// Returns true if variants are known to equal
-		// Returns false if variants are known to not equal or equality is unknown		
-		static bool VariantsKnownEqual(in Variant v1, in Variant v2) {
-			
-			if (v1.VariantType != v2.VariantType) return false;
-
-			return v1.VariantType switch {
-				Variant.Type.Nil => true,
-				Variant.Type.Bool => v1.AsBool() == v2.AsBool(),
-				Variant.Type.Int => v1.AsInt64() == v2.AsInt64(),
-				Variant.Type.Float => v1.AsDouble() == v2.AsDouble(),
-				Variant.Type.String => v1.AsString() == v2.AsString(),
-				_ => false
-			};
-		}
-
-		// Perform validation
-		bool anyChanged = false;
+		// Copy row as array
 		Variant[] rowValues = TupleToArray(value);
 
+		// Validate each item
 		for (int i = 0; i < rowValues.Length; i++) {
 			if (validators[i] is null) continue;
-
-			Variant oldValue = rowValues[i];
-			Variant newValue = validators[i]!.ReturnValid(oldValue);
-
-			// basic ref comparison
-			// because there is no == between Variants
-			anyChanged = anyChanged || !VariantsKnownEqual(in oldValue, in newValue);
-
-			rowValues[i] = newValue;
+			rowValues[i] = validators[i]!.ReturnValid(rowValues[i]);
 		}
 
-		if (anyChanged) return ArrayToTuple(rowValues);
-		return value;
+		return ArrayToTuple(rowValues);
 	}
 
 	/// <summary>Forces all current rows through <see cref="ReturnValidRow(TRowTuple)"/>.</summary>
