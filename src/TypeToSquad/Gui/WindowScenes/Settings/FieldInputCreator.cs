@@ -19,6 +19,11 @@ public static class FieldInputCreator {
 	/// is created but will not set its <see cref="Field{T}.Value"/> automatically.
 	/// </para>
 	/// </summary>
+	/// <remarks>
+	/// Does not set <see cref="Control.SizeFlagsHorizontal"/>, 
+	/// <see cref="Control.SizeFlagsVertical"/>,
+	/// <see cref="Control.SizeFlagsStretchRatio"/>.
+	/// </remarks>
 	/// <exception cref="NotSupportedException"/>
 	public static Control CreateFor(Field field, bool isUnlinked = false) {
 	
@@ -64,6 +69,11 @@ public static class FieldInputCreator {
 	}
 
 	#region //// Case-specific creation
+
+	public static LineEdit CreateForAnyUnlinked() {
+		return new LineEdit();
+	}
+
 
 	public static LineEdit CreateForString(Field<string> field, bool isUnlinked = false) {
 
