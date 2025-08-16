@@ -181,4 +181,16 @@ public partial class WindowManager : Node, IRefrencesCore {
 		return newWindow;
 	}
 
+	/// <summary>
+	/// Returns a window of type <paramref name="windowType"/>
+	/// if it exsists as a child of the manager.
+	/// Returns <see langword="null"/> if the window does not exit.
+	/// </summary>
+	public Window? GetExistingWindowAtSelf(WindowType windowType) {
+		if (currentChildrenByType.TryGetValue(windowType, out Window? existingWindow)) {
+			return existingWindow;
+		}
+		return null;
+	}
+
 }

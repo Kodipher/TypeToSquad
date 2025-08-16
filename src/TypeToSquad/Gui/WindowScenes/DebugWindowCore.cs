@@ -10,10 +10,7 @@ using WinRTSpeechSynthServer.Protocol.Messages;
 namespace TypeToSquad.Gui.WindowScenes;
 
 
-/// <remarks>
-/// This contents of this window are to be unpacked,
-/// thefore the main window has its programing in an immediate single child.
-/// </remarks>
+/// <summary>An old relic of early testing.</summary>
 public partial class DebugWindowCore : Control, IRefrencesCore {
 
 	#region //// Core Node
