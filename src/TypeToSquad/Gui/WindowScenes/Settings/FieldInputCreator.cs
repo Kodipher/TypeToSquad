@@ -68,6 +68,37 @@ public static class FieldInputCreator {
 		throw new NotSupportedException();
 	}
 
+	/// <summary>
+	/// Connects a submission handler to the approprate
+	/// node signal of a node created by <see cref="CreateFor(Field, bool)"/>.
+	/// </summary>
+	/// <exception cref="NotSupportedException"></exception>
+	public static void ConnectOnControlSubmit(Control node, Action<Variant> onSubmit) {
+
+		if (node is OptionButton optionButton) {
+			optionButton.ItemSelected += index => onSubmit(optionButton.GetItemMetadata((int)index).AsString());
+			return;
+		}
+
+		if (node is CheckBox checkBox) {
+			checkBox.Toggled += newValue => onSubmit(newValue);
+			return;
+		}
+
+		if (node is LineEdit lineEdit) {
+			lineEdit.TextSubmitted += (text) => onSubmit(text);
+			lineEdit.FocusExited += () => onSubmit(lineEdit.Text);
+			return;
+		}
+
+		if (node is SpinBox spinBox) {
+			spinBox.ValueChanged += newValue => onSubmit(newValue);
+			return;
+		}
+
+		throw new NotSupportedException();
+	}
+
 	#region //// Case-specific creation
 
 	public static LineEdit CreateForAnyUnlinked() {
