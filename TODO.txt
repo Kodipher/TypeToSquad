@@ -1,16 +1,14 @@
 TODO:
 - change how/when log file is monitored
 - main window: check min size
-- tab shortcuts for context changes
+- feature: tab shortcuts for context changes
 -- letter after autocompletes the context
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
-- feature: direct hardware shortcuts (like DCSB)
+- feature: direct hardware typing
 - icons for table edit
 - min window sizes for all windows
 - check tab order in all windows
 - hover information
 
 TO TEST:
-- ssml: ipa
-- Settings.Table validation
