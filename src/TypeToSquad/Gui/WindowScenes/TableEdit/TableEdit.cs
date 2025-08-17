@@ -181,13 +181,37 @@ public partial class TableEdit : ScrollContainer {
 	void OnUpPressed(Button source) {
 		ThrowIfNotInitiated();
 
-		throw new NotImplementedException();
+		// Move inside table
+		int rowIndex = GridIndexToTableIndex(source.GetIndex());
+		if (rowIndex < 1) return;
+
+		var rowData = targetTable!.GetAtAsArray(rowIndex);
+		targetTable.RemoveAt(rowIndex);
+		targetTable.InsertAsArray(rowIndex - 1, rowData);
+
+		// Move inside grid by moving a previous row down
+		int offset = TableIndexToGridStartIndex(rowIndex - 1);
+		for (int nodesLeft = mainGrid.Columns; nodesLeft > 0; nodesLeft--) {
+			mainGrid.MoveChild(mainGrid.GetChild(offset), offset + 2*mainGrid.Columns - 1);
+		}
 	}
 
 	void OnDownPressed(Button source) {
 		ThrowIfNotInitiated();
 
-		throw new NotImplementedException();
+		// Move inside table
+		int rowIndex = GridIndexToTableIndex(source.GetIndex());
+		if (rowIndex >= targetTable!.Count - 1) return;
+
+		var rowData = targetTable.GetAtAsArray(rowIndex);
+		targetTable.RemoveAt(rowIndex);
+		targetTable.InsertAsArray(rowIndex + 1, rowData);
+
+		// Move inside grid
+		int offset = TableIndexToGridStartIndex(rowIndex);
+		for (int nodesLeft = mainGrid.Columns; nodesLeft > 0; nodesLeft--) {
+			mainGrid.MoveChild(mainGrid.GetChild(offset), offset + 2 * mainGrid.Columns - 1);
+		}
 	}
 
 	void OnInputSubmit(Control source, Variant newValue) {
