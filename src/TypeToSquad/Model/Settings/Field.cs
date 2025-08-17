@@ -5,18 +5,6 @@ using System;
 namespace TypeToSquad.Model.Settings;
 
 
-// A non-generic inhertiance root
-// to avoid getting data via reflection
-interface IVariantSavable {
-
-	/// <summary>Gets content as <see cref="Variant"/> for purposes of saving.</summary>
-	Variant ToSavableVariant();
-
-	/// <summary>Sets content from <see cref="Variant"/>. Used for loading.</summary>
-	void SetFromVariant(Variant value);
-}
-
-
 /// <summary>
 /// A storage for a value, together with a validator.
 /// The stored value should always be valid.
