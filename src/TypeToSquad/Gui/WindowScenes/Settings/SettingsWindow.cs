@@ -60,6 +60,12 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 	public void OnClose() {
 		GD.Print("Closing settings");
 
+		var windowManager = CoreNode?.WindowManager;
+		if (windowManager is not null) {
+			windowManager.GetExistingWindowAtSelf(WindowType.EditReplacements)?.QueueFree();
+			windowManager.GetExistingWindowAtSelf(WindowType.EditVoiceChanges)?.QueueFree();
+		}
+
 		if (CoreNode is not null) {
 			UserSettingsLoader.Save(CoreNode.UserSettings);
 			CoreNode.ReapplySettings();
