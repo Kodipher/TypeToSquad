@@ -113,6 +113,8 @@ public partial class TableEdit : ScrollContainer {
 
 	#endregion
 
+	#region //// Init
+
 	public void InitiateFor(Table table) {
 		ThrowIfInitiated();
 
@@ -166,6 +168,16 @@ public partial class TableEdit : ScrollContainer {
 		}
 	}
 
+	#endregion
+
+	int GridIndexToTableIndex(int souceIndex) {
+		return (souceIndex / mainGrid.Columns) - 1;
+	}
+	
+	int TableIndexToGridStartIndex(int tableIndex) {
+		return (tableIndex + 1) * mainGrid.Columns;
+	}
+
 	void OnUpPressed(Button source) {
 		ThrowIfNotInitiated();
 
@@ -187,13 +199,36 @@ public partial class TableEdit : ScrollContainer {
 	void OnDeletePressed(Button source) {
 		ThrowIfNotInitiated();
 
-		throw new NotImplementedException();
+		// Find row index
+		int rowIndex = GridIndexToTableIndex(source.GetIndex());
+
+		// Remove row
+		targetTable!.RemoveAt(rowIndex);
+
+		// Remove nodes
+		int offset = TableIndexToGridStartIndex(rowIndex);
+		for (int i = offset; i < offset + targetTable!.ColumnCount + gridRowTotalPrototypes; i++) {
+			mainGrid.GetChild(i).QueueFree();
+		}
 	}
 
 	void OnAddPressed() {
 		ThrowIfNotInitiated();
 
-		throw new NotImplementedException();
+		// Add empty/default data row
+		targetTable!.AddAsArray(Array.Empty<Variant>());
+		Variant[] rowData = targetTable.GetAtAsArray(targetTable.Count - 1);
+		
+		// Add new row into the table
+		foreach (var rowNode in CreateNewRow()) mainGrid.AddChild(rowNode);
+
+		// Fill new row with default data
+		int rowStartIndex = -(gridRowTotalPrototypes + targetTable.ColumnCount);
+
+		for (int j = 0; j < rowData.Length; j++) {
+			var controlNode = mainGrid.GetChild<Control>(rowStartIndex + gridRowLeftPrototypes + j);
+			FieldInputCreator.SetControlInputValue(controlNode, rowData[j]);
+		}
 	}
 
 	#region //// Throw helpers
