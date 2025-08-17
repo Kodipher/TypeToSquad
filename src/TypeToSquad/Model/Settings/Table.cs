@@ -203,8 +203,9 @@ where TRowTuple: struct, ITuple
 		RevalidateAllRows();
 	}
 
+	/// <remarks>If proxies were not set, returns an array of nulls.</remarks>
 	public override Field?[] GetValidationProxies() {
-		if (this.validators is null) throw new InvalidOperationException("Validation proxies were not set.");
+		if (this.validators is null) return new Field?[this.ColumnCount];
 		return this.validators.ToArray();
 	}
 
