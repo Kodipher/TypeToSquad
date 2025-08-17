@@ -14,11 +14,42 @@ namespace TypeToSquad.Model.Settings;
 
 
 /// <summary>
+/// <para>
 /// A savable array of value tuples.
 /// Only <see cref="ValueTuple"/>s of <see cref="Variant"/> compatible values
 /// are supported.
+/// </para>
+/// <para>
+/// Can convert between tuples and <see cref="Variant"/> arrays.
+/// Corrects length automatically.
+/// </para>
+/// <para>
+/// See <see cref="Table{TRowTuple}"/> for implementation.
+/// </para>
 /// </summary>
-public class Table<TRowTuple> : IVariantSavable, IList<TRowTuple>, IReadOnlyList<TRowTuple> 
+public abstract class Table : IVariantSavable {
+
+	public abstract Variant ToSavableVariant();
+	public abstract void SetFromVariant(Variant value);
+
+	public abstract Variant[] GetAtAsArray(int index);
+	public abstract void SetAtAsArray(int index, Variant[] array);
+	public abstract int Count { get; }
+
+	public abstract void AddAsArray(Variant[] array);
+	public abstract void InsertAsArray(int index, Variant[] array);
+	public abstract void RemoveAt(int index);
+	public abstract void Clear();
+
+	public abstract Field?[] GetValidationProxies();
+	public abstract void RevalidateAllRows();
+
+	public abstract int ColumnCount { get; }
+}
+
+
+/// <inheritdoc cref="Table"/>
+public class Table<TRowTuple> : Table, IList<TRowTuple>, IReadOnlyList<TRowTuple> 
 where TRowTuple: struct, ITuple 
 {
 
@@ -31,14 +62,19 @@ where TRowTuple: struct, ITuple
 		set => rows[index] = ReturnValidRow(value);
 	}
 
-	public int Count => rows.Count;
+	public override Variant[] GetAtAsArray(int index) => TupleToArray(this[index]);
+	public override void SetAtAsArray(int index, Variant[] array) => this[index] = ArrayToTuple(array);
+
+	public override int Count => rows.Count;
 
 	public void Add(TRowTuple row) => rows.Add(ReturnValidRow(row));
+	public override void AddAsArray(Variant[] array) => Add(ArrayToTuple(array));
 	public void Insert(int index, TRowTuple row) => rows.Insert(index, ReturnValidRow(row));
+	public override void InsertAsArray(int index, Variant[] array) => Insert(index, ArrayToTuple(array));
 
-	public void RemoveAt(int index) => rows.RemoveAt(index);
+	public override void RemoveAt(int index) => rows.RemoveAt(index);
 	public bool Remove(TRowTuple row) => rows.Remove(row);
-	public void Clear() => rows.Clear();
+	public override void Clear() => rows.Clear();
 
 	public int IndexOf(TRowTuple row) => rows.IndexOf(row);
 	public bool Contains(TRowTuple row) => rows.Contains(row);
@@ -52,7 +88,7 @@ where TRowTuple: struct, ITuple
 
 	#endregion
 
-	public Variant ToSavableVariant() {
+	public override Variant ToSavableVariant() {
 		Godot.Collections.Array savableArray = new();
 
 		foreach (var row in rows) {
@@ -62,7 +98,7 @@ where TRowTuple: struct, ITuple
 		return savableArray;
 	}
 
-	public void SetFromVariant(Variant value) {
+	public override void SetFromVariant(Variant value) {
 		foreach (var rowSource in value.AsGodotArray()) {
 			this.Add(ArrayToTuple(rowSource.AsGodotArray()));
 		}
@@ -133,6 +169,8 @@ where TRowTuple: struct, ITuple
 		return rowArray;
 	}
 
+	public override int ColumnCount => tupleTypes.Value.Length;
+
 	#endregion
 
 	#region //// Validation
@@ -154,8 +192,8 @@ where TRowTuple: struct, ITuple
 		// Guards
 		ArgumentNullException.ThrowIfNull(validators);
 		
-		if (validators.Length != tupleTypes.Value.Length) {
-			throw new ArgumentException($"Validators length mismatch. Expected length of {tupleTypes.Value.Length}, got {validators.Length}");
+		if (validators.Length != ColumnCount) {
+			throw new ArgumentException($"Validators length mismatch. Expected length of {ColumnCount}, got {validators.Length}");
 		}
 
 		// Set validators (copy array)
@@ -165,7 +203,7 @@ where TRowTuple: struct, ITuple
 		RevalidateAllRows();
 	}
 
-	public Field?[] GetValidationProxies() {
+	public override Field?[] GetValidationProxies() {
 		if (this.validators is null) throw new InvalidOperationException("Validation proxies were not set.");
 		return this.validators.ToArray();
 	}
@@ -188,7 +226,7 @@ where TRowTuple: struct, ITuple
 	}
 
 	/// <summary>Forces all current rows through <see cref="ReturnValidRow(TRowTuple)"/>.</summary>
-	public void RevalidateAllRows() {
+	public override void RevalidateAllRows() {
 		for (int i = 0; i < this.Count; i++) {
 			this[i] = ReturnValidRow(this[i]);
 		}
