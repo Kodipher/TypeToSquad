@@ -56,7 +56,7 @@ public static class FieldInputCreator {
 	/// created by <see cref="CreateFor(Field, bool)"/>.
 	/// </summary>
 	/// <exception cref="NotSupportedException"/>
-	public static Variant GetControlInput(Control node) {
+	public static Variant GetControlInputValue(Control node) {
 		
 		if (node is OptionButton optionButton) {
 			return optionButton.GetItemMetadata(optionButton.Selected);
@@ -64,6 +64,40 @@ public static class FieldInputCreator {
 		if (node is CheckBox checkBox) return checkBox.ButtonPressed;
 		if (node is LineEdit lineEdit) return lineEdit.Text;
 		if (node is SpinBox spinBox) return spinBox.Value;
+
+		throw new NotSupportedException();
+	}
+
+	/// <exception cref="NotSupportedException"/>
+	public static void SetControlInputValue(Control node, Variant value) {
+
+		if (node is OptionButton optionButton) {
+
+			for (int i = 0; i < optionButton.ItemCount; i++) {
+				if (optionButton.GetItemMetadata(i).AsString() == value.AsString()) {
+					optionButton.Selected = i;
+					return;
+				}
+			}
+
+			GD.PushError($"Could not select current option. Could not find {value} among options.");
+			optionButton.Selected = -1;
+		}
+
+		if (node is CheckBox checkBox) {
+			checkBox.SetPressedNoSignal(value.AsBool());
+			return;
+		}
+
+		if (node is LineEdit lineEdit) {
+			lineEdit.Text = value.AsString();
+			return;
+		}
+
+		if (node is SpinBox spinBox) {
+			spinBox.SetValueNoSignal(value.AsDouble());
+			return;
+		}
 
 		throw new NotSupportedException();
 	}
@@ -126,6 +160,7 @@ public static class FieldInputCreator {
 		return textInput;
 	}
 
+
 	public static CheckBox CreateForBool(Field<bool> field, bool isUnlinked = false) {
 		
 		// Create
@@ -161,6 +196,7 @@ public static class FieldInputCreator {
 
 		return fieldInput;
 	}
+
 
 	/// <remarks>There is a precision limit of 6 decimal places to avoid rounding errors.</remarks>
 	public static SpinBox CreateForDouble(FieldNumericRange<double> field, bool isUnlinked = false, double valueStep = 0.1) {
