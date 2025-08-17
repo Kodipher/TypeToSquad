@@ -82,6 +82,7 @@ public static class FieldInputCreator {
 
 			GD.PushError($"Could not select current option. Could not find {value} among options.");
 			optionButton.Selected = -1;
+			return;
 		}
 
 		if (node is CheckBox checkBox) {
