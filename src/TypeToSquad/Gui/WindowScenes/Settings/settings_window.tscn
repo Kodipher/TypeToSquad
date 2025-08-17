@@ -1,18 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://b3gxg0rgcj3yr"]
+[gd_scene load_steps=4 format=3 uid="uid://bcpfjd6g106yg"]
 
-[ext_resource type="Script" uid="uid://d6m05kgpahi8" path="res://Gui/WindowScenes/Settings/SettingsWindow.cs" id="1_e6at4"]
-[ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="2_bxiov"]
-[ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_xtlee"]
+[ext_resource type="Script" uid="uid://cty723lak8pxd" path="res://Gui/WindowScenes/Settings/SettingsWindow.cs" id="1_8ncbl"]
+[ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_c2op0"]
+[ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_5ide3"]
 
-[node name="SettingsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
-title = "Settings"
+[node name="AdvancedSettingsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
+title = "Settings (Advanced)"
 initial_position = 2
-size = Vector2i(700, 160)
-min_size = Vector2i(200, 155)
-script = ExtResource("1_e6at4")
-AutoFocusNode = NodePath("MarginContainer/VBoxContainer/MainGrid/MainVoiceInput")
-MainTheme = ExtResource("2_xtlee")
-KeyboardPatchTheme = ExtResource("2_bxiov")
+size = Vector2i(700, 300)
+min_size = Vector2i(300, 200)
+script = ExtResource("1_8ncbl")
+AutoFocusNode = NodePath("MarginContainer/VBoxContainer/TabContainer")
+MainTheme = ExtResource("2_c2op0")
+KeyboardPatchTheme = ExtResource("3_5ide3")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -24,55 +24,168 @@ grow_vertical = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="MainGrid" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+current_tab = 0
+
+[node name="General" type="GridContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
 columns = 2
+metadata/_tab_index = 0
 
-[node name="MainVoiceLabel" type="Label" parent="MarginContainer/VBoxContainer/MainGrid"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Voice"
-
-[node name="MainVoiceInput" type="OptionButton" parent="MarginContainer/VBoxContainer/MainGrid"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-focus_next = NodePath("../OutputDeviceInput")
-focus_previous = NodePath("../../SaveButton")
-fit_to_longest_item = false
-allow_reselect = true
-
-[node name="OutputDeviceLabel" type="Label" parent="MarginContainer/VBoxContainer/MainGrid"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Output Device"
-
-[node name="OutputDeviceInput" type="OptionButton" parent="MarginContainer/VBoxContainer/MainGrid"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-focus_next = NodePath("../EnableAdvancedInput")
-focus_previous = NodePath("../MainVoiceInput")
-fit_to_longest_item = false
-allow_reselect = true
-
-[node name="EnableAdvancedLabel" type="Label" parent="MarginContainer/VBoxContainer/MainGrid"]
+[node name="EnableAdvancedLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/General"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Enable Advanced Settings"
 
-[node name="EnableAdvancedInput" type="CheckBox" parent="MarginContainer/VBoxContainer/MainGrid"]
+[node name="EnableAdvancedInput" type="CheckBox" parent="MarginContainer/VBoxContainer/TabContainer/General"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EnableMonitoringLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/General"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Enable Error Monitoring"
+
+[node name="EnableMonitoringInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/General"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Voices" type="GridContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+columns = 2
+metadata/_tab_index = 1
+
+[node name="MainVoiceLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Main Voice"
+
+[node name="MainVoiceInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VoicePitchLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Voice Pitch"
+
+[node name="VoicePitchInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VoiceRateLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Speaking Rate"
+
+[node name="VoiceRateInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VoiceChangesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Voice Changes"
+
+[node name="OpenVoiceChangesButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
-focus_next = NodePath("../../SaveButton")
-focus_previous = NodePath("../OutputDeviceInput")
+text = "Edit"
+
+[node name="Input" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/TabContainer/Input"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+
+[node name="HistorySlotsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "History Slots"
+
+[node name="HistorySlotsInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ReplacementsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Text Replacements"
+
+[node name="OpenReplacementsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Edit"
+
+[node name="ReplacementPassesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Replacement Passes Limit"
+
+[node name="ReplacementPassesInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OpenShortcutsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Input"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "View Input Shortcuts"
+
+[node name="Audio" type="GridContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+columns = 2
+metadata/_tab_index = 3
+
+[node name="OutputDeviceLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Output Device"
+
+[node name="OutputDeviceInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MaxConcurentLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Max Concurent Outputs"
+
+[node name="MaxConcurentInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SynthesisVolumeLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Audio Volume"
+
+[node name="SynthesisVolumeInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
-focus_next = NodePath("../MainGrid/MainVoiceInput")
-focus_previous = NodePath("../MainGrid/EnableAdvancedInput")
 text = "Close"

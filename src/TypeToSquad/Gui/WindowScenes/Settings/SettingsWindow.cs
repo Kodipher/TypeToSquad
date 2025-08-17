@@ -17,30 +17,16 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 	#endregion
 
-	#region //// Nodes (common for both setting windows)
-
-	// All set in FindNodes, which is called in _Ready
-	BaseButton saveButton = null!;
-	BaseButton enableAdvancedCheckbox = null!;
-
-	void FindNodes() {
-		saveButton = this.GetNodeNotNull<BaseButton>("%SaveButton");
-		enableAdvancedCheckbox = this.GetNodeNotNull<BaseButton>("%EnableAdvancedInput");
-	}
-
-	#endregion
-
 	public override void _Ready() {
 		base._Ready();
 
-		FindNodes();
-
 		// Saving
 		this.CloseRequested += OnClose;
-		saveButton.Pressed += OnClose;
+		this.GetNodeNotNull<BaseButton>("%SaveButton").Pressed += OnClose;
 
 		// Advanced settings toggle
 		if (CoreNode is not null) {
+			var enableAdvancedCheckbox = this.GetNodeNotNull<BaseButton>("%EnableAdvancedInput");
 			Field<bool> advancedSettingsField = CoreNode.UserSettings.UseAdvancedSettings;
 
 			if (advancedSettingsField.Value) enableAdvancedCheckbox.ButtonPressed = true;
@@ -101,14 +87,36 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 	/// <summary>
 	/// Sets up inputs for user settings.
-	/// Overriden in derived <see cref="AdvancedSettingsWindow"/>.
+	/// Overriden in <see cref="SimpleSettingsWindow"/>.
 	/// </summary>
 	protected virtual void SetupSettingInputs() {
 
 		if (CoreNode is null) return;
 
-		ImplaceByProperInput(CoreNode.UserSettings.Voice, "%MainVoiceInput");
-		ImplaceByProperInput(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+		var settings = CoreNode.UserSettings;
+
+		// General
+		ImplaceByProperInput(settings.EnableErrorMonitoring, "%EnableMonitoringInput");
+
+		// Voices
+		ImplaceByProperInput(settings.Voice, "%MainVoiceInput");
+		ImplaceByProperInput(settings.VoicePitch, "%VoicePitchInput");
+		ImplaceByProperInput(settings.VoiceRate, "%VoiceRateInput");
+		LinkButtonToExternalWindow("%OpenVoiceChangesButton", WindowType.EditVoiceChanges);
+
+		// Input
+		ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
+		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
+		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
+
+		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);
+
+		// Audio
+		ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
+		ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
+
+		var volumeInput = ImplaceByProperInput(settings.SynthesisVolumePercent, "%SynthesisVolumeInput");
+		((SpinBox)volumeInput).Suffix = "%";
 	}
 
 }
