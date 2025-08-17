@@ -1,0 +1,74 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnk332u7rxegx"]
+
+[ext_resource type="Script" uid="uid://bm018rwyy2jcm" path="res://Gui/WindowScenes/TableEdit/TableEdit.cs" id="1_t8jsl"]
+
+[node name="TableEdit" type="ScrollContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+script = ExtResource("1_t8jsl")
+
+[node name="MarginContainerRight" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"MarginContainerRightOnly"
+
+[node name="VBox" type="VBoxContainer" parent="MarginContainerRight"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainGrid" type="GridContainer" parent="MarginContainerRight/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 4
+
+[node name="UpPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid"]
+layout_mode = 2
+
+[node name="DownPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid"]
+layout_mode = 2
+
+[node name="ColumnNamePrototype" type="Label" parent="MarginContainerRight/VBox/MainGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Unnamed"
+
+[node name="DeletePlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid"]
+layout_mode = 2
+
+[node name="UpButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "▲"
+
+[node name="DownButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "▼"
+
+[node name="DeleteButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Del"
+
+[node name="AddRowButton" type="Button" parent="MarginContainerRight/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "+"
+
+[node name="PrototypeDump" type="Control" parent="MarginContainerRight/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
