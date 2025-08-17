@@ -12,7 +12,9 @@ public enum WindowType {
 	Debug,
 	Settings,
 	AdvancedSettings,
-	Shortcuts
+	Shortcuts,
+	EditReplacements,
+	EditVoiceChanges
 }
 
 

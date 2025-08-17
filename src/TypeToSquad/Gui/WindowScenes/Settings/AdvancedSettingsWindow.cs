@@ -7,17 +7,6 @@ namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 
-	public override void _Ready() {
-		base._Ready();
-
-		// View shortcuts button
-		var openShortcutsButton = this.GetNodeNotNull<BaseButton>("%OpenShortcutsButton");
-		openShortcutsButton.Pressed += () => {
-			if (CoreNode is null) return;
-			CoreNode.WindowManager.CreateWindowAtSelfUnique(WindowType.Shortcuts);
-		};
-	}
-
 	protected override void SetupSettingInputs() {
 
 		if (CoreNode is null) return;
@@ -31,10 +20,14 @@ public partial class AdvancedSettingsWindow : SettingsWindow, IRefrencesCore {
 		ImplaceByProperInput(settings.Voice, "%MainVoiceInput");
 		ImplaceByProperInput(settings.VoicePitch, "%VoicePitchInput");
 		ImplaceByProperInput(settings.VoiceRate, "%VoiceRateInput");
+		LinkButtonToExternalWindow("%OpenVoiceChangesButton", WindowType.EditVoiceChanges);
 
 		// Input
 		ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
+		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
 		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
+
+		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);
 
 		// Audio
 		ImplaceByProperInput(settings.Device, "%OutputDeviceInput");

@@ -84,6 +84,15 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		return newNode;
 	}
 
+	protected void LinkButtonToExternalWindow(NodePath buttonPath, WindowType windowType) {
+
+		if (CoreNode is null) throw new System.InvalidOperationException();
+
+		this.GetNode<Button>(buttonPath).Pressed += () => {
+			CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
+		};
+	}
+
 	/// <summary>
 	/// Sets up inputs for user settings.
 	/// Overriden in derived <see cref="AdvancedSettingsWindow"/>.
