@@ -122,7 +122,7 @@ where TRowTuple: struct, ITuple
 	});
 
 	/// <summary>Converts a variant array into a tupple row of this table.</summary>
-	public static TRowTuple ArrayToTuple(Variant[] array) {
+	protected static TRowTuple ArrayToTuple(Variant[] array) {
 
 		// Force correct size
 		if (array.Length != tupleTypes.Value.Length) {
@@ -153,12 +153,12 @@ where TRowTuple: struct, ITuple
 	}
 
 	/// <inheritdoc cref="ArrayToTuple(Variant[])"/>
-	public static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
+	protected static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
 		return ArrayToTuple(array.ToArray());
 	}
 
 	/// <summary>Converts a tuple into a variant array.</summary>
-	public static Variant[] TupleToArray(TRowTuple tuple) {
+	protected static Variant[] TupleToArray(TRowTuple tuple) {
 		Variant[] rowArray = new Variant[tuple.Length];
 
 		for (int i = 0; i < tuple.Length; i++) {
