@@ -109,7 +109,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	public void OnSettingsPressed() {
 		if (CoreNode is null) return;
 
-		var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.AdvancedSettings : WindowType.Settings;
+		var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.Settings : WindowType.SimpleSettings;
 		CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
 	}
 

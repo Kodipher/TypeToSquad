@@ -34,7 +34,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 				advancedSettingsField.Value = newValue;
 				OnClose();
 
-				var windowType = advancedSettingsField ? WindowType.AdvancedSettings : WindowType.Settings;
+				var windowType = advancedSettingsField ? WindowType.Settings : WindowType.SimpleSettings;
 				CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
 			};
 		}

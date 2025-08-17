@@ -10,8 +10,8 @@ public enum WindowType {
 	Unknown,
 	Main,
 	Debug,
+	SimpleSettings,
 	Settings,
-	AdvancedSettings,
 	Shortcuts,
 	EditReplacements,
 	EditVoiceChanges
