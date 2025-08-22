@@ -21,6 +21,18 @@ public static class GodotExtensions {
 	}
 
 	/// <summary>
+	/// Calls an action on the next frame.
+	/// Uses <see cref="SceneTree.ProcessFrame"/> signal.
+	/// </summary>
+	public static void CallOneFrameLater(this Node thisNode, Action action) {
+		thisNode.GetTree().Connect(
+			SceneTree.SignalName.ProcessFrame,
+			Callable.From(action),
+			(uint)GodotObject.ConnectFlags.OneShot
+		);
+	}
+
+	/// <summary>
 	/// <para>
 	/// Convernts any object into a <see cref="Variant"/>.
 	/// </para>

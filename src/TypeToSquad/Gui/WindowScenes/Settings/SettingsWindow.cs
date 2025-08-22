@@ -86,14 +86,6 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		};
 	}
 
-	protected void CallOneFrameLater(Action action) {
-		GetTree().Connect(
-			SceneTree.SignalName.ProcessFrame, 
-			Callable.From(action), 
-			(uint)ConnectFlags.OneShot
-		);
-	}
-
 	/// <summary>
 	/// Sets up inputs for user settings.
 	/// Overriden in <see cref="SimpleSettingsWindow"/>.
@@ -117,7 +109,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		var historySlotsInput = ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			historySlotsInput,
-			_ => CallOneFrameLater(
+			_ => this.CallOneFrameLater(
 					() => {
 						CoreNode.HistoryTracker.MaxHistorySize = CoreNode.UserSettings.HistorySlots;
 						CoreNode.HistoryTracker.EnforceHistoryCountMax();
@@ -134,13 +126,13 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		var deviceSelect = ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			deviceSelect, 
-			_ => CallOneFrameLater(CoreNode.AudioManager.SetOutputDeviceFromSettings)
+			_ => this.CallOneFrameLater(CoreNode.AudioManager.SetOutputDeviceFromSettings)
 		);
 
 		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			maxConcurrentInput, 
-			_ => CallOneFrameLater(CoreNode.AudioManager.EnsureConcurrentNodeMax)
+			_ => this.CallOneFrameLater(CoreNode.AudioManager.EnsureConcurrentNodeMax)
 		);
 
 		var volumeInput = ImplaceByProperInput(settings.SynthesisVolumePercent, "%SynthesisVolumeInput");
