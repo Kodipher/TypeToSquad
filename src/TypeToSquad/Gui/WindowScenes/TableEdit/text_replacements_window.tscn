@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2w437qnsyeoh"]
+
+[ext_resource type="Script" uid="uid://bv5p0v7yacuvv" path="res://Gui/WindowScenes/TableEdit/TextReplacementsWindow.cs" id="1_2015u"]
+[ext_resource type="PackedScene" uid="uid://bnk332u7rxegx" path="res://Gui/WindowScenes/TableEdit/table_edit.tscn" id="1_xkik6"]
+[ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_rrtd5"]
+[ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_wxo4p"]
+
+[node name="TextReplacementsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
+title = "Edit Text Replacements"
+initial_position = 2
+size = Vector2i(700, 500)
+min_size = Vector2i(300, 200)
+script = ExtResource("1_2015u")
+AutoFocusNode = NodePath("MarginContainer/VBoxContainer/SaveButton")
+MainTheme = ExtResource("2_rrtd5")
+KeyboardPatchTheme = ExtResource("3_wxo4p")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TableEdit" parent="MarginContainer/VBoxContainer" instance=ExtResource("1_xkik6")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Close"
