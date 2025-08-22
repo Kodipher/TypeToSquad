@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 using TypeToSquad.Utils;
 using TypeToSquad.Model.Settings;

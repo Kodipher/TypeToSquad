@@ -1,3 +1,4 @@
+using TypeToSquad.Utils;
 
 
 namespace TypeToSquad.Gui.WindowScenes.Settings;
@@ -10,7 +11,12 @@ public partial class SimpleSettingsWindow : SettingsWindow, IRefrencesCore {
 		if (CoreNode is null) return;
 
 		ImplaceByProperInput(CoreNode.UserSettings.Voice, "%MainVoiceInput");
-		ImplaceByProperInput(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+
+		var deviceSelect = ImplaceByProperInput(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+		FieldInputCreator.ConnectOnControlSubmit(
+			deviceSelect,
+			_ => this.CallOneFrameLater(CoreNode.AudioManager.SetOutputDeviceFromSettings)
+		);
 	}
 
 }
