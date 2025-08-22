@@ -80,7 +80,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 		if (CoreNode is null) throw new System.InvalidOperationException();
 
-		this.GetNode<Button>(buttonPath).Pressed += () => {
+		this.GetNodeNotNull<Button>(buttonPath).Pressed += () => {
 			CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
 		};
 	}
