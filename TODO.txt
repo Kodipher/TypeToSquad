@@ -1,6 +1,6 @@
 TODO:
+- voice changes: also change the current context
 - change how/when log file is monitored
-- main window: check min size
 - feature: tab shortcuts for context changes
 -- letter after autocompletes the context
 - feature: smml audio tag usage
