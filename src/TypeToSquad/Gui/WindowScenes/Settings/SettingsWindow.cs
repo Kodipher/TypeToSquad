@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 using TypeToSquad.Utils;
 using TypeToSquad.Model.Settings;
@@ -85,6 +86,14 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		};
 	}
 
+	protected void CallOneFrameLater(Action action) {
+		GetTree().Connect(
+			SceneTree.SignalName.ProcessFrame, 
+			Callable.From(action), 
+			(uint)ConnectFlags.OneShot
+		);
+	}
+
 	/// <summary>
 	/// Sets up inputs for user settings.
 	/// Overriden in <see cref="SimpleSettingsWindow"/>.
@@ -108,10 +117,12 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		var historySlotsInput = ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			historySlotsInput,
-			_ => {
-				CoreNode.HistoryTracker.MaxHistorySize = CoreNode.UserSettings.HistorySlots;
-				CoreNode.HistoryTracker.EnforceHistoryCountMax();
-			}
+			_ => CallOneFrameLater(
+					() => {
+						CoreNode.HistoryTracker.MaxHistorySize = CoreNode.UserSettings.HistorySlots;
+						CoreNode.HistoryTracker.EnforceHistoryCountMax();
+					}
+				)
 		);
 
 		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
@@ -123,13 +134,13 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		var deviceSelect = ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			deviceSelect, 
-			_ => CoreNode.AudioManager.SetOutputDeviceFromSettings()
+			_ => CallOneFrameLater(CoreNode.AudioManager.SetOutputDeviceFromSettings)
 		);
 
 		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			maxConcurrentInput, 
-			_ => CoreNode.AudioManager.EnsureConcurrentNodeMax()
+			_ => CallOneFrameLater(CoreNode.AudioManager.EnsureConcurrentNodeMax)
 		);
 
 		var volumeInput = ImplaceByProperInput(settings.SynthesisVolumePercent, "%SynthesisVolumeInput");
