@@ -226,6 +226,11 @@ public partial class TableEdit : ScrollContainer {
 		// Find row index
 		int rowIndex = GridIndexToTableIndex(source.GetIndex());
 
+		// Focus another row to keep focus
+		int rowIndexToFocus = rowIndex == targetTable!.Count - 1 ? rowIndex - 1 : rowIndex + 1;
+		int nodeIndexToFocus = TableIndexToGridStartIndex(rowIndexToFocus) + mainGrid.Columns - 1;
+		mainGrid.GetChild<Control>(nodeIndexToFocus).GrabFocus();
+
 		// Remove row
 		targetTable!.RemoveAt(rowIndex);
 
