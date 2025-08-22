@@ -10,15 +10,7 @@ using TypeToSquad.Utils;
 namespace TypeToSquad.Gui.WindowScenes;
 
 
-public partial class ShortcutWindow : WindowEx, IRefrencesCore {
-
-	#region //// Core Node
-
-	public CoreNode? CoreNode { get; set; } = null;
-
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
-
-	#endregion
+public partial class ShortcutWindow : WindowEx {
 
 	#region //// Displayed Shortcuts
 
