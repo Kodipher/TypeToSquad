@@ -225,18 +225,17 @@ where TRowTuple: struct, ITuple
 		// No validators sets
 		if (validators is null) return ArrayToTuple(values);
 
-		// Copy row as array
+		// Copy input to avoid mutation
 		Variant[] rowValues = new Variant[ColumnCount];
+		int n = Math.Min(values.Length, rowValues.Length);
+		for (int i = 0; i < n; i++) {
+			rowValues[i] = values[i];
+		}
 
 		// Validate each item
 		for (int i = 0; i < rowValues.Length; i++) {
-
-			if (validators[i] is null) {
-				rowValues[i] = values[i];
-				continue;
-			}
-
-			rowValues[i] = validators[i]!.ReturnValid(values[i]);
+			if (validators[i] is null) continue;
+			rowValues[i] = validators[i]!.ReturnValid(rowValues[i]);
 		}
 
 		return ArrayToTuple(rowValues);
