@@ -35,14 +35,8 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	public override void _Ready() {
 		base._Ready();
 
-		// Find nodes
-		speakButton = this.GetNodeNotNull<BaseButton>("%SpeakButton");
-		shutButton = this.GetNodeNotNull<BaseButton>("%ShutButton");
+		// Find main text edit
 		messageTextEdit = this.GetNodeNotNull<TextEdit>("%MessageTextEdit");
-
-		settingsButton = this.GetNodeNotNull<BaseButton>("%SettingsButton");
-
-		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
 
 		// Init syntax highlighter
 		var highlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighligher();
@@ -50,12 +44,19 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		messageTextEdit.SyntaxHighlighter = highlighter;
 		
 		// Init error indicator
+		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
+
 		errorIndicator.Hide();
-			CoreNode.LogMonitor.OnErrorFound += errorIndicator.Show;
-			if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 		errorIndicator.Pressed += OnErrorIndicatorPressed;
 
-		// Connect button signals
+		CoreNode.LogMonitor.OnErrorFound += errorIndicator.Show;
+		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
+
+		// Init buttons
+		speakButton = this.GetNodeNotNull<BaseButton>("%SpeakButton");
+		shutButton = this.GetNodeNotNull<BaseButton>("%ShutButton");
+		settingsButton = this.GetNodeNotNull<BaseButton>("%SettingsButton");
+
 		speakButton.Pressed += OnSpeakPressed;
 		shutButton.Pressed += OnShutPressed;
 		settingsButton.Pressed += OnSettingsPressed;
