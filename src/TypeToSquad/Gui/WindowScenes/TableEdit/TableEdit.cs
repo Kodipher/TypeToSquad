@@ -69,7 +69,7 @@ public partial class TableEdit : ScrollContainer {
 	const int gridRowTotalPrototypes = 3;
 	const int gridRowLeftPrototypes = 2;
 
-	IEnumerable<Control> CreateNewRow() {
+	IEnumerable<Control> CreateNewRowNodes() {
 
 		if (targetTable is null) throw new InvalidOperationException($"{nameof(targetTable)} was not set.");
 
@@ -138,7 +138,7 @@ public partial class TableEdit : ScrollContainer {
 
 		// Rows
 		for (int i = 0; i < table.Count; i++) {
-			foreach (var rowNode in CreateNewRow()) mainGrid.AddChild(rowNode);
+			foreach (var rowNode in CreateNewRowNodes()) mainGrid.AddChild(rowNode);
 
 			int rowStartIndex = -(gridRowTotalPrototypes + table.ColumnCount);
 			// Negative index counting backwards from end
@@ -174,7 +174,7 @@ public partial class TableEdit : ScrollContainer {
 		return (souceIndex / mainGrid.Columns) - 1;
 	}
 	
-	int TableIndexToGridStartIndex(int tableIndex) {
+	int TableIndexToGridRowStartIndex(int tableIndex) {
 		return (tableIndex + 1) * mainGrid.Columns;
 	}
 
@@ -190,7 +190,7 @@ public partial class TableEdit : ScrollContainer {
 		targetTable.InsertAsArray(rowIndex - 1, rowData);
 
 		// Move inside grid by moving a previous row down
-		int offset = TableIndexToGridStartIndex(rowIndex - 1);
+		int offset = TableIndexToGridRowStartIndex(rowIndex - 1);
 		for (int nodesLeft = mainGrid.Columns; nodesLeft > 0; nodesLeft--) {
 			mainGrid.MoveChild(mainGrid.GetChild(offset), offset + 2*mainGrid.Columns - 1);
 		}
@@ -208,7 +208,7 @@ public partial class TableEdit : ScrollContainer {
 		targetTable.InsertAsArray(rowIndex + 1, rowData);
 
 		// Move inside grid
-		int offset = TableIndexToGridStartIndex(rowIndex);
+		int offset = TableIndexToGridRowStartIndex(rowIndex);
 		for (int nodesLeft = mainGrid.Columns; nodesLeft > 0; nodesLeft--) {
 			mainGrid.MoveChild(mainGrid.GetChild(offset), offset + 2 * mainGrid.Columns - 1);
 		}
@@ -228,14 +228,14 @@ public partial class TableEdit : ScrollContainer {
 
 		// Focus another row to keep focus
 		int rowIndexToFocus = rowIndex == targetTable!.Count - 1 ? rowIndex - 1 : rowIndex + 1;
-		int nodeIndexToFocus = TableIndexToGridStartIndex(rowIndexToFocus) + mainGrid.Columns - 1;
+		int nodeIndexToFocus = TableIndexToGridRowStartIndex(rowIndexToFocus) + mainGrid.Columns - 1;
 		mainGrid.GetChild<Control>(nodeIndexToFocus).GrabFocus();
 
 		// Remove row
 		targetTable!.RemoveAt(rowIndex);
 
 		// Remove nodes
-		int offset = TableIndexToGridStartIndex(rowIndex);
+		int offset = TableIndexToGridRowStartIndex(rowIndex);
 		for (int i = offset; i < offset + targetTable!.ColumnCount + gridRowTotalPrototypes; i++) {
 			mainGrid.GetChild(i).QueueFree();
 		}
@@ -249,7 +249,7 @@ public partial class TableEdit : ScrollContainer {
 		Variant[] rowData = targetTable.GetAtAsArray(targetTable.Count - 1);
 		
 		// Add new row into the table
-		foreach (var rowNode in CreateNewRow()) mainGrid.AddChild(rowNode);
+		foreach (var rowNode in CreateNewRowNodes()) mainGrid.AddChild(rowNode);
 
 		// Fill new row with default data
 		int rowStartIndex = -(gridRowTotalPrototypes + targetTable.ColumnCount);
