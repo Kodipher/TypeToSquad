@@ -146,17 +146,4 @@ public partial class CoreNode : Node {
 		else if (what == NotificationWMCloseRequest) OnCloseRequest();
 	}
 
-	public void ReapplySettings() {
-
-		AudioManager.SetOutputDeviceFromSettings();
-		AudioManager.EnsureConcurrentNodeMax();
-
-		HistoryTracker.MaxHistorySize = UserSettings.HistorySlots;
-		HistoryTracker.EnforceHistoryCountMax();
-
-		MainWindow.ClearHighlighterCache();
-
-		if (UserSettings.EnableErrorMonitoring) LogMonitor.CheckLog();
-	}
-
 }

@@ -54,7 +54,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 		if (CoreNode is not null) {
 			UserSettingsLoader.Save(CoreNode.UserSettings);
-			CoreNode.ReapplySettings();
+			if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 		}
 
 		this.QueueFree();
@@ -105,15 +105,32 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		LinkButtonToExternalWindow("%OpenVoiceChangesButton", WindowType.EditVoiceChanges);
 
 		// Input
-		ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
+		var historySlotsInput = ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
+		FieldInputCreator.ConnectOnControlSubmit(
+			historySlotsInput,
+			_ => {
+				CoreNode.HistoryTracker.MaxHistorySize = CoreNode.UserSettings.HistorySlots;
+				CoreNode.HistoryTracker.EnforceHistoryCountMax();
+			}
+		);
+
 		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
 		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
 
 		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);
 
 		// Audio
-		ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
-		ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
+		var deviceSelect = ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
+		FieldInputCreator.ConnectOnControlSubmit(
+			deviceSelect, 
+			_ => CoreNode.AudioManager.SetOutputDeviceFromSettings()
+		);
+
+		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
+		FieldInputCreator.ConnectOnControlSubmit(
+			maxConcurrentInput, 
+			_ => CoreNode.AudioManager.EnsureConcurrentNodeMax()
+		);
 
 		var volumeInput = ImplaceByProperInput(settings.SynthesisVolumePercent, "%SynthesisVolumeInput");
 		((SpinBox)volumeInput).Suffix = "%";

@@ -18,10 +18,6 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	#endregion
 
-	public void ClearHighlighterCache() {
-		messageTextEdit.SyntaxHighlighter?.ClearHighlightingCache();
-	}
-
 	#region //// Setup
 
 	// Nodes
