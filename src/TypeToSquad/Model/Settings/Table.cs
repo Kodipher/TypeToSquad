@@ -63,14 +63,14 @@ where TRowTuple: struct, ITuple
 	}
 
 	public override Variant[] GetAtAsArray(int index) => TupleToArray(this[index]);
-	public override void SetAtAsArray(int index, Variant[] array) => this[index] = ArrayToTuple(array);
+	public override void SetAtAsArray(int index, Variant[] array) => rows[index] = ReturnValidRow(array);
 
 	public override int Count => rows.Count;
 
 	public void Add(TRowTuple row) => rows.Add(ReturnValidRow(row));
-	public override void AddAsArray(Variant[] array) => Add(ArrayToTuple(array));
+	public override void AddAsArray(Variant[] array) => rows.Add(ReturnValidRow(array));
 	public void Insert(int index, TRowTuple row) => rows.Insert(index, ReturnValidRow(row));
-	public override void InsertAsArray(int index, Variant[] array) => Insert(index, ArrayToTuple(array));
+	public override void InsertAsArray(int index, Variant[] array) => rows.Insert(index, ReturnValidRow(array));
 
 	public override void RemoveAt(int index) => rows.RemoveAt(index);
 	public bool Remove(TRowTuple row) => rows.Remove(row);
@@ -209,18 +209,34 @@ where TRowTuple: struct, ITuple
 		return this.validators.ToArray();
 	}
 
-	public virtual TRowTuple ReturnValidRow(TRowTuple value) {
+	public virtual TRowTuple ReturnValidRow(TRowTuple row) {
 
 		// No validators sets
-		if (validators is null) return value;
+		if (validators is null) return row;
+
+		// Validate as array
+		Variant[] rowValues = TupleToArray(row);
+		return ReturnValidRow(rowValues);
+	}
+
+	/// <remarks>Input array is not mutated.</remarks>
+	public virtual TRowTuple ReturnValidRow(params Variant[] values) {
+
+		// No validators sets
+		if (validators is null) return ArrayToTuple(values);
 
 		// Copy row as array
-		Variant[] rowValues = TupleToArray(value);
+		Variant[] rowValues = new Variant[ColumnCount];
 
 		// Validate each item
 		for (int i = 0; i < rowValues.Length; i++) {
-			if (validators[i] is null) continue;
-			rowValues[i] = validators[i]!.ReturnValid(rowValues[i]);
+
+			if (validators[i] is null) {
+				rowValues[i] = values[i];
+				continue;
+			}
+
+			rowValues[i] = validators[i]!.ReturnValid(values[i]);
 		}
 
 		return ArrayToTuple(rowValues);
