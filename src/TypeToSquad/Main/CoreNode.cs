@@ -19,9 +19,10 @@ namespace TypeToSquad;
 public interface IRefrencesCore {
 	/// <summary>
 	/// Called once to share the <see cref="CoreNode"/> reference.
-	/// <b>Note:</b> Might be called before <see cref="Node._Ready"/>.
+	/// Should be called before <see cref="Node._Ready"/> for nodes,
+	/// when possible (not guaranteed).
 	/// </summary>
-	public void RecieveCoreReference(CoreNode? core);
+	public void RecieveCoreReference(CoreNode core);
 }
 
 

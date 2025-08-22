@@ -33,9 +33,11 @@ public class MessageParser : IRefrencesCore {
 
 	#region //// Core Node
 
-	public CoreNode? CoreNode { get; set; } = null;
+	CoreNode? _coreNode = null;
 
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
+
+	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
 
 	#endregion
 
@@ -53,7 +55,6 @@ public class MessageParser : IRefrencesCore {
 	/// with <see cref="ContentSegment.ContentType"/> set.
 	/// </summary>
 	ContentSegment CreateTypedContentSegment(ContentSegment segment) {
-		if (CoreNode is null) return ContentSegment.CreateWithType(segment, ContentType.Invalid);
 
 		var contextType =
 			contextHintStrings
@@ -70,7 +71,6 @@ public class MessageParser : IRefrencesCore {
 	/// with <see cref="HintSegment.HintType"/> set.
 	/// </summary>
 	HintSegment CreateTypedHintSegment(HintSegment segment) {
-		if (CoreNode is null) return HintSegment.CreateWithType(segment, HintType.Unset);
 
 		// Check for empty context
 		if (string.IsNullOrWhiteSpace(segment.HintText)) {
@@ -296,8 +296,6 @@ public class MessageParser : IRefrencesCore {
 	public List<MessageSegment> ReplaceTextSinglePass(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
 		anyTextReplaced = false;
 
-		if (CoreNode is null) return segments.ToList();
-
 		string currentContext = "";
 		List<MessageSegment> newSegments = new();
 
@@ -412,7 +410,6 @@ public class MessageParser : IRefrencesCore {
 
 	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
-		if (CoreNode is null) throw new InvalidOperationException("Cannot compile SSML without CoreNode");
 		if (CoreNode.SpeechDaemon.VoicesByName is null) throw new InvalidOperationException("Cannot find voice information.");
 
 		StringBuilder sb = new StringBuilder();

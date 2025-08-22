@@ -16,14 +16,15 @@ public class MessageSender : IRefrencesCore {
 
 	#region //// Core Node
 
-	public CoreNode? CoreNode { get; set; } = null;
+	CoreNode? _coreNode = null;
 
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
+
+	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
 
 	#endregion
 
 	public void SendMessage(string message) {
-		if (CoreNode is null) return;
 		
 		SynthesizeRequest request = new SynthesizeRequest();
 
@@ -59,7 +60,6 @@ public class MessageSender : IRefrencesCore {
 	}
 
 	void ParseMessageText(in SynthesizeRequest request, string message) {
-		if (CoreNode is null) return;
 
 		var parser = CoreNode.MessageParser;
 

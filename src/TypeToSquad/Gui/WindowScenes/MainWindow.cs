@@ -12,9 +12,11 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	#region //// Core Node
 
-	public CoreNode? CoreNode { get; set; } = null;
+	CoreNode? _coreNode = null;
 
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
+
+	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
 
 	#endregion
 
@@ -49,10 +51,8 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		
 		// Init error indicator
 		errorIndicator.Hide();
-		if (CoreNode is not null) {
 			CoreNode.LogMonitor.OnErrorFound += errorIndicator.Show;
 			if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
-		}
 		errorIndicator.Pressed += OnErrorIndicatorPressed;
 
 		// Connect button signals
@@ -62,9 +62,6 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 		// Connect focus
 		this.FocusEntered += messageTextEdit.GrabFocus;
-
-		// Core check
-		if (CoreNode is null) GD.PushError("Main Window has not been provided with CoreNode.");
 	}
 
 	public override void _Input(InputEvent @event) {
@@ -103,15 +100,11 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	#endregion
 
 	public void OnSettingsPressed() {
-		if (CoreNode is null) return;
-
 		var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.Settings : WindowType.SimpleSettings;
 		CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
 	}
 
 	public void OnErrorIndicatorPressed() {
-		if (CoreNode is null) return;
-
 		GD.Print("Opening log file.");
 		errorIndicator.Hide();
 
@@ -121,7 +114,6 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	}
 
 	public void OnSpeakPressed() {
-		if (CoreNode is null) return;
 
 		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 
@@ -142,15 +134,12 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	}
 
 	public void OnShutPressed() {
-		if (CoreNode is null) return;
-
 		GD.Print("Shutting.");
 		CoreNode.AudioManager.StopAll();
 		messageTextEdit.GrabFocus();
 	}
 
 	public void OnHistoryPrevRequest() {
-		if (CoreNode is null) return;
 		if (CoreNode.HistoryTracker.TryNavigatePrevious(messageTextEdit.Text, out string queryResult)) {
 			messageTextEdit.Text = queryResult; // also clears carets
 			messageTextEdit.SetCaretPositionToEnd();
@@ -158,7 +147,6 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	}
 
 	public void OnHistoryNextRequest() {
-		if (CoreNode is null) return;
 		if (CoreNode.HistoryTracker.TryNavigateNext(messageTextEdit.Text, out string queryResult)) {
 			messageTextEdit.Text = queryResult; // also clears carets
 			messageTextEdit.SetCaretPositionToEnd();

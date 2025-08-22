@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using TypeToSquad.Model.Settings;
 using TypeToSquad.Utils;
 
 
@@ -11,9 +9,11 @@ public partial class TableEditWindowBase : WindowEx, IRefrencesCore {
 
 	#region //// Core Node
 
-	public CoreNode? CoreNode { get; set; } = null;
+	CoreNode? _coreNode = null;
 
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
+
+	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
 
 	#endregion
 
@@ -27,11 +27,8 @@ public partial class TableEditWindowBase : WindowEx, IRefrencesCore {
 		this.GetNodeNotNull<BaseButton>("%SaveButton").Pressed += OnClose;
 
 		// Table edit
-		if (CoreNode is not null) {
-			TableEdit tableEdit = this.GetNodeNotNull<TableEdit>("%TableEdit");
-			SetupTableEdit(tableEdit);
-		}
-
+		TableEdit tableEdit = this.GetNodeNotNull<TableEdit>("%TableEdit");
+		SetupTableEdit(tableEdit);
 	}
 
 	public void OnClose() {

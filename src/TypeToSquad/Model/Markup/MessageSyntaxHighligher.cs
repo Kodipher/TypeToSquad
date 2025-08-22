@@ -13,9 +13,11 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 
 	#region //// Core Node
 
-	public CoreNode? CoreNode { get; set; } = null;
+	CoreNode? _coreNode = null;
 
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
+
+	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
 
 	#endregion
 
@@ -26,7 +28,6 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 
 	void PopulateSegmentCache(string message) {
 		if (cacheKey == message) return;
-		if (CoreNode is null) return;
 		cacheKey = message;
 		segmentsCache = CoreNode.MessageParser.SegmentMessage(message);
 	}

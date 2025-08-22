@@ -19,14 +19,15 @@ public partial class AudioManagerNode : Node, IRefrencesCore {
 
 	#region //// Core Node
 
-	public CoreNode? CoreNode { get; set; } = null;
+	CoreNode? _coreNode = null;
 
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
+
+	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
 
 	#endregion
 
 	public void SetOutputDeviceFromSettings() {
-		if (CoreNode is null) return;
 		AudioServer.OutputDevice = CoreNode.UserSettings.Device;
 	}
 
@@ -94,7 +95,7 @@ public partial class AudioManagerNode : Node, IRefrencesCore {
 	/// is within limits.
 	/// </summary>
 	public void EnsureConcurrentNodeMax() {
-		int maxChildren = CoreNode is null ? 1 : CoreNode.UserSettings.MaxConcurrentStreams;
+		int maxChildren = CoreNode.UserSettings.MaxConcurrentStreams;
 		while (this.GetChildCount() > maxChildren) {
 			var oldestNode = this.GetChild<AudioStreamPlayer>(0);
 			oldestNode.Stop();

@@ -8,8 +8,6 @@ public partial class SimpleSettingsWindow : SettingsWindow, IRefrencesCore {
 
 	protected override void SetupSettingInputs() {
 
-		if (CoreNode is null) return;
-
 		ImplaceByProperInput(CoreNode.UserSettings.Voice, "%MainVoiceInput");
 
 		var deviceSelect = ImplaceByProperInput(CoreNode.UserSettings.Device, "%OutputDeviceInput");

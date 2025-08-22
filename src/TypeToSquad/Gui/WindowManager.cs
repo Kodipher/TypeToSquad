@@ -22,9 +22,11 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 	#region //// Core Node
 
-	public CoreNode? CoreNode { get; set; } = null;
+	CoreNode? _coreNode = null;
 
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
+
+	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
 
 	#endregion
 
@@ -61,8 +63,8 @@ public partial class WindowManager : Node, IRefrencesCore {
 		Window window = (Window)windowSceneRoot;
 
 		// Provide Core
-		if (windowSceneRoot is IRefrencesCore windowRootWithInterfaced) {
-			if (CoreNode is not null) windowRootWithInterfaced.RecieveCoreReference(CoreNode);
+		if (windowSceneRoot is IRefrencesCore windowRootWithCore) {
+			windowRootWithCore.RecieveCoreReference(CoreNode);
 		}
 
 		return window;
@@ -103,8 +105,6 @@ public partial class WindowManager : Node, IRefrencesCore {
 			throw new InvalidOperationException("The root window already has a script. Another window might have been created this way.");
 		}
 
-		if (CoreNode is null) throw new InvalidOperationException("Core node must be set.");
-
 		// Find root window
 		Window rootWindow = CoreNode.GetWindow();
 
@@ -135,8 +135,8 @@ public partial class WindowManager : Node, IRefrencesCore {
 			}
 		}
 
-		if (rootWindow is IRefrencesCore windowRootWithInterfaced) {
-			if (CoreNode is not null) windowRootWithInterfaced.RecieveCoreReference(CoreNode);
+		if (rootWindow is IRefrencesCore windowRootWithCore) {
+			windowRootWithCore.RecieveCoreReference(CoreNode);
 		}
 
 		// Enable root event processing

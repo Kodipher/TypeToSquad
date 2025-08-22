@@ -11,9 +11,11 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 	#region //// Core Node
 
-	public CoreNode? CoreNode { get; set; } = null;
+	CoreNode? _coreNode = null;
 
-	public void RecieveCoreReference(CoreNode? core) => CoreNode = core;
+	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
+
+	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
 
 	#endregion
 
@@ -25,7 +27,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		this.GetNodeNotNull<BaseButton>("%SaveButton").Pressed += OnClose;
 
 		// Advanced settings toggle
-		if (CoreNode is not null) {
+		{
 			var enableAdvancedCheckbox = this.GetNodeNotNull<BaseButton>("%EnableAdvancedInput");
 			Field<bool> advancedSettingsField = CoreNode.UserSettings.UseAdvancedSettings;
 
@@ -46,16 +48,12 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 	public void OnClose() {
 		GD.Print("Closing settings");
 
-		var windowManager = CoreNode?.WindowManager;
-		if (windowManager is not null) {
-			windowManager.GetExistingWindowAtSelf(WindowType.EditReplacements)?.QueueFree();
-			windowManager.GetExistingWindowAtSelf(WindowType.EditVoiceChanges)?.QueueFree();
-		}
+		var windowManager = CoreNode.WindowManager;
+		windowManager.GetExistingWindowAtSelf(WindowType.EditReplacements)?.QueueFree();
+		windowManager.GetExistingWindowAtSelf(WindowType.EditVoiceChanges)?.QueueFree();
 
-		if (CoreNode is not null) {
-			UserSettingsLoader.Save(CoreNode.UserSettings);
-			if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
-		}
+		UserSettingsLoader.Save(CoreNode.UserSettings);
+		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 
 		this.QueueFree();
 	}
@@ -77,9 +75,6 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 	}
 
 	protected void LinkButtonToExternalWindow(NodePath buttonPath, WindowType windowType) {
-
-		if (CoreNode is null) throw new System.InvalidOperationException();
-
 		this.GetNodeNotNull<Button>(buttonPath).Pressed += () => {
 			CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
 		};
@@ -90,9 +85,6 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 	/// Overriden in <see cref="SimpleSettingsWindow"/>.
 	/// </summary>
 	protected virtual void SetupSettingInputs() {
-
-		if (CoreNode is null) return;
-
 		var settings = CoreNode.UserSettings;
 
 		// General
