@@ -217,7 +217,21 @@ public partial class TableEdit : ScrollContainer {
 	void OnInputSubmit(Control source, Variant newValue) {
 		ThrowIfNotInitiated();
 
-		throw new NotImplementedException();
+		// Find row and column index
+		int childIndex = source.GetIndex();
+		int rowIndex = GridIndexToTableIndex(childIndex);
+		int indexWithinRow = (childIndex % mainGrid.Columns) - gridRowLeftPrototypes;
+
+		// Change the value
+		Variant[] values;
+
+		values = targetTable!.GetAtAsArray(rowIndex);
+		values[indexWithinRow] = newValue;
+		targetTable!.SetAtAsArray(rowIndex, values);
+
+		// Update the node
+		values = targetTable!.GetAtAsArray(rowIndex);
+		FieldInputCreator.SetControlInputValue(source, values[indexWithinRow]);
 	}
 
 	void OnDeletePressed(Button source) {
