@@ -94,7 +94,7 @@ public class MessageParser : IRefrencesCore {
 								.UserSettings
 								.TextReplacements
 								.Any(row => row.context.Trim() == segment.Context);
-		if (hintInLanguages) {
+		if (hintInReplacements) {
 			currentUses |= ContextUses.Replacements;
 		}
 
