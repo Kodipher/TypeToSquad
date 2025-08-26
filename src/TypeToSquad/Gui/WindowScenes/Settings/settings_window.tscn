@@ -38,6 +38,8 @@ metadata/_tab_index = 0
 [node name="EnableAdvancedLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/General"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Show or hide settings for advanced use."
+mouse_filter = 1
 text = "Enable Advanced Settings"
 
 [node name="EnableAdvancedInput" type="CheckBox" parent="MarginContainer/VBoxContainer/TabContainer/General"]
@@ -47,6 +49,9 @@ layout_mode = 2
 [node name="EnableMonitoringLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/General"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Enable or disable checking for logged errors.
+(Note: Messages are never logged)"
+mouse_filter = 1
 text = "Enable Error Monitoring"
 
 [node name="EnableMonitoringInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/General"]
@@ -62,6 +67,8 @@ metadata/_tab_index = 1
 [node name="MainVoiceLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "The primary voice to use during voice synthesis."
+mouse_filter = 1
 text = "Main Voice"
 
 [node name="MainVoiceInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
@@ -69,9 +76,24 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="VoiceChangesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Rules for which voice to use inside a context."
+mouse_filter = 1
+text = "Voice Changes"
+
+[node name="OpenVoiceChangesButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Edit"
+
 [node name="VoicePitchLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Pitch of voice during synthesis."
+mouse_filter = 1
 text = "Voice Pitch"
 
 [node name="VoicePitchInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
@@ -82,23 +104,14 @@ size_flags_horizontal = 3
 [node name="VoiceRateLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Rate (speed) of voice during synthesis."
+mouse_filter = 1
 text = "Speaking Rate"
 
 [node name="VoiceRateInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="VoiceChangesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Voice Changes"
-
-[node name="OpenVoiceChangesButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Voices"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Edit"
 
 [node name="Input" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
 visible = false
@@ -110,19 +123,11 @@ layout_mode = 2
 size_flags_vertical = 3
 columns = 2
 
-[node name="HistorySlotsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "History Slots"
-
-[node name="HistorySlotsInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
 [node name="ReplacementsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Rules for automatic text substitution."
+mouse_filter = 1
 text = "Text Replacements"
 
 [node name="OpenReplacementsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
@@ -134,9 +139,25 @@ text = "Edit"
 [node name="ReplacementPassesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "The maximum number of times to try and substitute text using the replacement rules.
+Set to avoid infinite substitutions.
+When this threshold is reached an error is logged."
+mouse_filter = 1
 text = "Replacement Passes Limit"
 
 [node name="ReplacementPassesInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HistorySlotsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "The number of previous messages to keep in memory."
+mouse_filter = 1
+text = "History Slots"
+
+[node name="HistorySlotsInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -157,6 +178,8 @@ metadata/_tab_index = 3
 [node name="OutputDeviceLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Audio device to speak into."
+mouse_filter = 1
 text = "Output Device"
 
 [node name="OutputDeviceInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
@@ -167,6 +190,9 @@ size_flags_horizontal = 3
 [node name="MaxConcurentLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Maximum number of synthesized clips played at the same time.
+Oldest playing clips are discarded to keep the number of clips within this bound."
+mouse_filter = 1
 text = "Max Concurent Outputs"
 
 [node name="MaxConcurentInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
@@ -177,6 +203,8 @@ size_flags_horizontal = 3
 [node name="SynthesisVolumeLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Audio volume of voice during synthesis."
+mouse_filter = 1
 text = "Audio Volume"
 
 [node name="SynthesisVolumeInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]

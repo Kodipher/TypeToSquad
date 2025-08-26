@@ -49,23 +49,27 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Move Row Up"
 text = "▲"
 
 [node name="DownButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
+tooltip_text = "Move Row Down"
 text = "▼"
 
 [node name="DeleteButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
+tooltip_text = "Delete Row"
 text = "Del"
 
 [node name="AddRowButton" type="Button" parent="MarginContainerRight/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Add Row"
 text = "+"
 
 [node name="PrototypeDump" type="Control" parent="MarginContainerRight/VBox"]

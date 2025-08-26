@@ -9,6 +9,5 @@ TODO:
 - icons for table edit
 - min window sizes for all windows
 - check tab order in all windows
-- hover information
 
 TO TEST:
