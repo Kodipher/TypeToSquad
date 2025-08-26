@@ -44,9 +44,9 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 	readonly static Color colorDefault = new(1, 1, 1);
 	readonly static Color colorInvalid = new(colorDefault, 0.5f);
 
-	readonly static Color colorHintReplacement = new(1, 1, 0);
-	readonly static Color colorHintUnknownReplacement = new(colorHintReplacement, 0.5f);
-	readonly static Color colorHintLanguage = new(0, 1, 1);
+	readonly static Color colorContextReplacement = new(1, 1, 0);
+	readonly static Color colorContextNone = new(colorContextReplacement, 0.5f);
+	readonly static Color colorContextVoice = new(0, 1, 1);
 
 	readonly static Color colorContent = new(1, 0, 1);
 	readonly static Color colorContentPayload = new(1, 0.5f, 1);
@@ -83,35 +83,36 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 			if (curLineStart >= currentSegment.EndExclusive) continue;
 			if (curLineEndExclusive <= currentSegment.Start) break;
 
-			// Add color change
+			// Add color change for misc
 			if (currentSegment is PlainTextSegment) {
 				AddColorChange(currentSegment.Start, colorDefault);
 
 			} else if (currentSegment is InvalidSegment) {
 				AddColorChange(currentSegment.Start, colorInvalid);
 
-			} else if (currentSegment is HintSegment hintSegment) {
-				switch (hintSegment.HintType) {
-					case HintType.UnknownReplacementContext:
-						AddColorChange(currentSegment.Start, colorHintUnknownReplacement);
-						break;
-					case HintType.ReplacementContext:
-						AddColorChange(currentSegment.Start, colorHintReplacement);
-						break;
-					case HintType.VoiceChange:
-						AddColorChange(currentSegment.Start, colorHintLanguage);
-						break;
-					default:
-						AddColorChange(currentSegment.Start, colorInvalid);
-						break;
+			// Add color change for contexts
+			} else if (currentSegment is ContextSegment contextSegment) {
+
+				if (contextSegment.ContextUses == ContextUses.Empty) {
+					AddColorChange(currentSegment.Start, colorContextReplacement);
+
+				} else if (contextSegment.ContextUses.HasFlag(ContextUses.VoiceChange)) {
+					AddColorChange(currentSegment.Start, colorContextVoice);
+
+				} else if (contextSegment.ContextUses.HasFlag(ContextUses.Replacements)) {
+					AddColorChange(currentSegment.Start, colorContextReplacement);
+
+				} else {
+					AddColorChange(currentSegment.Start, colorContextNone);
 				}
 
+			// Add color change for content
 			} else if (currentSegment is ContentSegment contentSegment) {
-				if (contentSegment.ContentType == ContentType.Invalid) {
+				if (contentSegment.Type == ContentType.Invalid) {
 					AddColorChange(currentSegment.Start, colorInvalid);
 				} else {
 					AddColorChange(contentSegment.Start, colorContent);
-					AddColorChange(contentSegment.HintEndExclusive, colorContentPayload);
+					AddColorChange(contentSegment.TypeTextEndExclusive, colorContentPayload);
 					AddColorChange(contentSegment.EndExclusive - 1, colorContent);
 				}
 

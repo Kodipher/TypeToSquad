@@ -76,11 +76,10 @@ public class MessageSender : IRefrencesCore {
 
 		// Stip non-content stuff
 		parser.StripInvalidSegments(segments);
-		parser.StripReplacementContextSegments(segments);
 		segments = parser.JoinPlainTextSegements(segments);
 
 		// Text-only message
-		if (segments.All(seg => seg is Markup.PlainTextSegment)) {
+		if (parser.IsPlainTextOnly(segments)) {
 			request.InputString = parser.SegmentedMessageToPlainText(segments);
 			request.IsSsml = false;
 			return;

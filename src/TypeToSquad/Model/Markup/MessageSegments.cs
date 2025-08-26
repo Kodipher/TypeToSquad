@@ -61,21 +61,21 @@ public record class InvalidSegment : MessageSegment {
 }
 
 
-public record class HintSegment : MessageSegment {
+public record class ContextSegment : MessageSegment {
 
-	public HintType HintType { get; private set; } = HintType.Unset;
+	/// <summary>Context of the segment (trimmed).</summary>
+	public string Context { get; private set; } = "";
 
-	/// <summary>The processed (trimmed) text of the hint.</summary>
-	public string HintText { get; private set; } = "";
+	public ContextUses ContextUses { get; private set; } = ContextUses.None;
 
-	public static HintSegment CreateAsSubstring(int start, int endExclusive, string str) {
-		var ret = MessageSegment.CreateBaseAsSubstring<HintSegment>(start, endExclusive, str);
-		ret.HintText = str[(start + 1)..(endExclusive - 1)].Trim();
+	public static ContextSegment CreateAsSubstring(int start, int endExclusive, string str) {
+		var ret = MessageSegment.CreateBaseAsSubstring<ContextSegment>(start, endExclusive, str);
+		ret.Context = str[(start + 1)..(endExclusive - 1)].Trim();
 		return ret;
 	}
 
-	public static HintSegment CreateWithType(HintSegment other, HintType contextType) {
-		return other with { HintType = contextType };
+	public static ContextSegment CreateWithUses(ContextSegment other, ContextUses uses) {
+		return other with { ContextUses = uses };
 	}
 
 }
@@ -84,24 +84,27 @@ public record class HintSegment : MessageSegment {
 public record class ContentSegment : MessageSegment {
 
 	/// <summary>The first position that separates hint and payload.</summary>
-	public int HintEndExclusive { get; private set; } = -1;
+	public int TypeTextEndExclusive { get; private set; } = -1;
 
-	/// <summary>The processed (trimmed) text of the hint (content type).</summary>
-	public string HintText { get; private set; } = "";
-	public ContentType ContentType { get; private set; } = ContentType.Invalid;
+	/// <summary>The normalized text of content type.</summary>
+	public string TypeText { get; private set; } = "";
 
+	/// <summary>Type of the content.</summary>
+	public ContentType Type { get; private set; } = ContentType.Invalid;
+
+	/// <summary>The content payload. Not automatically trimmed.</summary>
 	public string Payload { get; private set; } = "";
 
 	public static ContentSegment CreateAsSubstring(int start, int hintEndExclusive, int endExclusive, string str) {
 		var ret = MessageSegment.CreateBaseAsSubstring<ContentSegment>(start, endExclusive, str);
-		ret.HintEndExclusive = hintEndExclusive;
-		ret.HintText = str[(start + 1)..hintEndExclusive].Trim().ToLower();
+		ret.TypeTextEndExclusive = hintEndExclusive;
+		ret.TypeText = str[(start + 1)..hintEndExclusive].Trim().ToLower();
 		ret.Payload = str[(hintEndExclusive + 1)..(endExclusive - 1)];
 		return ret;
 	}
 
 	public static ContentSegment CreateWithType(ContentSegment other, ContentType contextType) {
-		return other with { ContentType = contextType };
+		return other with { Type = contextType };
 	}
 
 }

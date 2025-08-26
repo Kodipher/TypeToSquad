@@ -10,11 +10,12 @@ using System.Security;
 namespace TypeToSquad.Model.Markup;
 
 
-public enum HintType {
-	Unset = 0,
-	ReplacementContext,
-	UnknownReplacementContext,
-	VoiceChange
+[Flags]
+public enum ContextUses {
+	None = 0,
+	Empty = 1,			// Empty contexts have special treatment
+	Replacements = 2,
+	VoiceChange = 4
 }
 
 public enum ContentType {
@@ -41,7 +42,7 @@ public class MessageParser : IRefrencesCore {
 
 	#endregion
 
-	#region //// Typed hint and content segments
+	#region //// Content and context type parsing
 
 	readonly static ReadOnlyDictionary<string, ContentType> contextHintStrings =
 		new Dictionary<string, ContentType>() {
@@ -52,14 +53,14 @@ public class MessageParser : IRefrencesCore {
 
 	/// <summary>
 	/// Given a <see cref="ContentSegment"/>, returns a new <see cref="ContentSegment"/> 
-	/// with <see cref="ContentSegment.ContentType"/> set.
+	/// with <see cref="ContentSegment.Type"/> set.
 	/// </summary>
 	ContentSegment CreateTypedContentSegment(ContentSegment segment) {
 
 		var contextType =
 			contextHintStrings
 			.FirstOrDefault(
-				pair => pair.Key == segment.HintText,
+				pair => pair.Key == segment.TypeText,
 				KeyValuePair.Create("", ContentType.Invalid)
 			).Value;
 
@@ -67,32 +68,38 @@ public class MessageParser : IRefrencesCore {
 	}
 
 	/// <summary>
-	/// Given a <see cref="HintSegment"/>, returns a new <see cref="HintSegment"/> 
-	/// with <see cref="HintSegment.HintType"/> set.
+	/// Given a <see cref="ContextSegment"/>, returns a new <see cref="ContextSegment"/> 
+	/// with <see cref="ContextSegment.HintType"/> set.
 	/// </summary>
-	HintSegment CreateTypedHintSegment(HintSegment segment) {
+	ContextSegment CreateTypedHintSegment(ContextSegment segment) {
 
-		// Check for empty context
-		if (string.IsNullOrWhiteSpace(segment.HintText)) {
-			return HintSegment.CreateWithType(segment, HintType.ReplacementContext);
+		// Empty context
+		if (string.IsNullOrWhiteSpace(segment.Context)) {
+			return ContextSegment.CreateWithUses(segment, ContextUses.Empty);
 		}
+
+		ContextUses currentUses = ContextUses.None;
 
 		// Check for languages
 		bool hintInLanguages = CoreNode
 								.UserSettings
 								.VoiceChanges
-								.Any(row => row.hint.Trim() == segment.HintText);
-		if (hintInLanguages) return HintSegment.CreateWithType(segment, HintType.VoiceChange);
+								.Any(row => row.hint.Trim() == segment.Context);
+		if (hintInLanguages) {
+			currentUses |= ContextUses.VoiceChange;
+		}
 
 		// Check for replacements
 		bool hintInReplacements = CoreNode
 								.UserSettings
 								.TextReplacements
-								.Any(row => row.context.Trim() == segment.HintText);
-		if (hintInReplacements) return HintSegment.CreateWithType(segment, HintType.ReplacementContext);
+								.Any(row => row.context.Trim() == segment.Context);
+		if (hintInLanguages) {
+			currentUses |= ContextUses.Replacements;
+		}
 
-		// Nothing found
-		return HintSegment.CreateWithType(segment, HintType.UnknownReplacementContext);
+		// Create new one
+		return ContextSegment.CreateWithUses(segment, currentUses);
 	}
 
 	#endregion
@@ -238,7 +245,7 @@ public class MessageParser : IRefrencesCore {
 				// Hint with no content
 				segments.Add(
 					CreateTypedHintSegment(
-						HintSegment.CreateAsSubstring(
+						ContextSegment.CreateAsSubstring(
 							start: currentSegmentStartI,
 							endExclusive: i + 1,
 							str: message
@@ -270,17 +277,7 @@ public class MessageParser : IRefrencesCore {
 	public void StripInvalidSegments(List<MessageSegment> segments) {
 		segments.RemoveAll(seg => {
 			if (seg is InvalidSegment) return true;
-			if (seg is ContentSegment conSeg && conSeg.ContentType == ContentType.Invalid) return true;
-			return false;
-		});
-	}
-
-	/// <summary>Removes replacement context segments.</summary>
-	public void StripReplacementContextSegments(List<MessageSegment> segments) {
-		segments.RemoveAll(seg => {
-			if (seg is not HintSegment hintSeg) return false;
-			if (hintSeg.HintType == HintType.ReplacementContext) return true;
-			if (hintSeg.HintType == HintType.UnknownReplacementContext) return true;
+			if (seg is ContentSegment conSeg && conSeg.Type == ContentType.Invalid) return true;
 			return false;
 		});
 	}
@@ -301,14 +298,12 @@ public class MessageParser : IRefrencesCore {
 
 		foreach (MessageSegment seg in segments) {
 
-			// Handle context changes
-			if (seg is HintSegment hintSeg) {
-				if (hintSeg.HintType is HintType.ReplacementContext or HintType.UnknownReplacementContext) {
-					currentContext = hintSeg.HintText;
-				}
+			// Context changes
+			if (seg is ContextSegment hintSeg) {
+				currentContext = hintSeg.Context;
 			}
 
-			// Handle everything but text
+			// Add everything but text directly
 			if (seg is not PlainTextSegment) {
 				newSegments.Add(seg);
 				continue;
@@ -384,7 +379,26 @@ public class MessageParser : IRefrencesCore {
 
 	#endregion
 
-	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
+	public bool IsPlainTextOnly(IEnumerable<MessageSegment> segments) {
+
+		foreach (var seg in segments) {
+
+			if (seg is PlainTextSegment) continue;
+
+			if (
+				seg is ContextSegment contextSeg && 
+				(contextSeg.ContextUses == ContextUses.Empty ||
+				contextSeg.ContextUses == ContextUses.Replacements)
+			) {
+				continue;
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
 	public string SegmentedMessageToPlainText(IEnumerable<MessageSegment> segments) {
 		StringBuilder sb = new StringBuilder();
 		foreach (var seg in segments) {
@@ -408,7 +422,7 @@ public class MessageParser : IRefrencesCore {
 
 	const string ssmlIpa = """<phoneme alphabet="ipa" ph="{0}"></phoneme>""";
 
-	/// <remarks>Assumes context and invalid segments were already stripped.</remarks>
+	/// <remarks>Assumes invalid segments were already stripped.</remarks>
 	public string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
 		if (CoreNode.SpeechDaemon.VoicesByName is null) throw new InvalidOperationException("Cannot find voice information.");
 
@@ -430,16 +444,20 @@ public class MessageParser : IRefrencesCore {
 				sb.Append(segText);
 			}
 
-			if (seg is HintSegment hintSegment) {
+			if (seg is ContextSegment hintSegment) {
 
 				// Voice changes
-				if (hintSegment.HintType == HintType.VoiceChange) {
-					if (isInsideVoice) sb.Append(ssmlVoiceClose);
+				if (isInsideVoice) {
+					sb.Append(ssmlVoiceClose);
+					isInsideVoice = false;
+				}
 
+				if (hintSegment.ContextUses.HasFlag(ContextUses.VoiceChange)) {
+					
 					string voiceNameKey = CoreNode
 						.UserSettings
 						.VoiceChanges
-						.FirstOrDefault(row => row.hint == hintSegment.HintText)
+						.FirstOrDefault(row => row.hint == hintSegment.Context)
 						.voiceName;
 
 					if (!CoreNode.SpeechDaemon.VoicesByName.TryGetValue(voiceNameKey, out var voiceInfo)) {
@@ -457,7 +475,7 @@ public class MessageParser : IRefrencesCore {
 			// Content
 			if (seg is ContentSegment contentSegment) {
 
-				switch (contentSegment.ContentType) {
+				switch (contentSegment.Type) {
 
 					case ContentType.Ipa:
 						sb.AppendFormat(ssmlIpa, SecurityElement.Escape(contentSegment.Payload));
