@@ -42,7 +42,11 @@ public record class PlainTextSegment : MessageSegment {
 	}
 
 	public static PlainTextSegment CreateFromText(string text) {
-		return new PlainTextSegment() { Text = text };
+		return new PlainTextSegment() {
+			Start = 0,
+			EndExclusive = text.Length,
+			Text = text,
+		};
 	}
 
 }
