@@ -69,6 +69,7 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Settings"
 shortcut = SubResource("Shortcut_ulwh1")
+shortcut_in_tooltip = false
 icon = ExtResource("4_7es2g")
 icon_alignment = 1
 
@@ -101,6 +102,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 tooltip_text = "Speak"
 shortcut = SubResource("Shortcut_a1awg")
+shortcut_in_tooltip = false
 icon = ExtResource("5_a1awg")
 icon_alignment = 1
 
@@ -111,6 +113,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 tooltip_text = "Shut"
 shortcut = SubResource("Shortcut_7es2g")
+shortcut_in_tooltip = false
 icon = ExtResource("6_tsue3")
 icon_alignment = 1
 
