@@ -1,6 +1,5 @@
 TODO:
 - consider adding AudioVolume setting to SimpleSettings
-- voice changes: also change the current context
 - change how/when log file is monitored
 - feature: tab shortcuts for context changes
 -- letter after autocompletes the context
