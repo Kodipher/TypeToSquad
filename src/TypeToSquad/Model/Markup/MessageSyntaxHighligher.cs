@@ -117,6 +117,7 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 
 			} else {
 				AddColorChange(currentSegment.Start, colorInvalid);
+				GD.PushError("Unknown segment in syntax highlighter.");
 			}
 
 		}
