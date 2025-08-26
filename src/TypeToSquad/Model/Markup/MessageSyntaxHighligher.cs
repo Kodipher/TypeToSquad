@@ -47,6 +47,7 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 	readonly static Color colorContextReplacement = new(1, 1, 0);
 	readonly static Color colorContextNone = new(colorContextReplacement, 0.5f);
 	readonly static Color colorContextVoice = new(0, 1, 1);
+	readonly static Color colorContextEmpty = new(0.5f, 0.7f, 1);
 
 	readonly static Color colorContent = new(1, 0, 1);
 	readonly static Color colorContentPayload = new(1, 0.5f, 1);
@@ -94,7 +95,7 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 			} else if (currentSegment is ContextSegment contextSegment) {
 
 				if (contextSegment.ContextUses == ContextUses.Empty) {
-					AddColorChange(currentSegment.Start, colorContextReplacement);
+					AddColorChange(currentSegment.Start, colorContextEmpty);
 
 				} else if (contextSegment.ContextUses.HasFlag(ContextUses.VoiceChange)) {
 					AddColorChange(currentSegment.Start, colorContextVoice);
