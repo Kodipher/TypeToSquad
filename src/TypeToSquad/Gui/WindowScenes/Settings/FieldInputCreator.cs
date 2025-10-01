@@ -256,6 +256,41 @@ public static class FieldInputCreator {
 		return optionsInput;
 	}
 
+
+	/// <remarks>The actual value set to the field is stored in items' metadata.</remarks>
+	public static OptionButton CreateForEnum<[MustBeVariant] TEnum>(
+		FieldOptionsEnum<TEnum> field, 
+		bool isUnlinked = false
+	) 
+	where TEnum : struct, Enum
+	{
+
+		// Create
+		var optionsInput = new OptionButton {
+			AllowReselect = true,
+			FitToLongestItem = true
+		};
+
+		foreach (TEnum option in Enum.GetValues<TEnum>()) {
+			optionsInput.AddItem(option.ToString());
+			optionsInput.SetItemMetadata(optionsInput.ItemCount - 1, Variant.From(option));
+		}
+
+		if (isUnlinked) return optionsInput;
+
+		// Link
+		for (int i = 0; i < optionsInput.ItemCount; i++) {
+			if (optionsInput.GetItemMetadata(i).As<TEnum>().Equals(field.Value)) {
+				optionsInput.Selected = i;
+				break;
+			}
+		}
+
+		optionsInput.ItemSelected += index => field.Value = optionsInput.GetItemMetadata((int)index).As<TEnum>();
+
+		return optionsInput;
+	}
+
 	#endregion
 
 }
