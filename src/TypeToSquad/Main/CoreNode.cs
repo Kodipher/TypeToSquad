@@ -130,6 +130,17 @@ public partial class CoreNode : Node {
 
 		// Try quit gracfully
 		hasPressedQuit = true;
+
+		Window? maybeSettingsWindow = WindowManager.GetExistingWindowAtSelf(WindowType.Settings);
+		if (maybeSettingsWindow is TypeToSquad.Gui.WindowScenes.Settings.SettingsWindow settingsWindow) {
+			settingsWindow.OnClose(); // Fake close request to save settings
+		}
+
+		maybeSettingsWindow = WindowManager.GetExistingWindowAtSelf(WindowType.SimpleSettings);
+		if (maybeSettingsWindow is TypeToSquad.Gui.WindowScenes.Settings.SimpleSettingsWindow simpleSettingsWindow) {
+			simpleSettingsWindow.OnClose(); // Fake close request to save settings
+		}
+
 		GD.Print("Gracefuly terminating daemon...");
 		SpeechDaemon.DispatchRequest(
 			new TerminateRequest(), 
