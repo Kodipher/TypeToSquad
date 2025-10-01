@@ -21,6 +21,10 @@ namespace TypeToSquad.Model;
 
 
 //[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+/// <summary>
+/// Responsible for the daemon process 
+/// and communication with it.
+/// </summary>
 public class SpeechDaemon : IDisposable {
 
 	#region //// Daemon Process
@@ -210,7 +214,11 @@ public class SpeechDaemon : IDisposable {
 		});
 	}
 
-	/// <summary>Sends multiple requests in series, chaining callbacks together.</summary>
+	/// <summary>
+	/// Sends multiple requests in series, chaining callbacks together.
+	/// A request returned by one callback is sent and the response
+	/// is handled by the next callback, until null is returned.
+	/// </summary>
 	public void DispatchRequestSeries(Request startingRequest, params Func<Response, Request?>[] chainCallbacks) {
 
 		if (chainCallbacks.Length == 0) {

@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Linq;
 
 using WinRTSpeechSynthServer.Protocol.Messages;
 
@@ -9,8 +7,8 @@ namespace TypeToSquad.Model;
 
 
 /// <summary>
-/// Handles messgae parsing (into requests)
-/// and sending those rerequest via <see cref="SpeechDaemon"/>.
+/// Creates <see cref="SynthesizeRequest"/>s from messages
+/// and sends those to the <see cref="SpeechDaemon"/>.
 /// </summary>
 public class MessageSender : IRefrencesCore {
 

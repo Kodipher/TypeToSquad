@@ -199,7 +199,6 @@ public static class FieldInputCreator {
 	}
 
 
-	/// <remarks>There is a precision limit of 6 decimal places to avoid rounding errors.</remarks>
 	public static SpinBox CreateForDouble(FieldNumericRange<double> field, bool isUnlinked = false, double valueStep = 0.1) {
 
 		// Create

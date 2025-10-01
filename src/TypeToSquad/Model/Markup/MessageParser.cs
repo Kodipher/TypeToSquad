@@ -69,7 +69,7 @@ public class MessageParser : IRefrencesCore {
 
 	/// <summary>
 	/// Given a <see cref="ContextSegment"/>, returns a new <see cref="ContextSegment"/> 
-	/// with <see cref="ContextSegment.HintType"/> set.
+	/// with <see cref="ContextSegment.ContextUses"/> set.
 	/// </summary>
 	ContextSegment CreateTypedContextSegment(ContextSegment segment) {
 
@@ -113,7 +113,7 @@ public class MessageParser : IRefrencesCore {
 		/// </summary>
 		/// <remarks>
 		/// <paramref name="i"/> is assumed to start 
-		/// at the openign of the tag.
+		/// at the opening of the tag.
 		/// </remarks>
 		void ScanUntilClosed(ref int i, out bool hasNested) {
 
