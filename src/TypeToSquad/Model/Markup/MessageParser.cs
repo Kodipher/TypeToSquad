@@ -71,7 +71,7 @@ public class MessageParser : IRefrencesCore {
 	/// Given a <see cref="ContextSegment"/>, returns a new <see cref="ContextSegment"/> 
 	/// with <see cref="ContextSegment.HintType"/> set.
 	/// </summary>
-	ContextSegment CreateTypedHintSegment(ContextSegment segment) {
+	ContextSegment CreateTypedContextSegment(ContextSegment segment) {
 
 		// Empty context
 		if (string.IsNullOrWhiteSpace(segment.Context)) {
@@ -106,8 +106,6 @@ public class MessageParser : IRefrencesCore {
 
 	/// <summary>Returns a list of segments that make up the message.</summary>
 	public List<MessageSegment> SegmentMessage(string message) {
-
-		List<MessageSegment> segments = new();
 
 		/// <summary>
 		/// Iterates message string index until 
@@ -176,85 +174,89 @@ public class MessageParser : IRefrencesCore {
 			return true;
 		}
 
+		// ----------
+
+
+		List<MessageSegment> segments = new();
+
 		int currentSegmentStartI = 0;
 
 		for (int i = 0; i < message.Length; i++) {
 
-			if (message[i] == '[') {
+			// Scan until tag opening is found
+			if (message[i] != '[') continue;
 
-				// Add text before tag
-				if (i != currentSegmentStartI) {
-					segments.Add(
-						PlainTextSegment.CreateAsSubstring(
-							start: currentSegmentStartI,
-							endExclusive: i,
-							str: message
-						)
-					);
-
-					currentSegmentStartI = i;
-				}
-
-				// Find closing (assuming nesting)
-				ScanUntilClosed(ref i, out bool hasNested);
-
-				// Unclosed tag
-				if (i >= message.Length) {
-					segments.Add(
-						InvalidSegment.CreateAsSubstring(
-							start: currentSegmentStartI,
-							endExclusive: message.Length,
-							str: message
-						)
-					);
-					currentSegmentStartI = message.Length;
-					break;
-				}
-
-				// Closed tag but has nesting
-				if (hasNested) {
-					segments.Add(
-						InvalidSegment.CreateAsSubstring(
-							start: currentSegmentStartI,
-							endExclusive: i + 1,
-							str: message
-						)
-					);
-					currentSegmentStartI = i + 1;
-					continue;
-				}
-
-				bool isContent = IsSegmentContent(currentSegmentStartI, i, out int hintEndExclusive);
-
-				// Content
-				if (isContent) {
-					segments.Add(
-						CreateTypedContentSegment(
-							ContentSegment.CreateAsSubstring(
-								start: currentSegmentStartI,
-								endExclusive: i + 1,
-								hintEndExclusive: hintEndExclusive,
-								str: message
-							)
-						)
-					);
-					currentSegmentStartI = i + 1;
-					continue;
-				}
-
-				// Hint with no content
+			// Add text before tag
+			if (i != currentSegmentStartI) {
 				segments.Add(
-					CreateTypedHintSegment(
-						ContextSegment.CreateAsSubstring(
+					PlainTextSegment.CreateAsSubstring(
+						start: currentSegmentStartI,
+						endExclusive: i,
+						str: message
+					)
+				);
+
+				currentSegmentStartI = i;
+			}
+
+			// Find closing (assuming nesting)
+			ScanUntilClosed(ref i, out bool hasNested);
+
+			// Unclosed tag
+			if (i >= message.Length) {
+				segments.Add(
+					InvalidSegment.CreateAsSubstring(
+						start: currentSegmentStartI,
+						endExclusive: message.Length,
+						str: message
+					)
+				);
+				currentSegmentStartI = message.Length;
+				break;
+			}
+
+			// Closed tag but has nesting
+			if (hasNested) {
+				segments.Add(
+					InvalidSegment.CreateAsSubstring(
+						start: currentSegmentStartI,
+						endExclusive: i + 1,
+						str: message
+					)
+				);
+				currentSegmentStartI = i + 1;
+				continue;
+			}
+
+			bool isContent = IsSegmentContent(currentSegmentStartI, i, out int hintEndExclusive);
+
+			// Content
+			if (isContent) {
+				segments.Add(
+					CreateTypedContentSegment(
+						ContentSegment.CreateAsSubstring(
 							start: currentSegmentStartI,
 							endExclusive: i + 1,
+							hintEndExclusive: hintEndExclusive,
 							str: message
 						)
 					)
 				);
 				currentSegmentStartI = i + 1;
-
+				continue;
 			}
+
+			// Context (not content)
+			segments.Add(
+				CreateTypedContextSegment(
+					ContextSegment.CreateAsSubstring(
+						start: currentSegmentStartI,
+						endExclusive: i + 1,
+						str: message
+					)
+				)
+			);
+			currentSegmentStartI = i + 1;
 
 			// [continue]
 		}
