@@ -6,7 +6,7 @@ TODO:
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
 - feature: direct hardware typing
-- icons for table edit
+- proper icons for table edit
 - min window sizes for all windows
 - check tab order in all windows
 
