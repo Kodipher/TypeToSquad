@@ -138,44 +138,46 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 		// Find all context names
 		var contentHints = TypeToSquad.Model.Markup.MessageParser.contextHintStrings.Keys;
-		
-		var voiceContexts = CoreNode
-								.UserSettings
-								.VoiceChanges
-								.Select(row => row.hint);
 
-		var replacementContexts = CoreNode
-								.UserSettings
-								.TextReplacements
-								.Select(row => row.context);
-
-		IEnumerable<string> contextHints = voiceContexts
-								.Concat(replacementContexts)
-								.Distinct();
+		string[] contextHints = Enumerable.Concat(
+									CoreNode
+										.UserSettings
+										.VoiceChanges
+										.Select(row => row.hint),
+									CoreNode
+										.UserSettings
+										.TextReplacements
+										.Select(row => row.context)
+								)
+								.Distinct()
+								.ToArray();
 
 		// Find matches
-		static string? GetUniquePossibilityOrNull(IEnumerable<string> seq, string startingSubsrt) {
-			string[] possible = seq.Where(s => s.StartsWith(startingSubsrt)).Take(2).ToArray();
+		static string? GetSingleOrNullNoThrow(IEnumerable<string> seq) {
+			string[] possible = seq.Take(2).ToArray();
 			if (possible.Length == 1) return possible[0];
 			return null;
 		}
 
-		string? possibleContext = GetUniquePossibilityOrNull(contextHints, currentName);
-		string? possibleContent = GetUniquePossibilityOrNull(contentHints, currentName);
+		string? possibleContext = GetSingleOrNullNoThrow(contextHints.Where(s => s.StartsWith(currentName)));
+		string? possibleContent = GetSingleOrNullNoThrow(contentHints.Where(s => s.StartsWith(currentName, StringComparison.OrdinalIgnoreCase)));
 
 		string? autoCompleteText = null;
 
 		if (possibleContext is not null && possibleContent is null) {
-			// Context
+			// Context only
 			autoCompleteText = possibleContext[currentName.Length..] + "]";
 
 		} else if (possibleContext is null && possibleContent is not null) {
-			// Content
+			// Content only
 			autoCompleteText = possibleContent[currentName.Length..] + " ";
 
 		} else if (possibleContext is not null && possibleContent is not null) {
 			// Both possible
-			// TODO: add special handling
+			if (possibleContent.Equals(possibleContext, StringComparison.OrdinalIgnoreCase)) {
+				// Prefer one where case matters.
+				autoCompleteText = possibleContext[currentName.Length..];
+			}
 		}
 
 		// Insert
