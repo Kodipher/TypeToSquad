@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using TypeToSquad.Model;
 using TypeToSquad.Utils;
@@ -25,7 +27,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	// Nodes
 	BaseButton speakButton = null!;
 	BaseButton shutButton = null!;
-	TextEdit messageTextEdit = null!;
+	TextEditEx messageTextEdit = null!;
 
 	BaseButton settingsButton = null!;
 
@@ -36,7 +38,8 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		base._Ready();
 
 		// Find main text edit
-		messageTextEdit = this.GetNodeNotNull<TextEdit>("%MessageTextEdit");
+		messageTextEdit = this.GetNodeNotNull<TextEditEx>("%MessageTextEdit");
+		messageTextEdit.OnUnicodeInput += OnCharacterTyped;
 
 		// Init syntax highlighter
 		var highlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighligher();
@@ -108,6 +111,78 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	#region //// Tag autocomplete, Tab handling
 
+	/// <remarks>Assumes partial valid tags.</remarks>
+	public void OnCharacterTyped(char typedChar, int caretIndex) {
+
+		// Autocomplete disabled
+		if (!CoreNode.UserSettings.AutocompleteTags) return;
+
+		// Find latest opening
+		caretIndex = caretIndex == -1 ? 0 : caretIndex;
+
+		int currentLine = messageTextEdit.GetCaretLine(caretIndex);
+		int currentColumn = messageTextEdit.GetCaretColumn(caretIndex);
+
+		(bool isCurrentlyOpen, Vector2I openingPos) = SearchForTagOpeningAt(currentLine, currentColumn);
+
+		if (!isCurrentlyOpen) return; // only act on open tags
+	
+		int tagOpeningStringIndex = messageTextEdit.GetLineStartIndex(openingPos.Y) + openingPos.X;
+		int currentIndex = messageTextEdit.GetLineStartIndex(currentLine) + currentColumn;
+
+		// Find currently typed context name
+		string currentName = messageTextEdit.Text[(tagOpeningStringIndex + 1)..currentIndex];
+		currentName = currentName.TrimStart();
+
+		if (currentName.Length == 0) return; // do not act on empty names
+
+		// Find all context names
+		var contentHints = TypeToSquad.Model.Markup.MessageParser.contextHintStrings.Keys;
+		
+		var voiceContexts = CoreNode
+								.UserSettings
+								.VoiceChanges
+								.Select(row => row.hint);
+
+		var replacementContexts = CoreNode
+								.UserSettings
+								.TextReplacements
+								.Select(row => row.context);
+
+		IEnumerable<string> contextHints = voiceContexts
+								.Concat(replacementContexts)
+								.Distinct();
+
+		// Find matches
+		static string? GetUniquePossibilityOrNull(IEnumerable<string> seq, string startingSubsrt) {
+			string[] possible = seq.Where(s => s.StartsWith(startingSubsrt)).Take(2).ToArray();
+			if (possible.Length == 1) return possible[0];
+			return null;
+		}
+
+		string? possibleContext = GetUniquePossibilityOrNull(contextHints, currentName);
+		string? possibleContent = GetUniquePossibilityOrNull(contentHints, currentName);
+
+		string? autoCompleteText = null;
+
+		if (possibleContext is not null && possibleContent is null) {
+			// Context
+			autoCompleteText = possibleContext[currentName.Length..] + "]";
+
+		} else if (possibleContext is null && possibleContent is not null) {
+			// Content
+			autoCompleteText = possibleContent[currentName.Length..] + " ";
+
+		} else if (possibleContext is not null && possibleContent is not null) {
+			// Both possible
+			// TODO: add special handling
+		}
+
+		// Insert
+		if (autoCompleteText is null) return;
+		messageTextEdit.InsertTextAtCaret(autoCompleteText, caretIndex);
+	}
+
 	/// <remarks>
 	/// Assumes partial valid tags.
 	/// Only works with the main caret.
@@ -122,7 +197,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		int currentLine = messageTextEdit.GetCaretLine(caretIndex: 0);
 		int currentColumn = messageTextEdit.GetCaretColumn(caretIndex: 0);
 
-		(bool isCurrentlyOpen, var test) = SearchForTagOpeningAt(currentLine, currentColumn);
+		(bool isCurrentlyOpen, _) = SearchForTagOpeningAt(currentLine, currentColumn);
 
 		// Insert
 		messageTextEdit.InsertText(isCurrentlyOpen ? "]" : "[", currentLine, currentColumn, beforeSelectionBegin: true);

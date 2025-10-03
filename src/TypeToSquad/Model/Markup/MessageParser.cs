@@ -44,7 +44,7 @@ public class MessageParser : IRefrencesCore {
 
 	#region //// Content and context type parsing
 
-	readonly static ReadOnlyDictionary<string, ContentType> contextHintStrings =
+	readonly public static ReadOnlyDictionary<string, ContentType> contextHintStrings =
 		new Dictionary<string, ContentType>() {
 			["ipa"] = ContentType.Ipa,
 			["snd"] = ContentType.Audio,

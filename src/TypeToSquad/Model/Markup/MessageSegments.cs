@@ -86,7 +86,7 @@ public record class ContentSegment : MessageSegment {
 	/// <summary>The first position that separates hint and payload.</summary>
 	public int TypeTextEndExclusive { get; private set; } = -1;
 
-	/// <summary>The normalized text of content type.</summary>
+	/// <summary>The normalized (trimmed, lowercase) text of content type.</summary>
 	public string TypeText { get; private set; } = "";
 
 	/// <summary>Type of the content.</summary>

@@ -230,6 +230,19 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 
+[node name="EnableTagCompletionLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "When enabled, open tags are completed automatically
+when only one valid possibility remains during tying."
+mouse_filter = 1
+text = "Enable Tag Completion"
+
+[node name="EnableTagCompletionInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
 [node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2

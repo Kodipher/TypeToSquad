@@ -8,5 +8,8 @@ TODO:
 - proper icons for table edit
 - min window sizes for all windows
 - check tab order in all windows
+- consider changing autocomplete and tab to insert tag to handle (invalid) nested tags
+- consider changing autocomplete logic to handle typing in the middle of the text
+- autocomplete: add special handling if a context name matches content hint 
 
 TO TEST:

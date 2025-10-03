@@ -53,6 +53,9 @@ public record class UserSettings {
 	/// <summary>Whether pressing Tab can open and close tags.</summary>
 	public readonly Field<bool> TabToInsertTag = new(true);
 
+	/// <summary>Whether to automatically complete tags during writing.</summary>
+	public readonly Field<bool> AutocompleteTags = new(false);
+
 
 	// ===== ===== ===== CONTEXTS ===== ===== =====
 

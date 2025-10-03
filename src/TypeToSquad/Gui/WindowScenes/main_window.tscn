@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://0w4yxg65pc57"]
+[gd_scene load_steps=15 format=3 uid="uid://0w4yxg65pc57"]
 
 [ext_resource type="Script" uid="uid://b2gyqbxewtq7x" path="res://Gui/WindowScenes/MainWindow.cs" id="1_3e08y"]
 [ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_f3pvk"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dcf76i0j56fy5" path="res://assets/icons/m-cog-6-tooth.svg" id="4_7es2g"]
 [ext_resource type="Texture2D" uid="uid://b4vqky88rxt8i" path="res://assets/icons/m-exclamation-triangle.svg" id="4_ulwh1"]
 [ext_resource type="Texture2D" uid="uid://brgulx2rg7qdj" path="res://assets/icons/m-speaker-wave.svg" id="5_a1awg"]
+[ext_resource type="Script" uid="uid://b7kry6ncjve5d" path="res://Gui/TextEditEx.cs" id="5_tsue3"]
 [ext_resource type="Texture2D" uid="uid://k8nk6kkqhwld" path="res://assets/icons/m-speaker-x-mark.svg" id="6_tsue3"]
 
 [sub_resource type="InputEventAction" id="InputEventAction_f3pvk"]
@@ -89,6 +90,7 @@ scroll_v_scroll_speed = 20.0
 scroll_fit_content_width = true
 caret_blink = true
 caret_move_on_right_click = false
+script = ExtResource("5_tsue3")
 
 [node name="VBoxRight" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox"]
 layout_mode = 2
