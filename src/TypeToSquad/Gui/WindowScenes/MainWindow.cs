@@ -109,7 +109,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	#region //// Tag autocomplete, Tab handling
 
 	/// <remarks>
-	/// Assuming partial valid tags.
+	/// Assumes partial valid tags.
 	/// Only works with the main caret.
 	/// </remarks>
 	/// <returns>true if the tab press was consumed</returns>
@@ -118,41 +118,53 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		// Disabled from settings
 		if (!CoreNode.UserSettings.TabToInsertTag) return false;
 
+		// Find latest opening
 		int currentLine = messageTextEdit.GetCaretLine(caretIndex: 0);
 		int currentColumn = messageTextEdit.GetCaretColumn(caretIndex: 0);
 
-		// Find latest open and closing tag characters
-		var searchFlags = (uint)TextEdit.SearchFlags.Backwards;
-		Vector2I lastOpen = messageTextEdit.Search("[", searchFlags, currentLine, currentColumn);
-		Vector2I lastClose = messageTextEdit.Search("]", searchFlags, currentLine, currentColumn);
-
-		bool isInsertingOpen = false;
-
-		do {
-			// x is the column, y is the line	
-
-			// Nothing found
-			if (lastOpen.Y == -1 && lastClose.Y == -1) {
-				isInsertingOpen = true;
-				break;
-			}
-
-			// Close is latest
-			// (or close is found and open is not)
-			if (
-				lastOpen.Y < lastClose.Y ||
-				(lastOpen.Y == lastClose.Y && lastOpen.X < lastClose.X)	
-			) {
-				isInsertingOpen = true;
-				break;
-			}
-
-		} while (false);
+		(bool isCurrentlyOpen, var test) = SearchForTagOpeningAt(currentLine, currentColumn);
 
 		// Insert
-		messageTextEdit.InsertText(isInsertingOpen ? "[" : "]", currentLine, currentColumn, beforeSelectionBegin: true);
+		messageTextEdit.InsertText(isCurrentlyOpen ? "]" : "[", currentLine, currentColumn, beforeSelectionBegin: true);
 
 		return true;
+	}
+
+
+	/// <returns>
+	/// Whether given position is after a tag opening and 
+	/// the position of the last opening or closing character.
+	/// </returns>
+	(bool isOpen, Vector2I position) SearchForTagOpeningAt(int line, int column) {
+
+		var searchFlags = (uint)TextEdit.SearchFlags.Backwards;
+		Vector2I lastOpen = messageTextEdit.Search("[", searchFlags, line, column);
+		Vector2I lastClose = messageTextEdit.Search("]", searchFlags, line, column);
+
+		// x is the column, y is the line	
+
+		// Invalidate anything after caret position
+		if (lastOpen.Y > line || (lastOpen.Y == line && lastOpen.X >= column)) {
+			lastOpen = new Vector2I(-1, -1);
+		}
+
+		if (lastClose.Y > line || (lastClose.Y == line && lastClose.X >= column)) {
+			lastClose = new Vector2I(-1, -1);
+		}
+
+		// Nothing found
+		if (lastOpen.Y == -1 && lastClose.Y == -1) {
+			return (false, lastClose);
+		}
+
+		// Close is latest
+		// (or close is found and open is not)
+		if (lastClose.Y > lastOpen.Y || (lastOpen.Y == lastClose.Y && lastClose.X > lastOpen.X)) {
+			return (false, lastClose);
+		}
+
+		// Otherwise open
+		return (true, lastOpen);
 	}
 
 	#endregion
