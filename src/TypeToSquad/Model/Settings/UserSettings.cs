@@ -14,10 +14,10 @@ public record class UserSettings {
 
 	// ===== ===== ===== GENERAL ===== ===== =====
 
-	/// <summary>Wether to show advanced settings.</summary>
+	/// <summary>Whether to show advanced settings.</summary>
 	public readonly Field<bool> UseAdvancedSettings = new(false);
 
-	/// <summary>Wether to monitor the log file for errors.</summary>
+	/// <summary>Whether to monitor the log file for errors.</summary>
 	public readonly Field<bool> EnableErrorMonitoring = new(true);
 
 
