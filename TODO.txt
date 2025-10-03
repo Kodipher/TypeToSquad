@@ -1,11 +1,10 @@
 TODO:
 - consider adding AudioVolume setting to SimpleSettings
 - change how/when log file is monitored
-- feature: tab shortcuts for context changes
--- letter after autocompletes the context
+- feature: autocomplete contexts
+- feature: direct hardware input to grab and release focus
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
-- feature: direct hardware typing
 - proper icons for table edit
 - min window sizes for all windows
 - check tab order in all windows

@@ -50,6 +50,9 @@ public record class UserSettings {
 	/// <summary>Number of previous inputs held in memory.</summary>
 	public readonly FieldNumericRange<int> HistorySlots = new(0, short.MaxValue, defaultValue: 32);
 
+	/// <summary>Whether pressing Tab can open and close tags.</summary>
+	public readonly Field<bool> TabToInsertTag = new(true);
+
 
 	// ===== ===== ===== CONTEXTS ===== ===== =====
 

@@ -129,6 +129,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
 		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
 		LinkButtonToExternalWindow("%OpenVoiceChangesButton", WindowType.EditVoiceChanges);
+		ImplaceByProperInput(settings.TabToInsertTag, "%EnableTabToInsertTagInput");
 
 	}
 
