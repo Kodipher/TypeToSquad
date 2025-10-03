@@ -28,7 +28,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 
 		// Advanced settings toggle
 		{
-			var enableAdvancedCheckbox = this.GetNodeNotNull<BaseButton>("%EnableAdvancedInput");
+			var enableAdvancedCheckbox = this.GetNodeNotNull<BaseButton>("%ShowAdvancedInput");
 			Field<bool> advancedSettingsField = CoreNode.UserSettings.UseAdvancedSettings;
 
 			if (advancedSettingsField.Value) enableAdvancedCheckbox.ButtonPressed = true;

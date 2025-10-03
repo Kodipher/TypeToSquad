@@ -56,19 +56,19 @@ text = "Output Device"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-focus_next = NodePath("../EnableAdvancedInput")
+focus_next = NodePath("../ShowAdvancedInput")
 focus_previous = NodePath("../MainVoiceInput")
 fit_to_longest_item = false
 allow_reselect = true
 
-[node name="EnableAdvancedLabel" type="Label" parent="MarginContainer/VBoxContainer/MainGrid"]
+[node name="ShowAdvancedLabel" type="Label" parent="MarginContainer/VBoxContainer/MainGrid"]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Show or hide settings for advanced use."
 mouse_filter = 1
-text = "Enable Advanced Settings"
+text = "Show Advanced Settings"
 
-[node name="EnableAdvancedInput" type="CheckBox" parent="MarginContainer/VBoxContainer/MainGrid"]
+[node name="ShowAdvancedInput" type="CheckBox" parent="MarginContainer/VBoxContainer/MainGrid"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
@@ -80,5 +80,5 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 focus_next = NodePath("../MainGrid/MainVoiceInput")
-focus_previous = NodePath("../MainGrid/EnableAdvancedInput")
+focus_previous = NodePath("../MainGrid/ShowAdvancedInput")
 text = "Close"
