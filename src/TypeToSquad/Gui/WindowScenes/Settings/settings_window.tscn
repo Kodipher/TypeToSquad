@@ -181,7 +181,8 @@ metadata/_tab_index = 4
 [node name="ReplacementsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Rules for automatic text substitution."
+tooltip_text = "Rules for automatic text substitution.
+Rules are context-specific."
 mouse_filter = 1
 text = "Text Replacements"
 
