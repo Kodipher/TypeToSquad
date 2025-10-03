@@ -90,11 +90,26 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		// General
 		ImplaceByProperInput(settings.EnableErrorMonitoring, "%EnableMonitoringInput");
 
-		// Voices
+		// Voice
 		ImplaceByProperInput(settings.Voice, "%MainVoiceInput");
 		ImplaceByProperInput(settings.VoicePitch, "%VoicePitchInput");
 		ImplaceByProperInput(settings.VoiceRate, "%VoiceRateInput");
-		LinkButtonToExternalWindow("%OpenVoiceChangesButton", WindowType.EditVoiceChanges);
+
+		var volumeInput = ImplaceByProperInput(settings.SynthesisVolumePercent, "%VoiceVolumeInput");
+		((SpinBox)volumeInput).Suffix = "%";
+
+		// Output
+		var deviceSelect = ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
+		FieldInputCreator.ConnectOnControlSubmit(
+			deviceSelect,
+			_ => this.CallOneFrameLater(CoreNode.AudioManager.SetOutputDeviceFromSettings)
+		);
+
+		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
+		FieldInputCreator.ConnectOnControlSubmit(
+			maxConcurrentInput,
+			_ => this.CallOneFrameLater(CoreNode.AudioManager.EnsureConcurrentNodeMax)
+		);
 
 		// Input
 		var historySlotsInput = ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
@@ -108,26 +123,13 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 				)
 		);
 
-		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
-		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
-
 		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);
 
-		// Audio
-		var deviceSelect = ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
-		FieldInputCreator.ConnectOnControlSubmit(
-			deviceSelect, 
-			_ => this.CallOneFrameLater(CoreNode.AudioManager.SetOutputDeviceFromSettings)
-		);
+		// Contexts
+		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
+		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
+		LinkButtonToExternalWindow("%OpenVoiceChangesButton", WindowType.EditVoiceChanges);
 
-		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
-		FieldInputCreator.ConnectOnControlSubmit(
-			maxConcurrentInput, 
-			_ => this.CallOneFrameLater(CoreNode.AudioManager.EnsureConcurrentNodeMax)
-		);
-
-		var volumeInput = ImplaceByProperInput(settings.SynthesisVolumePercent, "%SynthesisVolumeInput");
-		((SpinBox)volumeInput).Suffix = "%";
 	}
 
 }

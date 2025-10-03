@@ -26,14 +26,23 @@ public record class UserSettings {
 	/// <summary>Name of the current tts voice.</summary>
 	public readonly FieldOptionsRuntime Voice = new();
 
+	/// <summary>The volume of the voice.</summary>
+	public readonly FieldNumericRange<int> SynthesisVolumePercent = new(0, 100, defaultValue: 100);
+
 	/// <summary>The relative pitch of the voice.</summary>
 	public readonly FieldNumeticRangeRounded<double> VoicePitch = new(0, 2, defaultValue: 1);
 
 	/// <summary>The speaking rate (speed multiplier) of the voice.</summary>
 	public readonly FieldNumeticRangeRounded<double> VoiceRate = new(0.5, 6, defaultValue: 1);
 
-	/// <summary>A table of voices change hints and voices they correspond to.</summary>
-	public readonly Table<(string hint, string voiceName)> VoiceChanges = new();
+
+	// ===== ===== ===== OUTPUT ===== ===== =====
+
+	/// <summary>Name of the current output device.</summary>
+	public readonly FieldOptionsRuntime Device = new();
+
+	/// <summary>Max number of outputs played at the same time.</summary>
+	public readonly FieldNumericRange<int> MaxConcurrentStreams = new(1, 64, defaultValue: 6);
 
 
 	// ===== ===== ===== INPUT ===== ===== =====
@@ -41,23 +50,17 @@ public record class UserSettings {
 	/// <summary>Number of previous inputs held in memory.</summary>
 	public readonly FieldNumericRange<int> HistorySlots = new(0, short.MaxValue, defaultValue: 32);
 
-	/// <summary>Max number times text substitutions may run.</summary>
-	public readonly FieldNumericRange<int> MaxReplacementPasses = new(0, 100, defaultValue: 20);
+
+	// ===== ===== ===== CONTEXTS ===== ===== =====
 
 	/// <summary>A table of text replacements to perform. Patterns are written using regex.</summary>
 	public readonly Table<(string context, string pattern, string replacement)> TextReplacements = new();
 
+	/// <summary>Max number times text substitutions may run.</summary>
+	public readonly FieldNumericRange<int> MaxReplacementPasses = new(0, 100, defaultValue: 20);
 
-	// ===== ===== ===== AUDIO ===== ===== =====
-
-	/// <summary>Name of the current output device.</summary>
-	public readonly FieldOptionsRuntime Device = new();
-
-	/// <summary>The volume of the voice.</summary>
-	public readonly FieldNumericRange<int> SynthesisVolumePercent = new(0, 100, defaultValue: 100);
-
-	/// <summary>Max number of outputs played at the same time.</summary>
-	public readonly FieldNumericRange<int> MaxConcurrentStreams = new(1, 64, defaultValue: 6);
+	/// <summary>A table of voices change hints and voices they correspond to.</summary>
+	public readonly Table<(string hint, string voiceName)> VoiceChanges = new();
 
 
 	// ===== ===== ===== ===== ===== =====
