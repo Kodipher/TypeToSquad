@@ -1,14 +1,18 @@
 TODO:
 - consider adding AudioVolume setting to SimpleSettings
 - change how/when log file is monitored
-- feature: autocomplete contexts
+-- change to node, add timer nodes as children
+- feature: wait content tag for delay in seconds
 - feature: direct hardware input to grab and release focus
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
-- proper icons for table edit
+- table edit: proper icons
+- table edit: insert at (insert before) button
 - min window sizes for all windows
 - check tab order in all windows
 - consider changing autocomplete and tab to insert tag to handle (invalid) nested tags
 - consider changing autocomplete logic to handle typing in the middle of the text
+- autocomplete: handle text selection
+- refactor MessageParser into MessageLexer and MessageCompiler
 
 TO TEST:
