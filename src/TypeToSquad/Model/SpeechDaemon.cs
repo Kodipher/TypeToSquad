@@ -314,7 +314,7 @@ public class SpeechDaemon : IDisposable {
 
 	#endregion
 
-	#region //// Voice Storange
+	#region //// Voice Storage
 
 	public VoiceInfo? DefaultVoice { get; private set; } = null;
 
