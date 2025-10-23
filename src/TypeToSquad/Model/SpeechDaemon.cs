@@ -16,8 +16,6 @@ using Rephidock.GeneralUtilities.Randomness;
 using WinRTSpeechSynthServer.Protocol;
 using WinRTSpeechSynthServer.Protocol.Messages;
 
-using TypeToSquad.Model.Settings;
-
 
 namespace TypeToSquad.Model;
 
@@ -336,24 +334,6 @@ public class SpeechDaemon : IDisposable {
 				callback();
 			}
 		}
-	}
-
-	#endregion
-
-	#region //// Send Message
-
-	public void SendMessage(string parsedMessage, bool isSsml, UserSettings settings, Action<SyntesisResultResponse> callback) {
-
-		SynthesizeRequest request = new SynthesizeRequest() {
-			InputString = parsedMessage,
-			IsSsml = isSsml,
-			VoiceName = settings.Voice,
-			Pitch = settings.VoicePitch,
-			Rate = settings.VoiceRate,
-			Volume = settings.SynthesisVolumePercent / 100.0
-		};
-		
-		DispatchRequest(request, callback);
 	}
 
 	#endregion

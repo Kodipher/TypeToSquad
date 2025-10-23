@@ -6,6 +6,9 @@ using System.Linq;
 using TypeToSquad.Model;
 using TypeToSquad.Utils;
 
+using SynthesizeRequest = WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest;
+using SyntesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse;
+
 
 namespace TypeToSquad.Gui.WindowScenes;
 
@@ -276,10 +279,17 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		// Speak
 		(string requestString, bool isSsml) = CoreNode.MessageProsessor.ProcessMessage(messageTextEdit.Text);
 
-		CoreNode.SpeechDaemon.SendMessage(
-			requestString,
-			isSsml,
-			CoreNode.UserSettings,
+		SynthesizeRequest synthRequest = new SynthesizeRequest() {
+			InputString = requestString,
+			IsSsml = isSsml,
+			VoiceName = CoreNode.UserSettings.Voice,
+			Pitch = CoreNode.UserSettings.VoicePitch,
+			Rate = CoreNode.UserSettings.VoiceRate,
+			Volume = CoreNode.UserSettings.SynthesisVolumePercent / 100.0
+		};
+
+		CoreNode.SpeechDaemon.DispatchRequest<SyntesisResultResponse>(
+			synthRequest,
 			(response) => {
 
 				// Voice does not exist
