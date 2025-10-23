@@ -217,6 +217,30 @@ public class SpeechDaemon : IDisposable {
 	}
 
 	/// <summary>
+	/// <see cref="DispatchRequest(Request, Action{Response})"/> 
+	/// with an expected response type.
+	/// </summary>
+	/// <remarks>
+	/// If the type does not match the <paramref name="callback"/> is not called.
+	/// </remarks>
+	public void DispatchRequest<TExpectedResponse>(Request request, Action<TExpectedResponse> callback)
+	where TExpectedResponse : Response
+	{
+		DispatchRequest(
+			request,
+			response => {
+
+				if (response is not TExpectedResponse expectedResponse) {
+					GD.PushError($"Expected response of type {typeof(TExpectedResponse).Name}, got {response.GetType().Name}.");
+					return;
+				}
+
+				callback(expectedResponse);
+			}
+		);
+	}
+
+	/// <summary>
 	/// Sends multiple requests in series, chaining callbacks together.
 	/// A request returned by one callback is sent and the response
 	/// is handled by the next callback, until null is returned.
@@ -329,18 +353,7 @@ public class SpeechDaemon : IDisposable {
 			Volume = settings.SynthesisVolumePercent / 100.0
 		};
 		
-		DispatchRequest(
-			request,
-			response => {
-
-				if (response is SyntesisResultResponse synthesisResult) {
-					callback(synthesisResult);
-					return;
-				}
-
-				GD.PushError($"Synthesis request response is not a {nameof(SyntesisResultResponse)}.");
-			}
-		);
+		DispatchRequest(request, callback);
 	}
 
 	#endregion

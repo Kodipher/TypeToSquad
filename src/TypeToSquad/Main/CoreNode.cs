@@ -70,14 +70,9 @@ public partial class CoreNode : Node {
 		// Start Daemon
 		SpeechDaemon = new SpeechDaemon();
 		SpeechDaemon.StartDaemon();
-		SpeechDaemon.DispatchRequest( // find voices
+		SpeechDaemon.DispatchRequest<AllVoicesResponse>( // find voices
 			new GetVoicesRequest(),
-			(resp) => {
-
-				if (resp is not AllVoicesResponse voicesResponse) {
-					GD.PushError($"{nameof(GetVoicesRequest)} did not give a {nameof(AllVoicesResponse)}");
-					return;
-				}
+			voicesResponse => {
 
 				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
 				UserSettings.VoiceChanges.RevalidateAllRows(); // Because Voices validator changed state
