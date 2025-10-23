@@ -18,7 +18,8 @@ public enum ContextUses {
 public enum ContentType {
 	Invalid = 0,
 	Ipa = 1,
-	Audio = 2
+	Audio = 2,
+	Wait = 3
 }
 
 
@@ -44,7 +45,9 @@ public class MessageLexer : IRefrencesCore {
 		new Dictionary<string, ContentType>() {
 			["ipa"] = ContentType.Ipa,
 			["snd"] = ContentType.Audio,
-			["audio"] = ContentType.Audio
+			["audio"] = ContentType.Audio,
+			["wait"] = ContentType.Wait,
+			["break"] = ContentType.Wait
 		}.AsReadOnly();
 
 	/// <summary>

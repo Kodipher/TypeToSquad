@@ -213,6 +213,7 @@ public class MessageProsessor : IRefrencesCore {
 	const string ssmlVoiceClose = """</voice>""";
 
 	const string ssmlIpa = """<phoneme alphabet="ipa" ph="{0}"></phoneme>""";
+	const string ssmlBreak = """<break time="{0}"/>""";
 
 	/// <remarks>Assumes invalid segments were already stripped.</remarks>
 	string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
@@ -277,8 +278,12 @@ public class MessageProsessor : IRefrencesCore {
 						throw new NotImplementedException("Inserting audio is not implemented.");
 						break;
 
+					case ContentType.Wait:
+						sb.AppendFormat(ssmlBreak, SecurityElement.Escape(contentSegment.Payload));
+						break;
+
 					default:
-						throw new ArgumentException("Invalid inline content segmet.");
+						throw new NotSupportedException("Unknown inline content segmet.");
 				}
 
 			}

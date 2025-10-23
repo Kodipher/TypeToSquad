@@ -7,6 +7,7 @@ A tag can denote:
 - **inline content** that is not plain text, if it has multiple words (space separated):
   - `[ipa {text}]` - Phonetic spelling
   - `[snd {name}]` or `[audio {name}]` - Sound effect
+  - `[wait {time}]` or `[break {time}]` - Adds a pause of a specified duration
 
 Tags fulfilling any of the following are invalid and are skipped over.
 
