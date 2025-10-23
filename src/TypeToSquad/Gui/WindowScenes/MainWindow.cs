@@ -137,7 +137,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		if (currentName.Length == 0) return; // do not act on empty names
 
 		// Find all context names
-		var contentHints = TypeToSquad.Model.Markup.MessageParser.contextHintStrings.Keys;
+		var contentHints = TypeToSquad.Model.Markup.MessageLexer.contextHintStrings.Keys;
 
 		string[] contextHints = Enumerable.Concat(
 									CoreNode
@@ -274,7 +274,25 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		CoreNode.HistoryTracker.NavigateReset();
 
 		// Speak
-		CoreNode.MessageSender.SendMessage(messageTextEdit.Text);
+		(string requestString, bool isSsml) = CoreNode.MessageProsessor.ProcessMessage(messageTextEdit.Text);
+
+		CoreNode.SpeechDaemon.SendMessage(
+			requestString,
+			isSsml,
+			CoreNode.UserSettings,
+			(response) => {
+
+				// Voice does not exist
+				if (!response.GivenVoiceExists) {
+					GD.PushError("Selected voice does not exist.");
+					var voiceField = CoreNode.UserSettings.Voice;
+					voiceField.Value = voiceField.DefaultValue;
+				}
+
+				// Play resulting data
+				CoreNode.AudioManager.PlayNew(response.SynthesizedData);
+			}
+		);
 
 		// Reset textbox
 		messageTextEdit.Clear();

@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using WinRTSpeechSynthServer.Protocol.Messages;
@@ -38,16 +36,11 @@ public partial class CoreNode : Node {
 	public UserSettings UserSettings { get; private set; } = null!;
 	public LogMonitor LogMonitor { get; private set; } = null!;
 
-	public MessageSender MessageSender { get; private set; } = null!;
-	public MessageParser MessageParser { get; private set; } = null!;
+	public MessageProsessor MessageProsessor { get; private set; } = null!;
 	public HistoryTracker HistoryTracker { get; private set; } = null!;
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!;
 
 	public AudioManagerNode AudioManager { get; private set; } = null!;
-
-	#endregion
-
-	#region //// UI (window) Components and parts
 
 	public WindowManager WindowManager { get; private set; } = null!;
 	public MainWindow MainWindow { get; private set; } = null!;
@@ -70,11 +63,9 @@ public partial class CoreNode : Node {
 		HistoryTracker = new HistoryTracker();
 		HistoryTracker.MaxHistorySize = UserSettings.HistorySlots;
 
-		MessageParser = new MessageParser();
-		MessageParser.RecieveCoreReference(this);
-
-		MessageSender = new MessageSender();
-		MessageSender.RecieveCoreReference(this);
+		MessageProsessor = new MessageProsessor();
+		MessageProsessor.RecieveCoreReference(this);
+		MessageProsessor.InitLexer();
 
 		// Start Daemon
 		SpeechDaemon = new SpeechDaemon();

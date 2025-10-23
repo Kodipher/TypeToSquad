@@ -13,6 +13,6 @@ TODO:
 - consider changing autocomplete and tab to insert tag to handle (invalid) nested tags
 - consider changing autocomplete logic to handle typing in the middle of the text
 - autocomplete: handle text selection
-- refactor MessageParser into MessageLexer and MessageCompiler
+- refactor MessageLexer
 
 TO TEST:

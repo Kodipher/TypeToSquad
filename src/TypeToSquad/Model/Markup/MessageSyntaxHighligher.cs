@@ -29,7 +29,7 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 	void PopulateSegmentCache(string message) {
 		if (cacheKey == message) return;
 		cacheKey = message;
-		segmentsCache = CoreNode.MessageParser.SegmentMessage(message);
+		segmentsCache = CoreNode.MessageProsessor.Lexer.SegmentMessage(message);
 	}
 
 	public override void _ClearHighlightingCache() {
