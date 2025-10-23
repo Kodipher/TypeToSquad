@@ -6,6 +6,7 @@ TODO:
 - feature: direct hardware input to grab and release focus
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
+- MessageLexer: check for content inside tags instead of letting the daemon crash
 - table edit: proper icons
 - table edit: insert at (insert before) button
 - min window sizes for all windows
