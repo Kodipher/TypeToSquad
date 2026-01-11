@@ -15,20 +15,27 @@ namespace TypeToSquad.Model;
 /// Expects to have no children, other than
 /// nodes created by itself.
 /// </remarks>
-public partial class AudioManagerNode : Node, IRefrencesCore {
+public partial class AudioManager : Node {
 
-	#region //// Core Node
+	#region //// Singleton
 
-	CoreNode? _coreNode = null;
+	public static AudioManager Instance { get; private set; } = null!; // Set in _Ready
 
-	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
-
-	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
+	private void StageSingletonInstance() {
+		Instance ??= this;
+	}
 
 	#endregion
 
-	public void SetOutputDeviceFromSettings() {
-		AudioServer.OutputDevice = CoreNode.UserSettings.Device;
+	public override void _Ready() {
+		StageSingletonInstance();
+		InitOutputDeviceSetting();
+	}
+
+	public void InitOutputDeviceSetting() {
+		var settingsInstance = UserSettingsManager.Instance.Settings;
+		settingsInstance.Device.SetOptions(AudioServer.GetOutputDeviceList());
+		AudioServer.OutputDevice = settingsInstance.Device;
 	}
 
 	/// <summary>
@@ -95,7 +102,7 @@ public partial class AudioManagerNode : Node, IRefrencesCore {
 	/// is within limits.
 	/// </summary>
 	public void EnsureConcurrentNodeMax() {
-		int maxChildren = CoreNode.UserSettings.MaxConcurrentStreams;
+		int maxChildren = UserSettingsManager.Instance.Settings.MaxConcurrentStreams;
 		while (this.GetChildCount() > maxChildren) {
 			var oldestNode = this.GetChild<AudioStreamPlayer>(0);
 			oldestNode.Stop();

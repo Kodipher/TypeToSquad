@@ -30,7 +30,7 @@ public partial class CoreNode : Node {
 	public HistoryTracker HistoryTracker { get; private set; } = null!;
 	public SpeechDaemon SpeechDaemon { get; private set; } = null!;
 
-	public AudioManagerNode AudioManager { get; private set; } = null!;
+	public AudioManager AudioManager { get; private set; } = null!;
 
 	public WindowManager WindowManager { get; private set; } = null!;
 	public MainWindow MainWindow { get; private set; } = null!;
@@ -41,12 +41,6 @@ public partial class CoreNode : Node {
 
 		// Misc. parts
 		LogMonitor = new LogMonitor();
-
-		// Init Audio 
-		AudioManager = this.GetNodeNotNull<AudioManagerNode>("%AudioManager");
-		AudioManager.RecieveCoreReference(this);
-		UserSettings.Device.SetOptions(AudioServer.GetOutputDeviceList());
-		AudioManager.SetOutputDeviceFromSettings();
 
 		// Init message stuff
 		HistoryTracker = new HistoryTracker();

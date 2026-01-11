@@ -13,7 +13,7 @@ public partial class SimpleSettingsWindow : SettingsWindow, IRefrencesCore {
 		var deviceSelect = ImplaceByProperInput(CoreNode.UserSettings.Device, "%OutputDeviceInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			deviceSelect,
-			_ => this.CallOneFrameLater(CoreNode.AudioManager.SetOutputDeviceFromSettings)
+			_ => this.CallOneFrameLater(CoreNode.AudioManager.InitOutputDeviceSetting)
 		);
 	}
 

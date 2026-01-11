@@ -52,7 +52,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		windowManager.GetExistingWindowAtSelf(WindowType.EditReplacements)?.QueueFree();
 		windowManager.GetExistingWindowAtSelf(WindowType.EditVoiceChanges)?.QueueFree();
 
-		UserSettingsLoader.Save(CoreNode.UserSettings);
+		UserSettingsManager.Save(CoreNode.UserSettings);
 		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
 
 		this.QueueFree();
@@ -102,7 +102,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		var deviceSelect = ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			deviceSelect,
-			_ => this.CallOneFrameLater(CoreNode.AudioManager.SetOutputDeviceFromSettings)
+			_ => this.CallOneFrameLater(CoreNode.AudioManager.InitOutputDeviceSetting)
 		);
 
 		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");

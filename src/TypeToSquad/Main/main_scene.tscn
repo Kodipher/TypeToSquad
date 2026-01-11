@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cdeue8fjdyebt"]
+[gd_scene load_steps=10 format=3 uid="uid://cdeue8fjdyebt"]
 
 [ext_resource type="Script" uid="uid://dbfqyxp6c48ce" path="res://Main/CoreNode.cs" id="1_66tet"]
 [ext_resource type="Script" uid="uid://hqpbx6wldkno" path="res://Gui/WindowManager.cs" id="2_7ycvg"]
@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://b3gxg0rgcj3yr" path="res://Gui/WindowScenes/Settings/simple_settings_window.tscn" id="5_671wp"]
 [ext_resource type="PackedScene" uid="uid://bcpfjd6g106yg" path="res://Gui/WindowScenes/Settings/settings_window.tscn" id="6_mo76n"]
 [ext_resource type="PackedScene" uid="uid://s0vn2q14tstu" path="res://Gui/WindowScenes/shortcut_window.tscn" id="7_42l1d"]
-[ext_resource type="Script" uid="uid://blybn6brq0fk8" path="res://Model/AudioManagerNode.cs" id="8_2jcla"]
 [ext_resource type="PackedScene" uid="uid://b2w437qnsyeoh" path="res://Gui/WindowScenes/TableEdit/text_replacements_window.tscn" id="8_ytex5"]
 [ext_resource type="PackedScene" uid="uid://dwl0hryvg21fb" path="res://Gui/WindowScenes/TableEdit/voice_changes_window.tscn" id="9_qa4k6"]
 
@@ -26,7 +25,3 @@ WindowScenes = Dictionary[int, PackedScene]({
 6: ExtResource("8_ytex5"),
 7: ExtResource("9_qa4k6")
 })
-
-[node name="AudioManager" type="Node" parent="."]
-unique_name_in_owner = true
-script = ExtResource("8_2jcla")

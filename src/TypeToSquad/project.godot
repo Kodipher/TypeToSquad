@@ -35,6 +35,7 @@ driver/output_latency=30
 [autoload]
 
 UserSettingsManager="*res://Model/UserSettingsManager.cs"
+AudioManager="*res://Model/AudioManager.cs"
 
 [copy_files_on_export]
 
