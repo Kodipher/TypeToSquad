@@ -14,16 +14,6 @@ using TypeToSquad.Utils;
 namespace TypeToSquad;
 
 
-public interface IRefrencesCore {
-	/// <summary>
-	/// Called once to share the <see cref="CoreNode"/> reference.
-	/// Should be called before <see cref="Node._Ready"/> for nodes,
-	/// when possible (not guaranteed).
-	/// </summary>
-	public void RecieveCoreReference(CoreNode core);
-}
-
-
 public partial class CoreNode : Node {
 
 	#region //// Components and Parts
