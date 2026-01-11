@@ -40,7 +40,6 @@ public partial class CoreNode : Node {
 	public override void _Ready() {
 
 		// Misc. parts
-		UserSettings = UserSettingsLoader.Load();
 		LogMonitor = new LogMonitor();
 
 		// Init Audio 

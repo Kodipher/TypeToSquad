@@ -6,11 +6,37 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using TypeToSquad.Model.Settings;
 
-namespace TypeToSquad.Model.Settings;
+
+namespace TypeToSquad.Model;
 
 
-public static class UserSettingsLoader {
+public partial class UserSettingsManager : Node {
+
+	/// <summary>
+	/// Current settings.
+	/// When settings are loaded or update this instance is changed
+	/// instead of a new instance being created.
+	/// </summary>
+	public UserSettings Settings { get; private init; } = new();
+
+	public override void _Ready() {
+		StageSingletonInstance();
+		Load();
+	}
+
+	#region //// Singleton
+
+	public static UserSettingsManager Instance { get; private set; } = null!; // Set in _Ready
+
+	private void StageSingletonInstance() {
+		Instance ??= this;
+	}
+
+	#endregion
+
+	#region //// Saving and Loading
 
 	public const string settingsFilepath = "user_settings.json";
 
@@ -21,15 +47,15 @@ public static class UserSettingsLoader {
 									.ToArray()
 									.AsReadOnly();
 
-	/// <summary>Saves settings to disk</summary>
-	public static void Save(UserSettings settings) {
+	/// <summary>Saves <see cref="Settings"/> to disk.</summary>
+	public void Save() {
 
 		// Find saveable data
 		Godot.Collections.Dictionary<string, Variant> settingsDict = new();
 
 		foreach (FieldInfo fieldInfo in UserSettingsSavableFields) {
 
-			IVariantSavable? savable = fieldInfo.GetValue(settings) as IVariantSavable;
+			IVariantSavable? savable = fieldInfo.GetValue(Settings) as IVariantSavable;
 			Variant saveValue = savable?.ToSavableVariant() ?? new Variant();
 
 			if (saveValue.VariantType == Variant.Type.Nil) {
@@ -46,12 +72,13 @@ public static class UserSettingsLoader {
 		File.WriteAllText(settingsPath, settingsJson);
 	}
 
-	/// <summary>Loads settings from disk</summary>
-	public static UserSettings Load() {
+	/// <summary>Loads settings from disk into <see cref="Settings"/>.</summary>
+	/// <remarks>On load error no changes are made.</remarks>
+	public void Load() {
 
 		// Read from disk
 		string settingsPath = Path.Combine(OS.GetUserDataDir(), settingsFilepath);
-		if (!File.Exists(settingsPath)) return new UserSettings();
+		if (!File.Exists(settingsPath)) return;
 
 		string settingsJson = File.ReadAllText(settingsPath);
 
@@ -61,28 +88,27 @@ public static class UserSettingsLoader {
 
 		if (result != Error.Ok) {
 			GD.PushError($"Could not load settings: file is malformed.\n{jsonReader.GetErrorMessage()}");
-			return new UserSettings();
+			return;
 		}
 
 		Variant parsedJson = jsonReader.Data;
 
 		if (parsedJson.VariantType != Variant.Type.Dictionary) {
 			GD.PushError("Could not load settings: root value is not an object.");
-			return new UserSettings();
+			return;
 		}
 
 		Godot.Collections.Dictionary<string, Variant> settingsDict = parsedJson.AsGodotDictionary<string, Variant>();
 
 		// Apply data
-		var settings = new UserSettings();
 		foreach (FieldInfo fieldInfo in UserSettingsSavableFields) {
 			if (settingsDict.TryGetValue(fieldInfo.Name, out Variant fieldSaveValue)) {
-				IVariantSavable? savable = fieldInfo.GetValue(settings) as IVariantSavable;
+				IVariantSavable? savable = fieldInfo.GetValue(Settings) as IVariantSavable;
 				if (savable is not null) savable.SetFromVariant(fieldSaveValue);
 			}
 		}
-
-		return settings;
 	}
+
+	#endregion
 
 }

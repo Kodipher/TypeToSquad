@@ -32,6 +32,10 @@ config/icon="uid://g03we4p304wj"
 
 driver/output_latency=30
 
+[autoload]
+
+UserSettingsManager="*res://Model/UserSettingsManager.cs"
+
 [copy_files_on_export]
 
 files=Array[PackedStringArray]([PackedStringArray("res://WinRTSpeechDaemon", "WinRTSpeechDaemon", "windows")])
