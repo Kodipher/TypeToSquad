@@ -23,14 +23,10 @@ public partial class CoreNode : Node {
 
 	// All of these are set in _Ready
 
-	public UserSettings UserSettings { get; private set; } = null!;
 	public LogMonitor LogMonitor { get; private set; } = null!;
 
 	public MessageProsessor MessageProsessor { get; private set; } = null!;
 	public HistoryTracker HistoryTracker { get; private set; } = null!;
-	public SpeechDaemon SpeechDaemon { get; private set; } = null!;
-
-	public AudioManager AudioManager { get; private set; } = null!;
 
 	public WindowManager WindowManager { get; private set; } = null!;
 	public MainWindow MainWindow { get; private set; } = null!;

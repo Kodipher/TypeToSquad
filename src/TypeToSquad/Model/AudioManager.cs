@@ -7,14 +7,7 @@ using System.Linq;
 namespace TypeToSquad.Model;
 
 
-/// <summary>
-/// A node that manages playback of spoken messages.
-/// Is a <see cref="Node"/> to better interact with the Godot engine.
-/// </summary>
-/// <remarks>
-/// Expects to have no children, other than
-/// nodes created by itself.
-/// </remarks>
+/// <summary>Manages playback of spoken messages.</summary>
 public partial class AudioManager : Node {
 
 	#region //// Singleton
