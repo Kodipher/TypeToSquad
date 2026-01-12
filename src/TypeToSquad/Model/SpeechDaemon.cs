@@ -25,7 +25,40 @@ namespace TypeToSquad.Model;
 /// Responsible for the daemon process 
 /// and communication with it.
 /// </summary>
-public class SpeechDaemon : IDisposable {
+public partial class SpeechDaemon : Node, IDisposable {
+
+	public override void _Ready() {
+		StageSingletonInstance();
+
+		StartDaemon();
+		
+		DispatchRequest<AllVoicesResponse>( // find voices
+			new GetVoicesRequest(),
+			voicesResponse => {
+
+				var settingsInstance = UserSettingsManager.Instance.Settings;
+
+				settingsInstance.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
+				settingsInstance.VoiceChanges.RevalidateAllRows(); // Because Voices validator changed state
+
+				StoreVoiceInfos(voicesResponse);
+			}
+		);
+	}
+
+	public override void _Process(double delta) {
+		ConsumeResponses();
+	}
+
+	#region //// Singleton
+
+	public static SpeechDaemon Instance { get; private set; } = null!; // Set in _Ready
+
+	private void StageSingletonInstance() {
+		Instance ??= this;
+	}
+
+	#endregion
 
 	#region //// Daemon Process
 
@@ -146,7 +179,7 @@ public class SpeechDaemon : IDisposable {
 	/// Safely closes and disposes of the daemon process.
 	/// Does nothing if <see cref="daemonProcess"/> is already <see langword="null"/>.
 	/// </summary>
-	void CloseAndDisposeDaemon() {
+	public void CloseAndDisposeDaemon() {
 
 		if (daemonProcess is null) return;
 
@@ -325,7 +358,7 @@ public class SpeechDaemon : IDisposable {
 	/// <see cref="responseConsumptionCallbackQueue"/>.
 	/// (Consumes the whole queue).
 	/// </summary>
-	public void ConsumeResponses() {
+	void ConsumeResponses() {
 		// Guards
 		ObjectDisposedException.ThrowIf(isDisposed, this);
 		// Consume
@@ -353,9 +386,9 @@ public class SpeechDaemon : IDisposable {
 
 	#region //// Disposable
 
-	private bool isDisposed;
+	private bool isDisposed = false;
 
-	protected virtual void Dispose(bool disposingManaged) {
+	protected override void Dispose(bool disposingManaged) {
 
 		if (isDisposed) return;
 
@@ -370,17 +403,9 @@ public class SpeechDaemon : IDisposable {
 
 		// Set flag
 		isDisposed = true;
-	}
 
-	~SpeechDaemon() {
-		// Do not add disposing here
-		Dispose(disposingManaged: false);
-	}
-
-	public void Dispose() {
-		// Do not add disposing here
-		Dispose(disposingManaged: true);
-		GC.SuppressFinalize(this);
+		// Dispose self as Node
+		base.Dispose(disposingManaged);
 	}
 
 	#endregion

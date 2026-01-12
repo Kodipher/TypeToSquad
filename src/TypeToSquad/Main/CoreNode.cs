@@ -50,20 +50,6 @@ public partial class CoreNode : Node {
 		MessageProsessor.RecieveCoreReference(this);
 		MessageProsessor.InitLexer();
 
-		// Start Daemon
-		SpeechDaemon = new SpeechDaemon();
-		SpeechDaemon.StartDaemon();
-		SpeechDaemon.DispatchRequest<AllVoicesResponse>( // find voices
-			new GetVoicesRequest(),
-			voicesResponse => {
-
-				UserSettings.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
-				UserSettings.VoiceChanges.RevalidateAllRows(); // Because Voices validator changed state
-				
-				SpeechDaemon.StoreVoiceInfos(voicesResponse);
-			}
-		);
-
 		// Init WindowManager and
 		// instantiate main window after ready
 		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");
@@ -80,12 +66,8 @@ public partial class CoreNode : Node {
 		//UserSettingsLoader.Save(UserSettings); // Disable automatic resaving to prevent data loss
 	}
 
-	public override void _Process(double delta) {
-		SpeechDaemon?.ConsumeResponses();
-	}
-
 	protected virtual void OnPreDelete() {
-		SpeechDaemon.Dispose();
+		SpeechDaemon.Instance.CloseAndDisposeDaemon();
 	}
 
 	bool hasPressedQuit = false;
@@ -111,7 +93,7 @@ public partial class CoreNode : Node {
 		}
 
 		GD.Print("Gracefuly terminating daemon...");
-		SpeechDaemon.DispatchRequest(
+		SpeechDaemon.Instance.DispatchRequest(
 			new TerminateRequest(), 
 			(_) => {
 				GD.Print("Exiting...");
