@@ -8,7 +8,22 @@ using FileAccess = System.IO.FileAccess;
 namespace TypeToSquad.Model;
 
 
-public class LogMonitor {
+public partial class LogMonitor : Node {
+
+	#region //// Singleton
+
+	public static LogMonitor Instance { get; private set; } = null!; // Set in _Ready
+
+	private void StageSingletonInstance() {
+		Instance ??= this;
+	}
+
+	#endregion
+
+	public override void _Ready() {
+		StageSingletonInstance();
+	}
+
 
 	/*
 	const string settingNameLoggingEnabled = @"debug/file_logging/enable_file_logging";

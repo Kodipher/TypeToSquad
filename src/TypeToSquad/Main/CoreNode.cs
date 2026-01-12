@@ -16,24 +16,16 @@ namespace TypeToSquad;
 
 public partial class CoreNode : Node {
 
-	#region //// Components and Parts
-
 	// Assume to be { get; private init; }
 	// Need to be private set; because they are set when _Ready is called
 
 	// All of these are set in _Ready
 
-	public LogMonitor LogMonitor { get; private set; } = null!;
-
 	public WindowManager WindowManager { get; private set; } = null!;
 	public MainWindow MainWindow { get; private set; } = null!;
 
-	#endregion
 
 	public override void _Ready() {
-
-		// Misc. parts
-		LogMonitor = new LogMonitor();
 
 		// Init WindowManager and
 		// instantiate main window after ready
