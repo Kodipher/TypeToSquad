@@ -7,17 +7,24 @@ using System.Linq;
 namespace TypeToSquad.Model;
 
 
-public class HistoryTracker {
+public partial class HistoryTracker : Node {
+
+	#region //// Singleton
+
+	public static HistoryTracker Instance { get; private set; } = null!; // Set in _Ready
+
+	private void StageSingletonInstance() {
+		Instance ??= this;
+	}
+
+	#endregion
+
+	public override void _Ready() {
+		StageSingletonInstance();
+	}
 
 	/// <summary>History of input, recent input first.</summary>
 	readonly LinkedList<string> history = new();
-
-	/// <summary>The maximum number of recent inputs stored.</summary>
-	/// <remarks>
-	/// Changing this value does not trim history automaically. 
-	/// Use <see cref="EnforceHistoryCountMax()"/>.
-	/// </remarks>
-	public int MaxHistorySize { get; set; } = 32;
 
 	/// <summary>
 	/// Returns all stored previous inputs, ordered recent first.
@@ -37,12 +44,15 @@ public class HistoryTracker {
 	}
 
 	/// <summary>
-	/// Removes older entries, ensuring no more than a give number
-	/// of enteries is stored.
+	/// Removes older entries, ensuring no more than 
+	/// a given number of enteries is stored.
 	/// </summary>
 	public void EnforceHistoryCountMax() {
-		if (MaxHistorySize < 0) MaxHistorySize = 0;
-		while (history.Count > MaxHistorySize) history.RemoveLast();
+
+		int historySlots = UserSettingsManager.Instance.Settings.HistorySlots;
+		if (historySlots < 0) historySlots = 0;
+
+		while (history.Count > historySlots) history.RemoveLast();
 
 		if (currentHistoryNode is not null && currentHistoryNode.List is null) {
 			GD.Print("Current history slot was trimmed. Resetting navigation as a failsafe.");

@@ -37,6 +37,7 @@ driver/output_latency=30
 UserSettingsManager="*res://Model/UserSettingsManager.cs"
 AudioManager="*res://Model/AudioManager.cs"
 SpeechDaemon="*res://Model/SpeechDaemon.cs"
+HistoryTracker="*res://Model/HistoryTracker.cs"
 
 [copy_files_on_export]
 

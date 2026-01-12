@@ -25,9 +25,6 @@ public partial class CoreNode : Node {
 
 	public LogMonitor LogMonitor { get; private set; } = null!;
 
-	public MessageProsessor MessageProsessor { get; private set; } = null!;
-	public HistoryTracker HistoryTracker { get; private set; } = null!;
-
 	public WindowManager WindowManager { get; private set; } = null!;
 	public MainWindow MainWindow { get; private set; } = null!;
 
@@ -37,10 +34,6 @@ public partial class CoreNode : Node {
 
 		// Misc. parts
 		LogMonitor = new LogMonitor();
-
-		// Init message stuff
-		HistoryTracker = new HistoryTracker();
-		HistoryTracker.MaxHistorySize = UserSettings.HistorySlots;
 
 		// Init WindowManager and
 		// instantiate main window after ready
