@@ -15,28 +15,7 @@ namespace TypeToSquad.Model.Markup;
 /// of some SSML features through markup.
 /// See docs folder for details.
 /// </summary>
-public class MessageProsessor : IRefrencesCore {
-
-	#region //// Core Node
-
-	CoreNode? _coreNode = null;
-
-	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
-
-	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
-
-	#endregion
-
-	#region //// Lexer
-
-	public MessageLexer Lexer { get; private set; } = null!; // Set in InitLexer
-
-	public void InitLexer() {
-		Lexer = new MessageLexer();
-		Lexer.RecieveCoreReference(this.CoreNode);
-	}
-
-	#endregion
+public class MessageProsessor {
 
 	#region //// Segment list operations
 
@@ -96,8 +75,10 @@ public class MessageProsessor : IRefrencesCore {
 	/// </remarks>
 	(string newText, bool anyReplaced) ReplaceTextSinglePass(PlainTextSegment segment, string currentContext) {
 
+		var settingsInstance = UserSettingsManager.Instance.Settings;
+
 		string newText = segment.Text;
-		foreach (var (context, pattern, replacement) in CoreNode.UserSettings.TextReplacements) {
+		foreach (var (context, pattern, replacement) in settingsInstance.TextReplacements) {
 
 			// Context check
 			string contextTrimmed = context.Trim();
@@ -155,7 +136,7 @@ public class MessageProsessor : IRefrencesCore {
 
 			if (textReplaced) {
 				anyTextReplaced = true;
-				newSegments.AddRange(Lexer.SegmentMessage(newText));
+				newSegments.AddRange(MessageLexer.SegmentMessage(newText));
 				continue;
 			}
 
@@ -217,13 +198,21 @@ public class MessageProsessor : IRefrencesCore {
 
 	/// <remarks>Assumes invalid segments were already stripped.</remarks>
 	string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
-		if (CoreNode.SpeechDaemon.VoicesByName is null) throw new InvalidOperationException("Cannot find voice information.");
 
+		// Singleton shortcuts
+		var settingsInstance = UserSettingsManager.Instance.Settings;
+		var speechDaemon = SpeechDaemon.Instance;
+
+		// Guards
+		if (speechDaemon.VoicesByName is null) throw new InvalidOperationException("Cannot find voice information.");
+
+
+		
 		StringBuilder sb = new StringBuilder();
 
 		// Header
-		string defaultVoiceName = CoreNode.UserSettings.Voice;
-		string defaultVoiceLang = CoreNode.SpeechDaemon.VoicesByName[defaultVoiceName].Language;
+		string defaultVoiceName = settingsInstance.Voice;
+		string defaultVoiceLang = speechDaemon.VoicesByName[defaultVoiceName].Language;
 		sb.AppendFormat(ssmlHeaderFormat, defaultVoiceLang);
 
 		// Segments
@@ -247,13 +236,13 @@ public class MessageProsessor : IRefrencesCore {
 
 				if (hintSegment.ContextUses.HasFlag(ContextUses.VoiceChange)) {
 					
-					string voiceNameKey = CoreNode
-						.UserSettings
+					string voiceNameKey = 
+						settingsInstance
 						.VoiceChanges
 						.FirstOrDefault(row => row.hint == hintSegment.Context)
 						.voiceName;
 
-					if (!CoreNode.SpeechDaemon.VoicesByName.TryGetValue(voiceNameKey, out var voiceInfo)) {
+					if (!speechDaemon.VoicesByName.TryGetValue(voiceNameKey, out var voiceInfo)) {
 						continue;
 					}
 
@@ -305,10 +294,10 @@ public class MessageProsessor : IRefrencesCore {
 	/// </summary>
 	public (string requestString, bool isSsml) ProcessMessage(string message) {
 
-		var segments = Lexer.SegmentMessage(message);
+		var segments = MessageLexer.SegmentMessage(message);
 
 		// Text replacements
-		for (int i = 0, n = CoreNode.UserSettings.MaxReplacementPasses; i < n; i++) {
+		for (int i = 0, n = UserSettingsManager.Instance.Settings.MaxReplacementPasses; i < n; i++) {
 			segments = ReplaceTextSinglePassAll(segments, out bool anyReplaced);
 			segments = CombineAdjacentPlainTextSegements(segments);
 			if (!anyReplaced) break;

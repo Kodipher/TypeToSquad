@@ -42,10 +42,6 @@ public partial class CoreNode : Node {
 		HistoryTracker = new HistoryTracker();
 		HistoryTracker.MaxHistorySize = UserSettings.HistorySlots;
 
-		MessageProsessor = new MessageProsessor();
-		MessageProsessor.RecieveCoreReference(this);
-		MessageProsessor.InitLexer();
-
 		// Init WindowManager and
 		// instantiate main window after ready
 		WindowManager = this.GetNodeNotNull<WindowManager>("%WindowManager");

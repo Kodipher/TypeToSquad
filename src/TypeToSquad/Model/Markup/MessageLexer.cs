@@ -27,17 +27,7 @@ public enum ContentType {
 /// Implements splitting the message into segments,
 /// where each segment is either plain text or a tag.
 /// </summary>
-public class MessageLexer : IRefrencesCore {
-
-	#region //// Core Node
-
-	CoreNode? _coreNode = null;
-
-	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
-
-	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
-
-	#endregion
+public static class MessageLexer {
 
 	#region //// Content and context type parsing
 
@@ -54,7 +44,7 @@ public class MessageLexer : IRefrencesCore {
 	/// Given a <see cref="ContentSegment"/>, returns a new <see cref="ContentSegment"/> 
 	/// with <see cref="ContentSegment.Type"/> set.
 	/// </summary>
-	ContentSegment CreateTypedContentSegment(ContentSegment segment) {
+	static ContentSegment CreateTypedContentSegment(ContentSegment segment) {
 
 		var contextType =
 			contextHintStrings
@@ -70,7 +60,9 @@ public class MessageLexer : IRefrencesCore {
 	/// Given a <see cref="ContextSegment"/>, returns a new <see cref="ContextSegment"/> 
 	/// with <see cref="ContextSegment.ContextUses"/> set.
 	/// </summary>
-	ContextSegment CreateTypedContextSegment(ContextSegment segment) {
+	static ContextSegment CreateTypedContextSegment(ContextSegment segment) {
+
+		var settingsInstance = UserSettingsManager.Instance.Settings;
 
 		// Empty context
 		if (string.IsNullOrWhiteSpace(segment.Context)) {
@@ -80,8 +72,7 @@ public class MessageLexer : IRefrencesCore {
 		ContextUses currentUses = ContextUses.None;
 
 		// Check for languages
-		bool hintInLanguages = CoreNode
-								.UserSettings
+		bool hintInLanguages = settingsInstance
 								.VoiceChanges
 								.Any(row => row.hint.Trim() == segment.Context);
 		if (hintInLanguages) {
@@ -89,8 +80,7 @@ public class MessageLexer : IRefrencesCore {
 		}
 
 		// Check for replacements
-		bool hintInReplacements = CoreNode
-								.UserSettings
+		bool hintInReplacements = settingsInstance
 								.TextReplacements
 								.Any(row => row.context.Trim() == segment.Context);
 		if (hintInReplacements) {
@@ -104,7 +94,7 @@ public class MessageLexer : IRefrencesCore {
 	#endregion
 
 	/// <summary>Returns a list of segments that make up the message.</summary>
-	public List<MessageSegment> SegmentMessage(string message) {
+	public static List<MessageSegment> SegmentMessage(string message) {
 
 		/// <summary>
 		/// Iterates message string index until 

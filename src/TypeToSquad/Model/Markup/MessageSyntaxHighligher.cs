@@ -9,17 +9,7 @@ using TypeToSquad.Utils;
 namespace TypeToSquad.Model.Markup;
 
 
-public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrencesCore {
-
-	#region //// Core Node
-
-	CoreNode? _coreNode = null;
-
-	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
-
-	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
-
-	#endregion
+public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter {
 
 	#region //// Segment cache
 
@@ -29,7 +19,7 @@ public partial class MessageSyntaxHighligher : Godot.SyntaxHighlighter, IRefrenc
 	void PopulateSegmentCache(string message) {
 		if (cacheKey == message) return;
 		cacheKey = message;
-		segmentsCache = CoreNode.MessageProsessor.Lexer.SegmentMessage(message);
+		segmentsCache = MessageLexer.SegmentMessage(message);
 	}
 
 	public override void _ClearHighlightingCache() {
