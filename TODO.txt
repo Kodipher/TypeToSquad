@@ -15,4 +15,9 @@ TODO:
 - autocomplete: handle text selection
 - refactor MessageLexer
 
+DOING:
+- migrate to godot's singleton pattern
+-- maybe refactor daemon
+-- add a singleton to run start and end code
+
 TO TEST:
