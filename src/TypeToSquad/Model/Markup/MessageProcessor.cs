@@ -15,7 +15,7 @@ namespace TypeToSquad.Model.Markup;
 /// of some SSML features through markup.
 /// See docs folder for details.
 /// </summary>
-public class MessageProsessor {
+public static class MessageProsessor {
 
 	#region //// Segment list operations
 
@@ -24,7 +24,7 @@ public class MessageProsessor {
 	/// in the source <paramref name="segments"/> array are joined into one.
 	/// <b>Note:</b> the indexes in the returned segments may become invalid.
 	/// </summary>
-	public List<MessageSegment> CombineAdjacentPlainTextSegments(List<MessageSegment> segments) {
+	public static List<MessageSegment> CombineAdjacentPlainTextSegments(List<MessageSegment> segments) {
 
 		List<MessageSegment> newSegments = new();
 
@@ -50,7 +50,7 @@ public class MessageProsessor {
 	}
 
 	/// <summary>Removes invalid segments and invalid content segments</summary>
-	public void StripInvalidSegmentsInPlace(List<MessageSegment> segments) {
+	public static void StripInvalidSegmentsInPlace(List<MessageSegment> segments) {
 		segments.RemoveAll(seg => {
 			if (seg is InvalidSegment) return true;
 			if (seg is ContentSegment conSeg && conSeg.Type == ContentType.Invalid) return true;
@@ -73,7 +73,7 @@ public class MessageProsessor {
 	/// instead returns the new string.
 	/// The new string may contain tags.
 	/// </remarks>
-	(string newText, bool anyReplaced) ReplaceTextSinglePass(PlainTextSegment segment, string currentContext) {
+	static (string newText, bool anyReplaced) ReplaceTextSinglePass(PlainTextSegment segment, string currentContext) {
 
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 
@@ -112,7 +112,7 @@ public class MessageProsessor {
 	/// Creates a new list of segments by performing 1 pass of text replacements in current segments.
 	/// <b>Note:</b> the indexes in the returned segments may become invalid.
 	/// </summary>
-	List<MessageSegment> ReplaceTextSinglePassAll(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
+	static List<MessageSegment> ReplaceTextSinglePassAll(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
 		anyTextReplaced = false;
 
 		string currentContext = "";
@@ -150,7 +150,7 @@ public class MessageProsessor {
 
 	#region //// Compile Plain Text
 
-	bool IsPlainTextOnly(IEnumerable<MessageSegment> segments) {
+	static bool IsPlainTextOnly(IEnumerable<MessageSegment> segments) {
 
 		foreach (var seg in segments) {
 
@@ -170,7 +170,7 @@ public class MessageProsessor {
 		return true;
 	}
 
-	string SegmentedMessageToPlainText(IEnumerable<MessageSegment> segments) {
+	static string SegmentedMessageToPlainText(IEnumerable<MessageSegment> segments) {
 		StringBuilder sb = new StringBuilder();
 		foreach (var seg in segments) {
 			if (seg is not PlainTextSegment) continue;
@@ -197,7 +197,7 @@ public class MessageProsessor {
 	const string ssmlBreak = """<break time="{0}"/>""";
 
 	/// <remarks>Assumes invalid segments were already stripped.</remarks>
-	string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
+	static string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
 
 		// Singleton shortcuts
 		var settingsInstance = UserSettingsManager.Instance.Settings;
@@ -292,7 +292,7 @@ public class MessageProsessor {
 	/// Processes the message, performing analysis and text replacements.
 	/// Returns a plain text or an ssml message.
 	/// </summary>
-	public (string requestString, bool isSsml) ProcessMessage(string message) {
+	public static (string requestString, bool isSsml) ProcessMessage(string message) {
 
 		var segments = MessageLexer.SegmentMessage(message);
 
