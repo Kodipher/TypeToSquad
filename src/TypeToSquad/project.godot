@@ -39,6 +39,7 @@ AudioManager="*res://Model/AudioManager.cs"
 SpeechDaemon="*res://Model/SpeechDaemon.cs"
 HistoryTracker="*res://Model/HistoryTracker.cs"
 LogMonitor="*res://Model/LogMonitor.cs"
+ExitHandler="*res://Model/ExitHandler.cs"
 
 [copy_files_on_export]
 

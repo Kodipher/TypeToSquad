@@ -42,48 +42,5 @@ public partial class CoreNode : Node {
 		// Update settings
 		//UserSettingsLoader.Save(UserSettings); // Disable automatic resaving to prevent data loss
 	}
-
-	protected virtual void OnPreDelete() {
-		SpeechDaemon.Instance.CloseAndDisposeDaemon();
-	}
-
-	bool hasPressedQuit = false;
-	protected virtual void OnCloseRequest() {
-		if (hasPressedQuit) {
-			// Force quit on second press
-			GD.PushWarning("Second close request detected. Force quitting without graceful terminate.");
-			GetTree().Quit();
-			return;
-		}
-
-		// Try quit gracfully
-		hasPressedQuit = true;
-
-		Window? maybeSettingsWindow = WindowManager.GetExistingWindowAtSelf(WindowType.Settings);
-		if (maybeSettingsWindow is TypeToSquad.Gui.WindowScenes.Settings.SettingsWindow settingsWindow) {
-			settingsWindow.OnClose(); // Fake close request to save settings
-		}
-
-		maybeSettingsWindow = WindowManager.GetExistingWindowAtSelf(WindowType.SimpleSettings);
-		if (maybeSettingsWindow is TypeToSquad.Gui.WindowScenes.Settings.SimpleSettingsWindow simpleSettingsWindow) {
-			simpleSettingsWindow.OnClose(); // Fake close request to save settings
-		}
-
-		GD.Print("Gracefuly terminating daemon...");
-		SpeechDaemon.Instance.DispatchRequest(
-			new TerminateRequest(), 
-			(_) => {
-				GD.Print("Exiting...");
-				OnPreDelete();
-				GetTree().Quit();
-			}
-		);
-		
-	}
-
-	public override void _Notification(int what) {
-		if (what == NotificationPredelete) OnPreDelete();
-		else if (what == NotificationWMCloseRequest) OnCloseRequest();
-	}
-
+	
 }
