@@ -24,7 +24,7 @@ public class MessageProsessor {
 	/// in the source <paramref name="segments"/> array are joined into one.
 	/// <b>Note:</b> the indexes in the returned segments may become invalid.
 	/// </summary>
-	public List<MessageSegment> CombineAdjacentPlainTextSegements(List<MessageSegment> segments) {
+	public List<MessageSegment> CombineAdjacentPlainTextSegments(List<MessageSegment> segments) {
 
 		List<MessageSegment> newSegments = new();
 
@@ -299,7 +299,7 @@ public class MessageProsessor {
 		// Text replacements
 		for (int i = 0, n = UserSettingsManager.Instance.Settings.MaxReplacementPasses; i < n; i++) {
 			segments = ReplaceTextSinglePassAll(segments, out bool anyReplaced);
-			segments = CombineAdjacentPlainTextSegements(segments);
+			segments = CombineAdjacentPlainTextSegments(segments);
 			if (!anyReplaced) break;
 
 			if (i == n - 1) GD.PushError("Text replacement passes limit reached.");
@@ -307,7 +307,7 @@ public class MessageProsessor {
 
 		// Stip non-content stuff
 		StripInvalidSegmentsInPlace(segments);
-		segments = CombineAdjacentPlainTextSegements(segments);
+		segments = CombineAdjacentPlainTextSegments(segments);
 
 		// Text-only message
 		if (IsPlainTextOnly(segments)) {

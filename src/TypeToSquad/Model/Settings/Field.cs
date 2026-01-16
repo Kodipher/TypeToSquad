@@ -8,7 +8,7 @@ namespace TypeToSquad.Model.Settings;
 /// <summary>
 /// A storage for a value, together with a validator.
 /// The stored value should always be valid.
-/// The validator is independnat of the stored value.
+/// The validator is independent of the stored value.
 /// </summary>
 public abstract class Field : IVariantSavable {
 	public abstract Variant ToSavableVariant();

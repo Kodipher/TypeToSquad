@@ -45,7 +45,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		messageTextEdit.OnUnicodeInput += OnCharacterTyped;
 
 		// Init syntax highlighter
-		var highlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighligher();
+		var highlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighlighter();
 		highlighter.RecieveCoreReference(this.CoreNode);
 		messageTextEdit.SyntaxHighlighter = highlighter;
 		

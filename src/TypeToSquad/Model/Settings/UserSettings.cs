@@ -30,10 +30,10 @@ public record class UserSettings {
 	public readonly FieldNumericRange<int> SynthesisVolumePercent = new(0, 100, defaultValue: 100);
 
 	/// <summary>The relative pitch of the voice.</summary>
-	public readonly FieldNumeticRangeRounded<double> VoicePitch = new(0, 2, defaultValue: 1);
+	public readonly FieldNumericRangeRounded<double> VoicePitch = new(0, 2, defaultValue: 1);
 
 	/// <summary>The speaking rate (speed multiplier) of the voice.</summary>
-	public readonly FieldNumeticRangeRounded<double> VoiceRate = new(0.5, 6, defaultValue: 1);
+	public readonly FieldNumericRangeRounded<double> VoiceRate = new(0.5, 6, defaultValue: 1);
 
 
 	// ===== ===== ===== OUTPUT ===== ===== =====

@@ -5,8 +5,8 @@ using System;
 namespace TypeToSquad.Gui;
 
 /// <summary>
-/// An general extension of the <see cref="TextEdit"/>
-/// to expose things <see cref="TextEdit"/> normally doesnt.
+/// A general extension of the <see cref="TextEdit"/>
+/// to expose things <see cref="TextEdit"/> normally doesn't.
 /// </summary>
 [GlobalClass]
 public partial class TextEditEx : TextEdit {
@@ -15,7 +15,7 @@ public partial class TextEditEx : TextEdit {
 
 	public override void _HandleUnicodeInput(int unicodeChar, int caretIndex) {
 
-		// Keep original behaviour
+		// Keep original behavior
 		// (calling base does nothing apparently)
 		var charAsString = new string((char)unicodeChar, 1);
 		//StartAction(EditAction.Typing);

@@ -35,7 +35,7 @@ public partial class HistoryTracker : Node {
 	/// <summary>Adds an entry to the history</summary>
 	public void AddHistoryEntry(string text) {
 
-		// Reset naviation
+		// Reset navigation
 		NavigateReset();
 
 		// Add input
@@ -45,7 +45,7 @@ public partial class HistoryTracker : Node {
 
 	/// <summary>
 	/// Removes older entries, ensuring no more than 
-	/// a given number of enteries is stored.
+	/// a given number of entries is stored.
 	/// </summary>
 	public void EnforceHistoryCountMax() {
 
@@ -74,7 +74,7 @@ public partial class HistoryTracker : Node {
 	/// <summary>
 	/// Resets history navigation:
 	/// Places navigation point at present
-	/// and forgets what present is (see <see cref="NavigatePrevious"/>).
+	/// and forgets what present is (see <see cref="TryNavigatePrevious"/>).
 	/// </summary>
 	public void NavigateReset() {
 		currentHistoryNode = null;

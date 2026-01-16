@@ -34,7 +34,7 @@ public static class GodotExtensions {
 
 	/// <summary>
 	/// <para>
-	/// Convernts any object into a <see cref="Variant"/>.
+	/// Converts any object into a <see cref="Variant"/>.
 	/// </para>
 	/// <para>
 	/// <b>NOTE:</b> only intended to be used with variant compatible types.
@@ -53,7 +53,7 @@ public static class GodotExtensions {
 	readonly static Lazy<MethodInfo> variantFromMethod = new(
 		() => typeof(Variant)
 				.GetMethod(nameof(Variant.From)) 
-				?? throw new InvalidOperationException($"Could not find Varaint.From method")
+				?? throw new InvalidOperationException($"Could not find Variant.From method")
 	);
 
 	/// <summary>
@@ -73,12 +73,12 @@ public static class GodotExtensions {
 	readonly static Lazy<MethodInfo> variantAsMethod = new(
 		() => typeof(Variant)
 				.GetMethod(nameof(Variant.As))
-				?? throw new InvalidOperationException($"Could not find Varaint.As method")
+				?? throw new InvalidOperationException($"Could not find Variant.As method")
 	);
 
 	/// <summary>
 	/// Sets caret position to end of the text:
-	/// after the last chracter of the last line.
+	/// after the last character of the last line.
 	/// </summary>
 	/// <remarks>Does not call <see cref="TextEdit.MergeOverlappingCarets"/></remarks>
 	public static void SetCaretPositionToEnd(this TextEdit textEditNode, int caretIndex = 0) {
@@ -90,7 +90,7 @@ public static class GodotExtensions {
 	/// <summary>
 	/// Returns the start index of a specific line
 	/// in the <see cref="TextEdit.Text"/> string.
-	/// An out of bounds line returns -1.
+	/// An out-of-bounds line returns -1.
 	/// </summary>
 	public static int GetLineStartIndex(this TextEdit textEditNode, int lineIndex) {
 

@@ -4,7 +4,7 @@ using Godot;
 namespace TypeToSquad.Model.Settings;
 
 
-// A non-generic inhertiance root
+// A non-generic inheritance root
 // to avoid getting data via reflection
 interface IVariantSavable {
 

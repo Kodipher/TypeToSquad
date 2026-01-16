@@ -47,7 +47,7 @@ public partial class LogMonitor : Node {
 	/// <summary>
 	/// Reads the log for errors since the position of last read.
 	/// If an error is found then <see cref="OnErrorFound"/> is invoked
-	/// and futher checks are blocked.
+	/// and further checks are blocked.
 	/// </summary>
 	public void CheckLog() {
 	

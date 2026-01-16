@@ -50,7 +50,7 @@ public partial class UserSettingsManager : Node {
 	/// <summary>Saves <see cref="Settings"/> to disk.</summary>
 	public void Save() {
 
-		// Find saveable data
+		// Find savable data
 		Godot.Collections.Dictionary<string, Variant> settingsDict = new();
 
 		foreach (FieldInfo fieldInfo in UserSettingsSavableFields) {

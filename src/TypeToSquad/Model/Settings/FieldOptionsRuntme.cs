@@ -18,8 +18,8 @@ public class FieldOptionsRuntime : Field<string> {
 	
 	/// <summary>
 	/// The default value among <see cref="Options"/>.
-	/// Use this after <see cref="SetOptions"/> has been called, because
-	/// inherited <see cref="Field{T}.DefaultValue"/> is always an empty string.
+	/// Use this after SetOptions has been called, because
+	/// the inherited <see cref="Field{T}.DefaultValue"/> is always an empty string.
 	/// </summary>
 	public string? DefaultOption { get; private set; } = null;
 
@@ -31,7 +31,7 @@ public class FieldOptionsRuntime : Field<string> {
 		// Find index
 		int defaultIndex = Array.IndexOf(optionsArr, defaultOption);
 		if (defaultIndex < 0) {
-			throw new ArgumentException($"Default option \"{defaultOption}\" is not amongs options.", nameof(defaultOption));
+			throw new ArgumentException($"Default option \"{defaultOption}\" is not among options.", nameof(defaultOption));
 		}
 
 		SetOptions(optionsArr, defaultIndex);

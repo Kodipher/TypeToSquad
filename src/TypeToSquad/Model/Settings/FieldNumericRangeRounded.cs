@@ -8,9 +8,9 @@ namespace TypeToSquad.Model.Settings;
 
 /// <summary>
 /// A <see cref="FieldNumericRange{T}"/> with a rounding precision option.
-/// Made for and requires a <see cref="IFloatingPoint{TSelf}">.
+/// Made for and requires a <see cref="IFloatingPoint{TSelf}"/>.
 /// </summary>
-public class FieldNumeticRangeRounded<[MustBeVariant] T> : FieldNumericRange<T> where T: struct, IFloatingPoint<T> {
+public class FieldNumericRangeRounded<[MustBeVariant] T> : FieldNumericRange<T> where T: struct, IFloatingPoint<T> {
 
 	public int DigitsPrecision { get; private init; }
 
@@ -19,7 +19,7 @@ public class FieldNumeticRangeRounded<[MustBeVariant] T> : FieldNumericRange<T> 
 		return base.ReturnValid(value);
 	}
 
-	public FieldNumeticRangeRounded(T minInclusive, T maxInclusive, T defaultValue, int digitsPrecision = 6) : 
+	public FieldNumericRangeRounded(T minInclusive, T maxInclusive, T defaultValue, int digitsPrecision = 6) : 
 	base(minInclusive, maxInclusive, defaultValue) 
 	{
 		DigitsPrecision = digitsPrecision;
