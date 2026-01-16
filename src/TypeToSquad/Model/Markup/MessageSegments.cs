@@ -10,17 +10,17 @@ public abstract record class MessageSegment {
 	/// When performing text replacements, the source string can be <see cref="Text"/>
 	/// of segment where the replacement took place.
 	/// </remarks>
-	public int Start { get; protected set; } = -1;
+	public int Start { get; protected init; } = -1;
 
 	/// <summary>First position beyond this segment in the source string.</summary>
 	/// <remarks>
 	/// When performing text replacements, the source string can be <see cref="Text"/>
 	/// of segment where the replacement took place.
 	/// </remarks>
-	public int EndExclusive { get; protected set; } = -1;
+	public int EndExclusive { get; protected init; } = -1;
 
 	/// <summary>Inner text of the segment</summary>
-	public string Text { get; protected set; } = "";
+	public string Text { get; protected init; } = "";
 
 	protected static T CreateBaseAsSubstring<T>(int start, int endExclusive, string str) 
 	where T : MessageSegment, new()
