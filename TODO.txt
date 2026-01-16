@@ -17,7 +17,8 @@ TODO:
 
 DOING:
 - migrate to godot's singleton pattern
+-- migrate: WindowManager
+-- migrate all the windows
 -- maybe refactor daemon
--- add a singleton to run start and end code
 
 TO TEST:
