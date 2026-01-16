@@ -38,7 +38,7 @@ public partial class UserSettingsManager : Node {
 
 	#region //// Saving and Loading
 
-	public const string settingsFilepath = "user_settings.json";
+	public const string SettingsFilepath = "user_settings.json";
 
 	readonly static ReadOnlyCollection<FieldInfo> UserSettingsSavableFields = 
 									typeof(UserSettings)
@@ -68,7 +68,7 @@ public partial class UserSettingsManager : Node {
 
 		// Save to disk
 		string settingsJson = Json.Stringify(settingsDict, indent: "\t");
-		string settingsPath = Path.Combine(OS.GetUserDataDir(), settingsFilepath);
+		string settingsPath = Path.Combine(OS.GetUserDataDir(), SettingsFilepath);
 		File.WriteAllText(settingsPath, settingsJson);
 	}
 
@@ -77,7 +77,7 @@ public partial class UserSettingsManager : Node {
 	public void Load() {
 
 		// Read from disk
-		string settingsPath = Path.Combine(OS.GetUserDataDir(), settingsFilepath);
+		string settingsPath = Path.Combine(OS.GetUserDataDir(), SettingsFilepath);
 		if (!File.Exists(settingsPath)) return;
 
 		string settingsJson = File.ReadAllText(settingsPath);
@@ -102,10 +102,13 @@ public partial class UserSettingsManager : Node {
 
 		// Apply data
 		foreach (FieldInfo fieldInfo in UserSettingsSavableFields) {
-			if (settingsDict.TryGetValue(fieldInfo.Name, out Variant fieldSaveValue)) {
-				IVariantSavable? savable = fieldInfo.GetValue(Settings) as IVariantSavable;
-				if (savable is not null) savable.SetFromVariant(fieldSaveValue);
+			
+			if (!settingsDict.TryGetValue(fieldInfo.Name, out Variant fieldSaveValue)) continue;
+			
+			if (fieldInfo.GetValue(Settings) is IVariantSavable savable) {
+				savable.SetFromVariant(fieldSaveValue);
 			}
+			
 		}
 	}
 
