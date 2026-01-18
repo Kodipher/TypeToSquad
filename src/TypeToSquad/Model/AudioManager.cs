@@ -75,7 +75,7 @@ public partial class AudioManager : Node {
 		if (!IsInstanceValid(playbackNode)) return;
 		if (playbackNode.GetParent() != this) return;
 
-		// Stop playblack in case of interruption
+		// Stop playback in case of interruption
 		playbackNode.Stop();
 
 		// Free the steam

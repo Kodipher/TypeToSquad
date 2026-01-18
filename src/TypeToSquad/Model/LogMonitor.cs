@@ -119,7 +119,7 @@ public partial class LogMonitor : Node {
 	public event Action OnErrorFound = () => {};
 
 	/// <summary>
-	/// Wether to block checks. 
+	/// Whether to block checks. 
 	/// Automatically set when an error is found.
 	/// Not readonly.
 	/// </summary>

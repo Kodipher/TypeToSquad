@@ -211,7 +211,7 @@ public partial class SpeechDaemon : Node, IDisposable {
 	/*
 		Request are sent and processed asynchronously,
 		but the callbacks need to run on the main thread,
-		so callbacks are bound with the reponses and queued.
+		so callbacks are bound with the responses and queued.
 	*/
 
 	readonly static TimeSpan requestTimeout = TimeSpan.FromSeconds(5);
@@ -348,9 +348,9 @@ public partial class SpeechDaemon : Node, IDisposable {
 		writer.Flush();
 
 		GD.Print($"Waiting for response.");
-		Response responce = responseReader.ReadResponse(reader);
-		GD.Print($"Got response of type {responce.Type}.");
-		return responce;
+		Response response = responseReader.ReadResponse(reader);
+		GD.Print($"Got response of type {response.Type}.");
+		return response;
 	}
 
 	/// <summary>

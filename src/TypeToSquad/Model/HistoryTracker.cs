@@ -82,7 +82,7 @@ public partial class HistoryTracker : Node {
 	}
 
 	/// <summary>
-	/// Navigates furhter into the past. Returns true if navigation was successful. 
+	/// Navigates further into the past. Returns true if navigation was successful. 
 	/// Remembers the present during the first navigation into the past.
 	/// </summary>
 	public bool TryNavigatePrevious(string currentText, out string queryResult) {

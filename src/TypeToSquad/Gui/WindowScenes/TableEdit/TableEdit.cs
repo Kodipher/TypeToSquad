@@ -170,8 +170,8 @@ public partial class TableEdit : ScrollContainer {
 
 	#endregion
 
-	int GridIndexToTableIndex(int souceIndex) {
-		return (souceIndex / mainGrid.Columns) - 1;
+	int GridIndexToTableIndex(int sourceIndex) {
+		return (sourceIndex / mainGrid.Columns) - 1;
 	}
 	
 	int TableIndexToGridRowStartIndex(int tableIndex) {
