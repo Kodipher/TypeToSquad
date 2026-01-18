@@ -20,7 +20,8 @@ Tags fulfilling any of the following are invalid and are skipped over.
 A context is a named discriminator for text replacements and voice changes.
 
 A single context is kept track of when parsing the message. 
-The context starts out empty and is changed at every context tag. Contexts may not be nested.
+The context starts out empty and is changed at every context tag. 
+Contexts are not be nested, new context completely overwrites the old one.
 
 Context names are trimmed and are case sensitive.
 
