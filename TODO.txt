@@ -1,18 +1,24 @@
-TODO:
-- consider adding AudioVolume setting to SimpleSettings
+TODO (features):
+- make voice selection input better; handle voice list not being loaded yet
 - change how/when log file is monitored
--- change to node, add timer nodes as children
+-- make use of timer nodes
 - feature: direct hardware input to grab and release focus
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
-- MessageLexer: check for content inside tags instead of letting the daemon crash
-- table edit: proper icons
-- table edit: insert at (insert before) button
+
+TODO (internal):
+- refactor MessageLexer
+-- MessageLexer: check for content inside tags instead of letting the daemon crash
+- refactor autocomplete
+-- consider changing autocomplete and tab to insert tag to handle (invalid) nested tags
+-- consider changing autocomplete logic to handle typing in the middle of the text
+-- handle text selection
+
+TODO (misc quality):
+- update TableEdit
+-- proper icons
+-- add insert at (insert after) button
 - min window sizes for all windows
 - check tab order in all windows
-- consider changing autocomplete and tab to insert tag to handle (invalid) nested tags
-- consider changing autocomplete logic to handle typing in the middle of the text
-- autocomplete: handle text selection
-- refactor MessageLexer
 
 TO TEST:
