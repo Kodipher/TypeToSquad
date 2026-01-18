@@ -15,10 +15,4 @@ TODO:
 - autocomplete: handle text selection
 - refactor MessageLexer
 
-DOING:
-- migrate to godot's singleton pattern
--- migrate: WindowManager
--- migrate all the windows
--- maybe refactor daemon
-
 TO TEST:

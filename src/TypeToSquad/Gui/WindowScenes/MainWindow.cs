@@ -5,25 +5,16 @@ using System.Linq;
 
 using TypeToSquad.Model;
 using TypeToSquad.Utils;
+using TypeToSquad.Model.Markup;
 
 using SynthesizeRequest = WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest;
-using SyntesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse;
+using SynthesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse;
 
 
 namespace TypeToSquad.Gui.WindowScenes;
 
 
-public partial class MainWindow : WindowEx, IRefrencesCore {
-
-	#region //// Core Node
-
-	CoreNode? _coreNode = null;
-
-	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
-
-	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
-
-	#endregion
+public partial class MainWindow : WindowEx {
 
 	#region //// Setup
 
@@ -38,16 +29,21 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 
 	public override void _Ready() {
+		
+		if (this.GetTree().GetRoot() == this) {
+			ReadyWhenRoot();
+			return;
+		}
+
+		this.CallOneFrameLater(() => WindowManager.Instance.PromoteWindowIntoRoot(this));
+	}
+
+	public void ReadyWhenRoot() {
 		base._Ready();
 
 		// Find main text edit
 		messageTextEdit = this.GetNodeNotNull<TextEditEx>("%MessageTextEdit");
 		messageTextEdit.OnUnicodeInput += OnCharacterTyped;
-
-		// Init syntax highlighter
-		var highlighter = new TypeToSquad.Model.Markup.MessageSyntaxHighlighter();
-		highlighter.RecieveCoreReference(this.CoreNode);
-		messageTextEdit.SyntaxHighlighter = highlighter;
 		
 		// Init error indicator
 		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
@@ -55,8 +51,8 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		errorIndicator.Hide();
 		errorIndicator.Pressed += OnErrorIndicatorPressed;
 
-		CoreNode.LogMonitor.OnErrorFound += errorIndicator.Show;
-		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
+		LogMonitor.Instance.OnErrorFound += errorIndicator.Show;
+		if (UserSettingsManager.Instance.Settings.EnableErrorMonitoring) LogMonitor.Instance.CheckLog();
 
 		// Init buttons
 		speakButton = this.GetNodeNotNull<BaseButton>("%SpeakButton");
@@ -117,8 +113,10 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	/// <remarks>Assumes partial valid tags.</remarks>
 	public void OnCharacterTyped(char typedChar, int caretIndex) {
 
+		var settingsInstance = UserSettingsManager.Instance.Settings;
+		
 		// Autocomplete disabled
-		if (!CoreNode.UserSettings.AutocompleteTags) return;
+		if (!settingsInstance.AutocompleteTags) return;
 
 		// Find latest opening
 		caretIndex = caretIndex == -1 ? 0 : caretIndex;
@@ -143,12 +141,10 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 		var contentHints = TypeToSquad.Model.Markup.MessageLexer.contextHintStrings.Keys;
 
 		string[] contextHints = Enumerable.Concat(
-									CoreNode
-										.UserSettings
+									settingsInstance
 										.VoiceChanges
 										.Select(row => row.hint),
-									CoreNode
-										.UserSettings
+									settingsInstance
 										.TextReplacements
 										.Select(row => row.context)
 								)
@@ -196,7 +192,7 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 	public bool OnInsertTagPressed() {
 
 		// Disabled from settings
-		if (!CoreNode.UserSettings.TabToInsertTag) return false;
+		if (!UserSettingsManager.Instance.Settings.TabToInsertTag) return false;
 
 		// Find latest opening
 		int currentLine = messageTextEdit.GetCaretLine(caretIndex: 0);
@@ -251,56 +247,59 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 
 	public void OnSettingsPressed() {
-		var windowType = CoreNode.UserSettings.UseAdvancedSettings ? WindowType.Settings : WindowType.SimpleSettings;
-		CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
+		bool useAdvanceSettings = UserSettingsManager.Instance.Settings.UseAdvancedSettings;
+		var windowType = useAdvanceSettings ? WindowType.Settings : WindowType.SimpleSettings;
+		WindowManager.Instance.CreateWindowAtSelfUnique(windowType);
 	}
 
 	public void OnErrorIndicatorPressed() {
 		GD.Print("Opening log file.");
 		errorIndicator.Hide();
 
-		CoreNode.LogMonitor.SeekToLogEnd();
-		CoreNode.LogMonitor.BlockChecks = false;
+		LogMonitor.Instance.SeekToLogEnd();
+		LogMonitor.Instance.BlockChecks = false;
 		OS.ShellOpen(LogMonitor.GetLogfilePath());
 	}
 
 	public void OnSpeakPressed() {
 
-		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
+		var settingsInstance = UserSettingsManager.Instance.Settings;
+		
+		if (settingsInstance.EnableErrorMonitoring) LogMonitor.Instance.CheckLog();
 
 		// Skip empty messages
 		if (string.IsNullOrWhiteSpace(messageTextEdit.Text)) return;
 
 		// Add to history
 		GD.Print("Speaking.");
-		CoreNode.HistoryTracker.AddHistoryEntry(messageTextEdit.Text);
-		CoreNode.HistoryTracker.NavigateReset();
+		HistoryTracker.Instance.AddHistoryEntry(messageTextEdit.Text);
+		HistoryTracker.Instance.NavigateReset();
 
 		// Speak
-		(string requestString, bool isSsml) = CoreNode.MessageProsessor.ProcessMessage(messageTextEdit.Text);
+		(string requestString, bool isSsml) = MessageProsessor.ProcessMessage(messageTextEdit.Text);
 
 		SynthesizeRequest synthRequest = new SynthesizeRequest() {
 			InputString = requestString,
 			IsSsml = isSsml,
-			VoiceName = CoreNode.UserSettings.Voice,
-			Pitch = CoreNode.UserSettings.VoicePitch,
-			Rate = CoreNode.UserSettings.VoiceRate,
-			Volume = CoreNode.UserSettings.SynthesisVolumePercent / 100.0
+			VoiceName = settingsInstance.Voice,
+			Pitch = settingsInstance.VoicePitch,
+			Rate = settingsInstance.VoiceRate,
+			Volume = settingsInstance.SynthesisVolumePercent / 100.0
 		};
 
-		CoreNode.SpeechDaemon.DispatchRequest<SyntesisResultResponse>(
+		SpeechDaemon.Instance.DispatchRequest<SynthesisResultResponse>(
 			synthRequest,
 			(response) => {
 
 				// Voice does not exist
 				if (!response.GivenVoiceExists) {
 					GD.PushError("Selected voice does not exist.");
-					var voiceField = CoreNode.UserSettings.Voice;
+					var voiceField = settingsInstance.Voice;
 					voiceField.Value = voiceField.DefaultValue;
 				}
 
 				// Play resulting data
-				CoreNode.AudioManager.PlayNew(response.SynthesizedData);
+				AudioManager.Instance.PlayNew(response.SynthesizedData);
 			}
 		);
 
@@ -311,19 +310,19 @@ public partial class MainWindow : WindowEx, IRefrencesCore {
 
 	public void OnShutPressed() {
 		GD.Print("Shutting.");
-		CoreNode.AudioManager.StopAll();
+		AudioManager.Instance.StopAll();
 		messageTextEdit.GrabFocus();
 	}
 
 	public void OnHistoryPrevRequest() {
-		if (CoreNode.HistoryTracker.TryNavigatePrevious(messageTextEdit.Text, out string queryResult)) {
+		if (HistoryTracker.Instance.TryNavigatePrevious(messageTextEdit.Text, out string queryResult)) {
 			messageTextEdit.Text = queryResult; // also clears carets
 			messageTextEdit.SetCaretPositionToEnd();
 		}
 	}
 
 	public void OnHistoryNextRequest() {
-		if (CoreNode.HistoryTracker.TryNavigateNext(messageTextEdit.Text, out string queryResult)) {
+		if (HistoryTracker.Instance.TryNavigateNext(messageTextEdit.Text, out string queryResult)) {
 			messageTextEdit.Text = queryResult; // also clears carets
 			messageTextEdit.SetCaretPositionToEnd();
 		}
