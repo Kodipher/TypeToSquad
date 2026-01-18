@@ -5,17 +5,7 @@ using TypeToSquad.Utils;
 namespace TypeToSquad.Gui.WindowScenes.TableEdit;
 
 
-public partial class TableEditWindowBase : WindowEx, IRefrencesCore {
-
-	#region //// Core Node
-
-	CoreNode? _coreNode = null;
-
-	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
-
-	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
-
-	#endregion
+public partial class TableEditWindowBase : WindowEx {
 
 	protected virtual string LogName => "TableEditWindow";
 

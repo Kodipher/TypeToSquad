@@ -1,3 +1,4 @@
+using TypeToSquad.Model;
 using SizeFlags = Godot.Control.SizeFlags;
 
 
@@ -10,7 +11,7 @@ public partial class TextReplacementsWindow : TableEditWindowBase {
 
 	protected override void SetupTableEdit(TableEdit tableEdit) {
 		tableEdit.SetInputSizeFlagPreInit(SizeFlags.ShrinkBegin, SizeFlags.ExpandFill, SizeFlags.ExpandFill);
-		tableEdit.InitiateFor(CoreNode.UserSettings.TextReplacements);
+		tableEdit.InitiateFor(UserSettingsManager.Instance.Settings.TextReplacements);
 		tableEdit.SetColumnNamesPostInit("Context", "Pattern", "Replacement");
 	}
 
