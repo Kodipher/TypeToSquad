@@ -1,23 +1,14 @@
 using Godot;
 
 using TypeToSquad.Utils;
+using TypeToSquad.Model;
 using TypeToSquad.Model.Settings;
 
 
 namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 
-public partial class SettingsWindow : WindowEx, IRefrencesCore {
-
-	#region //// Core Node
-
-	CoreNode? _coreNode = null;
-
-	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
-
-	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
-
-	#endregion
+public partial class SettingsWindow : WindowEx {
 
 	public override void _Ready() {
 		base._Ready();
@@ -29,7 +20,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		// Advanced settings toggle
 		{
 			var enableAdvancedCheckbox = this.GetNodeNotNull<BaseButton>("%ShowAdvancedInput");
-			Field<bool> advancedSettingsField = CoreNode.UserSettings.UseAdvancedSettings;
+			Field<bool> advancedSettingsField = UserSettingsManager.Instance.Settings.UseAdvancedSettings;
 
 			if (advancedSettingsField.Value) enableAdvancedCheckbox.ButtonPressed = true;
 			enableAdvancedCheckbox.Toggled += newValue => {
@@ -52,8 +43,8 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		windowManager.GetExistingWindowAtSelf(WindowType.EditReplacements)?.QueueFree();
 		windowManager.GetExistingWindowAtSelf(WindowType.EditVoiceChanges)?.QueueFree();
 
-		UserSettingsManager.Save(CoreNode.UserSettings);
-		if (CoreNode.UserSettings.EnableErrorMonitoring) CoreNode.LogMonitor.CheckLog();
+		UserSettingsManager.Instance.Save();
+		if (UserSettingsManager.Instance.Settings.EnableErrorMonitoring) LogMonitor.Instance.CheckLog();
 
 		this.QueueFree();
 	}
@@ -85,7 +76,7 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 	/// Overriden in <see cref="SimpleSettingsWindow"/>.
 	/// </summary>
 	protected virtual void SetupSettingInputs() {
-		var settings = CoreNode.UserSettings;
+		var settings = UserSettingsManager.Instance.Settings;
 
 		// General
 		ImplaceByProperInput(settings.EnableErrorMonitoring, "%EnableMonitoringInput");
@@ -102,25 +93,20 @@ public partial class SettingsWindow : WindowEx, IRefrencesCore {
 		var deviceSelect = ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			deviceSelect,
-			_ => this.CallOneFrameLater(CoreNode.AudioManager.InitOutputDeviceSetting)
+			_ => this.CallOneFrameLater(AudioManager.Instance.InitOutputDeviceSetting)
 		);
 
 		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			maxConcurrentInput,
-			_ => this.CallOneFrameLater(CoreNode.AudioManager.EnsureConcurrentNodeMax)
+			_ => this.CallOneFrameLater(AudioManager.Instance.EnsureConcurrentNodeMax)
 		);
 
 		// Input
 		var historySlotsInput = ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			historySlotsInput,
-			_ => this.CallOneFrameLater(
-					() => {
-						CoreNode.HistoryTracker.MaxHistorySize = CoreNode.UserSettings.HistorySlots;
-						CoreNode.HistoryTracker.EnforceHistoryCountMax();
-					}
-				)
+			_ => this.CallOneFrameLater(HistoryTracker.Instance.EnforceHistoryCountMax)
 		);
 
 		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);

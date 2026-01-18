@@ -1,19 +1,20 @@
+using TypeToSquad.Model;
 using TypeToSquad.Utils;
 
 
 namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 
-public partial class SimpleSettingsWindow : SettingsWindow, IRefrencesCore {
+public partial class SimpleSettingsWindow : SettingsWindow {
 
 	protected override void SetupSettingInputs() {
 
-		ImplaceByProperInput(CoreNode.UserSettings.Voice, "%MainVoiceInput");
+		ImplaceByProperInput(UserSettingsManager.Instance.Settings.Voice, "%MainVoiceInput");
 
-		var deviceSelect = ImplaceByProperInput(CoreNode.UserSettings.Device, "%OutputDeviceInput");
+		var deviceSelect = ImplaceByProperInput(UserSettingsManager.Instance.Settings.Device, "%OutputDeviceInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			deviceSelect,
-			_ => this.CallOneFrameLater(CoreNode.AudioManager.InitOutputDeviceSetting)
+			_ => this.CallOneFrameLater(AudioManager.Instance.InitOutputDeviceSetting)
 		);
 	}
 
