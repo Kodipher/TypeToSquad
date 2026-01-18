@@ -9,6 +9,7 @@ using TypeToSquad.Utils;
 namespace TypeToSquad.Model.Markup;
 
 
+[GlobalClass]
 public partial class MessageSyntaxHighlighter : Godot.SyntaxHighlighter {
 
 	#region //// Segment cache
