@@ -5,6 +5,7 @@ TODO (features):
 - feature: direct hardware input to grab and release focus
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
+- add the ability to use capture groups in replacement patterns
 
 TODO (internal):
 - refactor MessageLexer
@@ -20,5 +21,6 @@ TODO (misc quality):
 -- add insert at (insert after) button
 - min window sizes for all windows
 - check tab order in all windows
+- document [wait {time}] format
 
 TO TEST:
