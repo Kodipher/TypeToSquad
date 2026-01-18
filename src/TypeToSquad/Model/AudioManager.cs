@@ -82,8 +82,8 @@ public partial class AudioManager : Node {
 		var stream = playbackNode.Stream;
 		playbackNode.Stream = null;
 		//stream?.Free(); // ref counted
-		stream?.Dispose();
-
+		//stream?.Dispose();
+		
 		// Remove the node
 		this.RemoveChild(playbackNode);
 		playbackNode.QueueFree();
