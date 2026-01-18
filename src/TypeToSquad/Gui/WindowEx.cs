@@ -142,7 +142,7 @@ public partial class WindowEx : Window {
 
 	#region //// UI Zoom
 
-	// Note: experemental
+	// Note: experimental
 
 	[Export]
 	public float MinContentScale { get; set; } = 0.5f;

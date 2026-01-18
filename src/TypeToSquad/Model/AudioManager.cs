@@ -91,8 +91,8 @@ public partial class AudioManager : Node {
 
 
 	/// <summary>
-	/// Checks and insure the number of currently playing streams
-	/// is within limits.
+	/// Checks and ensures that
+	/// the number of currently playing streams is within limits.
 	/// </summary>
 	public void EnsureConcurrentNodeMax() {
 		int maxChildren = UserSettingsManager.Instance.Settings.MaxConcurrentStreams;
