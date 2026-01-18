@@ -6,41 +6,27 @@ using System.Collections.Generic;
 namespace TypeToSquad.Gui;
 
 
-public enum WindowType {
-	Unknown,
-	Main,
-	Debug,
-	SimpleSettings,
-	Settings,
-	Shortcuts,
-	EditReplacements,
-	EditVoiceChanges
-}
+public partial class WindowManager : Node {
+	
+	#region //// Singleton
 
+	public static WindowManager Instance { get; private set; } = null!; // Set in _Ready
 
-public partial class WindowManager : Node, IRefrencesCore {
-
-	#region //// Core Node
-
-	CoreNode? _coreNode = null;
-
-	public CoreNode CoreNode => _coreNode ?? throw new CoreNodeNullException();
-
-	public void RecieveCoreReference(CoreNode core) => _coreNode = core;
+	private void StageSingletonInstance() {
+		Instance ??= this;
+	}
 
 	#endregion
 
-	#region //// Window Scenes
-
-	[Export]
-	public Godot.Collections.Dictionary<WindowType, PackedScene?> WindowScenes { get; set; } = [];
-
-	/// <summary>
-	/// Creates an instance of one of the window scenes.
-	/// Provides the <see cref="TypeToSquad.CoreNode"/> reference
-	/// to the root node of the window, if it's <see cref="IRefrencesCore"/>.
-	/// Only the root node is checked.
-	/// </summary>
+	public override void _Ready() {
+		StageSingletonInstance();
+	}
+	
+	readonly static WindowSceneAssignment windowScenes = GD.Load<WindowSceneAssignment>("res://Gui/windowSceneAssingment.tres");
+	
+	readonly Dictionary<WindowType, Window> currentChildrenByType = new();
+	
+	/// <summary> Creates an instance of one of the window scenes.</summary>
 	/// <remarks>
 	/// <see cref="Node._Ready"/> is not called by this method,
 	/// as this method does not add the <see cref="Window"/> into the scene tree.
@@ -48,7 +34,7 @@ public partial class WindowManager : Node, IRefrencesCore {
 	Window InstantiateWindowScene(WindowType windowType) {
 
 		// Get window
-		PackedScene? windowScene = WindowScenes.GetValueOrDefault(windowType, null);
+		PackedScene? windowScene = windowScenes.Scenes.GetValueOrDefault(windowType, null);
 		if (windowScene is null) {
 			throw new InvalidOperationException($"No scene set for window of type {windowType}");
 		}
@@ -56,101 +42,13 @@ public partial class WindowManager : Node, IRefrencesCore {
 		// Instantiate
 		Node windowSceneRoot = windowScene.Instantiate();
 
-		if (windowSceneRoot is not Window) {
+		if (windowSceneRoot is not Window window) {
 			throw new InvalidOperationException($"Scene set for window of type {windowType} must have a Window node as root.");
 		}
 
-		Window window = (Window)windowSceneRoot;
-
-		// Provide Core
-		if (windowSceneRoot is IRefrencesCore windowRootWithCore) {
-			windowRootWithCore.RecieveCoreReference(CoreNode);
-		}
-
+		// Return
 		return window;
 	}
-
-	#endregion
-
-	/// <summary>
-	/// <para>
-	/// Creates a window of type <paramref name="windowType"/>
-	/// and transfters the script, script proprties and
-	/// children into root window.
-	/// (as seen by <see cref="CoreNode"/>).
-	/// </para>
-	/// <para>
-	/// The created window must have a single child,
-	/// that does not have <see cref="Node.UniqueNameInOwner"/> set,
-	/// to facilitate transfer.
-	/// </para>
-	/// <para>
-	/// Because root must be ready by the point this is called,
-	/// the <see cref="Node._Ready"/> of the window is not called automatically.
-	/// </para>
-	/// </summary>
-	/// <returns>The root window, as the newly created window.</returns>
-	public Window CreateWindowIntoRoot(WindowType windowType) {
-
-		GD.Print($"Window {windowType} requested into root.");
-
-		Window window = InstantiateWindowScene(windowType);
-
-		// Guards
-		if (window.GetChildCount() != 1) {
-			throw new NotSupportedException("Only windows with 1 child can be unpacked.");
-		}
-
-		if (GetWindow().GetScript().VariantType != Variant.Type.Nil) {
-			throw new InvalidOperationException("The root window already has a script. Another window might have been created this way.");
-		}
-
-		// Find root window
-		Window rootWindow = CoreNode.GetWindow();
-
-		// Move children
-		Node child = window.GetChild(0);
-		var deepChildren = child.FindChildren("*");
-		foreach (var deepChild in deepChildren) deepChild.Owner = child;
-
-		child.Owner = null;
-		window.RemoveChild(child);
-		rootWindow.AddChild(child);
-
-		foreach (var deepChild in deepChildren) deepChild.Owner = rootWindow;
-
-		// Move script, provide core node to the new instance
-		Script windowScript = window.GetScript().As<Script>();
-		rootWindow.SetScript(windowScript);
-		rootWindow = CoreNode.GetWindow(); // refresh the C# object reference
-
-		foreach (Godot.Collections.Dictionary property in windowScript.GetScriptPropertyList()) {
-			if (
-				property["usage"]
-					.As<PropertyUsageFlags>()
-					.HasFlag(PropertyUsageFlags.ScriptVariable)
-			) {
-				StringName propertyName = property["name"].AsStringName();
-				rootWindow.Set(propertyName, window.Get(propertyName));
-			}
-		}
-
-		if (rootWindow is IRefrencesCore windowRootWithCore) {
-			windowRootWithCore.RecieveCoreReference(CoreNode);
-		}
-
-		// Enable root event processing
-		rootWindow.SetProcessInput(true);
-		rootWindow.SetProcess(true);
-		rootWindow.SetProcessShortcutInput(true);
-
-		// Cleanup and return
-		window.QueueFree();
-		return rootWindow;
-	}
-
-
-	readonly Dictionary<WindowType, Window> currentChildrenByType = new();
 
 	/// <summary>
 	/// Creates a new window of type <paramref name="windowType"/>
@@ -185,14 +83,90 @@ public partial class WindowManager : Node, IRefrencesCore {
 
 	/// <summary>
 	/// Returns a window of type <paramref name="windowType"/>
-	/// if it exsists as a child of the manager.
+	/// if it exists as a child of the manager.
 	/// Returns <see langword="null"/> if the window does not exit.
 	/// </summary>
 	public Window? GetExistingWindowAtSelf(WindowType windowType) {
-		if (currentChildrenByType.TryGetValue(windowType, out Window? existingWindow)) {
-			return existingWindow;
-		}
-		return null;
+		return currentChildrenByType.GetValueOrDefault(windowType, null!);
 	}
+	
+	/// <summary>
+	/// <para>
+	/// Promotes an existing <paramref name="window"/> into godot application root.
+	/// </para>
+	/// <para>
+	/// This is done by moving the child of the window into root,
+	/// reinstantiating the script and moving all script properties to the new script instance,
+	/// and then removing the original window.
+	/// </para>
+	/// <para>
+	/// The window must have a single child,
+	/// that does not have <see cref="Node.UniqueNameInOwner"/> set,
+	/// to facilitate transfer.
+	/// </para>
+	/// <para>
+	/// <see cref="Node._Ready"/> of the window is called
+	/// automatically after the transfer.
+	/// </para>
+	/// <para>
+	/// The <see cref="Node._Ready"/> method is called directly.
+	/// No notification is sent, thus the children do not have their <see cref="Node._Ready"/>
+	/// method called, only the window itself.
+	/// </para>
+	/// </summary>
+	public void PromoteWindowIntoRoot(Window window) {
 
+		GD.Print($"Window {window.Name} requested into root.");
+		
+		// Guards
+		if (window.GetChildCount() != 1) {
+			throw new NotSupportedException("Only windows with 1 child can be promoted.");
+		}
+
+		if (GetWindow().GetScript().VariantType != Variant.Type.Nil) {
+			throw new InvalidOperationException("The root window already has a script. Another window might have been promoted.");
+		}
+
+		// Find root window
+		Window rootWindow = this.GetWindow();
+
+		// Move children
+		Node child = window.GetChild(0);
+		var deepChildren = child.FindChildren("*");
+		foreach (var deepChild in deepChildren) deepChild.Owner = child; // temporarily set owner to be transfer node 
+
+		child.Owner = null;
+		window.RemoveChild(child);
+		rootWindow.AddChild(child);
+
+		foreach (var deepChild in deepChildren) deepChild.Owner = rootWindow;
+
+		// Move script, provide core node to the new instance
+		Script windowScript = window.GetScript().As<Script>();
+		rootWindow.SetScript(windowScript);
+		rootWindow = this.GetWindow(); // refresh the C# object reference
+
+		foreach (Godot.Collections.Dictionary property in windowScript.GetScriptPropertyList()) {
+			if (
+				property["usage"]
+					.As<PropertyUsageFlags>()
+					.HasFlag(PropertyUsageFlags.ScriptVariable)
+			) {
+				StringName propertyName = property["name"].AsStringName();
+				rootWindow.Set(propertyName, window.Get(propertyName));
+			}
+		}
+
+		// Enable root event processing
+		rootWindow.SetProcessInput(true);
+		rootWindow.SetProcess(true);
+		rootWindow.SetProcessShortcutInput(true);
+
+		// Call ready
+		rootWindow._Ready();
+		
+		// Remove old window
+		window.QueueFree();
+	}
+	
 }

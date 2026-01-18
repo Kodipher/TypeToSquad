@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WindowSceneAssignment" load_steps=7 format=3 uid="uid://d1jiyhgdoeesn"]
+
+[ext_resource type="PackedScene" uid="uid://b3gxg0rgcj3yr" path="res://Gui/WindowScenes/Settings/simple_settings_window.tscn" id="1_2bfr6"]
+[ext_resource type="Script" uid="uid://dbta153u4bv7x" path="res://Gui/WindowSceneAssignment.cs" id="1_x1nwk"]
+[ext_resource type="PackedScene" uid="uid://bcpfjd6g106yg" path="res://Gui/WindowScenes/Settings/settings_window.tscn" id="2_slovu"]
+[ext_resource type="PackedScene" uid="uid://s0vn2q14tstu" path="res://Gui/WindowScenes/shortcut_window.tscn" id="3_2vp4u"]
+[ext_resource type="PackedScene" uid="uid://b2w437qnsyeoh" path="res://Gui/WindowScenes/TableEdit/text_replacements_window.tscn" id="4_h8t8v"]
+[ext_resource type="PackedScene" uid="uid://dwl0hryvg21fb" path="res://Gui/WindowScenes/TableEdit/voice_changes_window.tscn" id="5_xvcwc"]
+
+[resource]
+script = ExtResource("1_x1nwk")
+Scenes = Dictionary[int, PackedScene]({
+3: ExtResource("1_2bfr6"),
+4: ExtResource("2_slovu"),
+5: ExtResource("3_2vp4u"),
+6: ExtResource("4_h8t8v"),
+7: ExtResource("5_xvcwc")
+})
+metadata/_custom_type_script = "uid://dbta153u4bv7x"

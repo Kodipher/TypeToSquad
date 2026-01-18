@@ -28,7 +28,7 @@ public partial class SettingsWindow : WindowEx {
 				OnClose();
 
 				var windowType = advancedSettingsField ? WindowType.Settings : WindowType.SimpleSettings;
-				CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
+				WindowManager.Instance.CreateWindowAtSelfUnique(windowType);
 			};
 		}
 
@@ -39,7 +39,7 @@ public partial class SettingsWindow : WindowEx {
 	public void OnClose() {
 		GD.Print("Closing settings");
 
-		var windowManager = CoreNode.WindowManager;
+		var windowManager = WindowManager.Instance;
 		windowManager.GetExistingWindowAtSelf(WindowType.EditReplacements)?.QueueFree();
 		windowManager.GetExistingWindowAtSelf(WindowType.EditVoiceChanges)?.QueueFree();
 
@@ -67,7 +67,7 @@ public partial class SettingsWindow : WindowEx {
 
 	protected void LinkButtonToExternalWindow(NodePath buttonPath, WindowType windowType) {
 		this.GetNodeNotNull<Button>(buttonPath).Pressed += () => {
-			CoreNode.WindowManager.CreateWindowAtSelfUnique(windowType);
+			WindowManager.Instance.CreateWindowAtSelfUnique(windowType);
 		};
 	}
 

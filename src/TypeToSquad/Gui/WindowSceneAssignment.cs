@@ -1,0 +1,26 @@
+using Godot;
+using System;
+
+
+namespace TypeToSquad.Gui;
+
+
+public enum WindowType {
+	Unknown,
+	UnusedSlotMain,
+	UnusedSlotDebug,
+	SimpleSettings,
+	Settings,
+	Shortcuts,
+	EditReplacements,
+	EditVoiceChanges
+}
+
+
+[GlobalClass]
+public partial class WindowSceneAssignment : Resource {
+	
+	[Export] 
+	public Godot.Collections.Dictionary<WindowType, PackedScene?> Scenes { get; set; } = [];
+	    
+}
