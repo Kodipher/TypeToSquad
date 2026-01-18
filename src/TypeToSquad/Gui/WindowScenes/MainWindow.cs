@@ -29,16 +29,6 @@ public partial class MainWindow : WindowEx {
 
 
 	public override void _Ready() {
-		
-		if (this.GetTree().GetRoot() == this) {
-			ReadyWhenRoot();
-			return;
-		}
-
-		this.CallOneFrameLater(() => WindowManager.Instance.PromoteWindowIntoRoot(this));
-	}
-
-	public void ReadyWhenRoot() {
 		base._Ready();
 
 		// Find main text edit

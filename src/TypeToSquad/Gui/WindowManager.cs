@@ -92,7 +92,9 @@ public partial class WindowManager : Node {
 	
 	/// <summary>
 	/// <para>
-	/// Promotes an existing <paramref name="window"/> into godot application root.
+	/// Creates a window of type <paramref name="windowType"/>
+	/// and transfers the script, script properties and
+	/// children into root window.
 	/// </para>
 	/// <para>
 	/// This is done by moving the child of the window into root,
@@ -114,9 +116,11 @@ public partial class WindowManager : Node {
 	/// method called, only the window itself.
 	/// </para>
 	/// </summary>
-	public void PromoteWindowIntoRoot(Window window) {
+	public Window CreateWindowIntoRoot(WindowType windowType) {
 
-		GD.Print($"Window {window.Name} requested into root.");
+		GD.Print($"Window {windowType} requested into root.");
+
+		Window window = InstantiateWindowScene(windowType);
 		
 		// Guards
 		if (window.GetChildCount() != 1) {
@@ -165,8 +169,9 @@ public partial class WindowManager : Node {
 		// Call ready
 		rootWindow._Ready();
 		
-		// Remove old window
+		// Cleanup and return
 		window.QueueFree();
+		return rootWindow;
 	}
 	
 }

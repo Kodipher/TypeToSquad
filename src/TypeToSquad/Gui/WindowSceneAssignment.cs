@@ -7,7 +7,7 @@ namespace TypeToSquad.Gui;
 
 public enum WindowType {
 	Unknown,
-	UnusedSlotMain,
+	Main,
 	UnusedSlotDebug,
 	SimpleSettings,
 	Settings,
