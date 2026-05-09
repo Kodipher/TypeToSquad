@@ -38,7 +38,7 @@ public class Program {
 		try {
 			Console.WriteLine($"Creating pipe \"{pipeName}\"...");
 
-			using NamedPipeServerStream pipeServer = new(
+			await using NamedPipeServerStream pipeServer = new(
 													pipeName,
 													PipeDirection.InOut,
 													maxNumberOfServerInstances: 1,
@@ -47,7 +47,7 @@ public class Program {
 												);
 
 			using BinaryReader reader = new BinaryReader(pipeServer);
-			using BinaryWriter writer = new BinaryWriter(pipeServer);
+			await using BinaryWriter writer = new BinaryWriter(pipeServer);
 
 			Console.WriteLine($"Serving pipe \"{pipeName}\" with buffer sizes in={pipeServer.InBufferSize} out={pipeServer.OutBufferSize} (0:=allocated as needed)");
 			while (!terminateRequestFlag) {
@@ -77,8 +77,8 @@ public class Program {
 				ex is ObjectDisposedException ||
 				ex is InvalidOperationException
 			) {
-				Console.Out.WriteLine("An exception has occurred. See stderr.");
-				Console.Error.WriteLine($"Exception occurred:{Console.Error.NewLine}{ex}");
+				await Console.Out.WriteLineAsync("An exception has occurred. See stderr.");
+				await Console.Error.WriteLineAsync($"Exception occurred:{Console.Error.NewLine}{ex}");
 			} else throw;
 		}
 
