@@ -31,7 +31,7 @@ public abstract record class Request : Message {
 }
 
 
-public sealed record class SynthesizeRequest : Request {
+public sealed record SynthesizeRequest : Request {
 
 	public override RequestType Type => RequestType.Synthesize;
 	
@@ -45,7 +45,7 @@ public sealed record class SynthesizeRequest : Request {
 	public string InputString { get; set; } = "";
 
 	/// <summary>
-	/// Wether the <see cref="InputString"/> is written in SSML (true),
+	/// Whether the <see cref="InputString"/> is written in SSML (true),
 	/// or plain text (false).
 	/// </summary>
 	public bool IsSsml { get; set; } = false;
@@ -100,21 +100,21 @@ public sealed record class SynthesizeRequest : Request {
 }
 
 
-public sealed record class GetVoicesRequest : Request {
+public sealed record GetVoicesRequest : Request {
 	public override RequestType Type => RequestType.GetVoices;
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 	public override void ReadContents(BinaryReader payloadReader) { }
 }
 
 
-public sealed record class TerminateRequest : Request {
+public sealed record TerminateRequest : Request {
 	public override RequestType Type => RequestType.Terminate;
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 	public override void ReadContents(BinaryReader payloadReader) { }
 }
 
 
-public sealed record class HeartbeatRequest : Request {
+public sealed record HeartbeatRequest : Request {
 
 	public override RequestType Type => RequestType.Heartbeat;
 

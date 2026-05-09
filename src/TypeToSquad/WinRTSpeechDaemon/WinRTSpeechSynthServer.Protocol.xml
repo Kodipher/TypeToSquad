@@ -72,7 +72,7 @@
         </member>
         <member name="P:WinRTSpeechSynthServer.Protocol.Messages.Message.IsRequest">
             <summary>
-            Wether this message is a request or a responce. 
+            Whether this message is a request or a response. 
             Affects what <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Message.MessageType"/> means.
             </summary>
         </member>
@@ -107,7 +107,7 @@
         </member>
         <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.IsSsml">
             <summary>
-            Wether the <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.InputString"/> is written in SSML (true),
+            Whether the <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest.InputString"/> is written in SSML (true),
             or plain text (false).
             </summary>
         </member>
@@ -141,32 +141,32 @@
             </remarks>
         </member>
         <member name="T:WinRTSpeechSynthServer.Protocol.Messages.Response">
-            <summary>Base class for all responce messages passed during communication.</summary>
+            <summary>Base class for all response messages passed during communication.</summary>
         </member>
-        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse.SynthesizedData">
-            <summary>The audio synthezied from the given message.</summary>
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesisResultResponse.SynthesizedData">
+            <summary>The audio synthesized from the given message.</summary>
         </member>
-        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse.GivenVoiceExists">
+        <member name="P:WinRTSpeechSynthServer.Protocol.Messages.SynthesisResultResponse.GivenVoiceExists">
             <summary>
-            Wether the given voice was used (true) or
+            Whether the given voice was used (true) or
             the default voice was used as a fallback (false).
             </summary>
         </member>
         <member name="T:WinRTSpeechSynthServer.Protocol.RequestMapper">
             <summary>
-            Maps incoming requsts to registed delegates.
+            Maps incoming requests to registered delegates.
             </summary>
             <remarks>
-            Each <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Request"/> has a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.RequestType"/> under <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Request.Type"/> 
-            which is to be written to the stream first.
+            Each <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Request"/> has a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.RequestType"/> (under <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Request.Type"/>) 
+            which is to be written to the stream first as the first byte.
             That <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.RequestType"/> is read to then construct a particular
             <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Request"/> decendant and call a delegate corresponding to it.
             </remarks>
         </member>
-        <member name="E:WinRTSpeechSynthServer.Protocol.RequestMapper.OnRequestReadStart">
+        <member name="E:WinRTSpeechSynthServer.Protocol.RequestMapper.OnRequestTypeRead">
             <summary>
             Invoked when the <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Request.Type"/> has been read.
-            The rest of the request is read imedeatly after.
+            The rest of the request is read immediately after.
             </summary>
         </member>
         <member name="M:WinRTSpeechSynthServer.Protocol.RequestMapper.HandleSingleRequest(System.IO.BinaryReader,System.IO.BinaryWriter)">
@@ -178,9 +178,9 @@
         </member>
         <member name="F:WinRTSpeechSynthServer.Protocol.RequestMapper.registeredReaderWithHandler">
             <summary>
-            A storage of all readers with handlers.
+            All request body handlers.
             Each delegate here reads the stream to construct a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Request"/>> object,
-            invokes the inner registerd handler and returns a response.
+            invokes the inner registered handler and returns a response.
             </summary>
         </member>
         <member name="M:WinRTSpeechSynthServer.Protocol.RequestMapper.Register``1(System.Func{``0,WinRTSpeechSynthServer.Protocol.Messages.Response})">
@@ -192,8 +192,8 @@
             Reads incoming responses as objects.
             </summary>
             <remarks>
-            Each <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/> has a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/> under <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Response.Type"/> 
-            which is to be written to the stream first.
+            Each <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/> has a <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/> (under <see cref="P:WinRTSpeechSynthServer.Protocol.Messages.Response.Type"/>)
+            which is to be written to the stream first as the first byte.
             That <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/> is read to pick a particular
             <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/> decendant and construct and fill.
             </remarks>
@@ -211,10 +211,10 @@
             of <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.Response"/>.
             </summary>
         </member>
-        <member name="M:WinRTSpeechSynthServer.Protocol.ResponseReader.CreateWithStanardRegistered">
+        <member name="M:WinRTSpeechSynthServer.Protocol.ResponseReader.CreateWithStandardRegistered">
             <summary>
-            Creates a <see cref="T:WinRTSpeechSynthServer.Protocol.ResponseReader"/> with 
-            <see cref="M:WinRTSpeechSynthServer.Protocol.ResponseReader.RegisterAll"/> having been called.
+            A shortcut to create <see cref="T:WinRTSpeechSynthServer.Protocol.ResponseReader"/> 
+            and call <see cref="M:WinRTSpeechSynthServer.Protocol.ResponseReader.RegisterAll"/> on it.
             </summary>
         </member>
         <member name="M:WinRTSpeechSynthServer.Protocol.ResponseReader.ReadResponse(System.IO.BinaryReader)">
@@ -223,7 +223,7 @@
             Throws <see cref="T:System.InvalidOperationException"/> if <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/>
             is not recognized.
             </summary>
-            <exception cref="T:System.InvalidOperationException">No registerd type has a matching <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">No registered type has a matching <see cref="T:WinRTSpeechSynthServer.Protocol.Messages.ResponseType"/>.</exception>
         </member>
         <member name="T:WinRTSpeechSynthServer.Protocol.VoiceInfo">
             <summary>Information about a voice (synthesis engine) installed on the system.</summary>
@@ -241,7 +241,7 @@
             <summary>The gender of the synthesis engine (voice).</summary>
         </member>
         <member name="P:WinRTSpeechSynthServer.Protocol.VoiceInfo.Empty">
-            <summary>Empty voice to be used as place holder.</summary>
+            <summary>Empty voice to be used as placeholder.</summary>
         </member>
     </members>
 </doc>

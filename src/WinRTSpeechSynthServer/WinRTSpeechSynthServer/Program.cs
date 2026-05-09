@@ -9,9 +9,9 @@ using WinRTSpeechSynthServer.Protocol.Messages;
 namespace WinRTSpeechSynthServer;
 
 
-public class Program {
+public static class Program {
 
-	async static Task Main(string[] args) {
+	static async Task Main(string[] args) {
 
 		// Argument Guard
 		if (args.Length < 1) {
@@ -19,7 +19,7 @@ public class Program {
 			return;
 		}
 
-		// Setup data and syntehsizer 
+		// Setup data and synthesizer 
 		string pipeName = args[0];
 		bool terminateRequestFlag = false;
 
@@ -32,7 +32,7 @@ public class Program {
 			.Register<TerminateRequest>(_ => { terminateRequestFlag = true; return new TerminateAcceptedResponse(); })
 			.Register<HeartbeatRequest>(req => new HeartbeatEchoResponse() { EchoByte = req.EchoByte });
 
-		requestHandler.OnRequestReadStart += reqType => Console.WriteLine($"Processing request of type {reqType}.");
+		requestHandler.OnRequestTypeRead += reqType => Console.WriteLine($"Processing request of type {reqType}.");
 
 		// Pipe
 		try {

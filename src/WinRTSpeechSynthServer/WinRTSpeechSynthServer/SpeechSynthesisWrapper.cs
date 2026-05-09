@@ -8,7 +8,7 @@ using Windows.Storage.Streams;
 using System.Runtime.InteropServices.WindowsRuntime;
 
 using SynthesizeRequest = WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest;
-using SyntesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse;
+using SynthesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SynthesisResultResponse;
 using ProtocolVoiceInfo = WinRTSpeechSynthServer.Protocol.VoiceInfo;
 using ProtocolVoiceGender = WinRTSpeechSynthServer.Protocol.VoiceGender;
 
@@ -20,7 +20,7 @@ public class SpeechSynthesisWrapper : IDisposable {
 
 	readonly SpeechSynthesizer synth = new();
 
-	#region //// Voices
+	#region /--- Voices ---/
 
 	/// <summary>
 	/// Sets a voice by <see cref="VoiceInformation.DisplayName"/>.
@@ -70,9 +70,9 @@ public class SpeechSynthesisWrapper : IDisposable {
 
 	#endregion
 
-	#region //// Synthesis
+	#region /--- Synthesis ---/
 
-	public async Task<SyntesisResultResponse> SynthesizeFromRequestAsync(SynthesizeRequest request) {
+	public async Task<SynthesisResultResponse> SynthesizeFromRequestAsync(SynthesizeRequest request) {
 
 		// Try set voice
 		bool wasVoiceSet = TrySetVoice(request.VoiceName);
@@ -93,15 +93,15 @@ public class SpeechSynthesisWrapper : IDisposable {
 			speechStreamContents = await GetSpeechStreamContents(stream);
 		}
 
-		// Retrun
-		return new SyntesisResultResponse() {
+		// Return
+		return new SynthesisResultResponse() {
 			SynthesizedData = speechStreamContents,
 			GivenVoiceExists = wasVoiceSet
 		};
 
 	}
 
-	public SyntesisResultResponse SynthesizeFromRequest(SynthesizeRequest request) {
+	public SynthesisResultResponse SynthesizeFromRequest(SynthesizeRequest request) {
 		return Task.Run(() => SynthesizeFromRequestAsync(request)).GetAwaiter().GetResult();
 	}
 
@@ -124,11 +124,11 @@ public class SpeechSynthesisWrapper : IDisposable {
 
 	#endregion
 
-	#region //// Disposable
+	#region /--- Disposable ---/
 
 	private bool isDisposed;
 
-	protected virtual void Dispose(bool disposeManaged) {
+	void Dispose(bool disposeManaged) {
 
 		if (isDisposed) return;
 

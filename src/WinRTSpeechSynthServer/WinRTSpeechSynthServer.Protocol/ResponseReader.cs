@@ -13,14 +13,13 @@ namespace WinRTSpeechSynthServer.Protocol;
 /// Reads incoming responses as objects.
 /// </summary>
 /// <remarks>
-/// Each <see cref="Response"/> has a <see cref="ResponseType"/> under <see cref="Response.Type"/> 
-/// which is to be written to the stream first.
+/// Each <see cref="Response"/> has a <see cref="ResponseType"/> (under <see cref="Response.Type"/>)
+/// which is to be written to the stream first as the first byte.
 /// That <see cref="ResponseType"/> is read to pick a particular
 /// <see cref="Response"/> decendant and construct and fill.
 /// </remarks>
 public class ResponseReader {
-
-
+	
 	readonly Dictionary<ResponseType, Func<BinaryReader, Response>> registeredReaders = new();
 
 	/// <summary>
@@ -30,7 +29,7 @@ public class ResponseReader {
 	/// <returns>this</returns>
 	public ResponseReader Register<TResponse>() where TResponse : Response, new() {
 		ResponseType keyByte = new TResponse().Type;
-
+		
 		var reader = (BinaryReader responseReader) => {
 			TResponse responseObject = new TResponse();
 			responseObject.ReadContents(responseReader);
@@ -68,21 +67,21 @@ public class ResponseReader {
 	}
 
 	/// <summary>
-	/// Creates a <see cref="ResponseReader"/> with 
-	/// <see cref="RegisterAll"/> having been called.
+	/// A shortcut to create <see cref="ResponseReader"/> 
+	/// and call <see cref="RegisterAll"/> on it.
 	/// </summary>
-	public static ResponseReader CreateWithStanardRegistered() {
+	public static ResponseReader CreateWithStandardRegistered() {
 		ResponseReader reader = new();
 		reader.RegisterAll();
 		return reader;
 	}
-
+	
 	/// <summary>
 	/// Reads a single <see cref="Response"/> from the borrowed stream.
 	/// Throws <see cref="InvalidOperationException"/> if <see cref="ResponseType"/>
 	/// is not recognized.
 	/// </summary>
-	/// <exception cref="InvalidOperationException">No registerd type has a matching <see cref="ResponseType"/>.</exception>
+	/// <exception cref="InvalidOperationException">No registered type has a matching <see cref="ResponseType"/>.</exception>
 	public Response ReadResponse(BinaryReader responseReader) {
 
 		ResponseType responseType = (ResponseType)responseReader.ReadByte();

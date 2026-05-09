@@ -8,11 +8,11 @@ namespace WinRTSpeechSynthServer.Protocol;
 
 
 /// <summary>
-/// Maps incoming requsts to registed delegates.
+/// Maps incoming requests to registered delegates.
 /// </summary>
 /// <remarks>
-/// Each <see cref="Request"/> has a <see cref="RequestType"/> under <see cref="Request.Type"/> 
-/// which is to be written to the stream first.
+/// Each <see cref="Request"/> has a <see cref="RequestType"/> (under <see cref="Request.Type"/>) 
+/// which is to be written to the stream first as the first byte.
 /// That <see cref="RequestType"/> is read to then construct a particular
 /// <see cref="Request"/> decendant and call a delegate corresponding to it.
 /// </remarks>
@@ -20,9 +20,9 @@ public class RequestMapper {
 
 	/// <summary>
 	/// Invoked when the <see cref="Request.Type"/> has been read.
-	/// The rest of the request is read imedeatly after.
+	/// The rest of the request is read immediately after.
 	/// </summary>
-	public event Action<RequestType> OnRequestReadStart = delegate { };
+	public event Action<RequestType> OnRequestTypeRead = delegate { };
 
 	/// <summary>
 	/// Reads one request from the input stream and writes one response to the output stream.
@@ -34,7 +34,7 @@ public class RequestMapper {
 		RequestType requestType = (RequestType)requestReader.ReadByte();
 		Response response;
 
-		OnRequestReadStart(requestType);
+		OnRequestTypeRead(requestType);
 
 		if (registeredReaderWithHandler.TryGetValue(requestType, out var handler)) {
 			// Handle request if known
@@ -49,9 +49,9 @@ public class RequestMapper {
 	}
 
 	/// <summary>
-	/// A storage of all readers with handlers.
+	/// All request body handlers.
 	/// Each delegate here reads the stream to construct a <see cref="Request"/>> object,
-	/// invokes the inner registerd handler and returns a response.
+	/// invokes the inner registered handler and returns a response.
 	/// </summary>
 	readonly Dictionary<RequestType, Func<BinaryReader, Response>> registeredReaderWithHandler = new();
 

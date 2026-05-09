@@ -8,7 +8,7 @@ namespace WinRTSpeechSynthServer.Protocol.Messages;
 public abstract record class Message {
 
 	/// <summary>
-	/// Wether this message is a request or a responce. 
+	/// Whether this message is a request or a response. 
 	/// Affects what <see cref="MessageType"/> means.
 	/// </summary>
 	public abstract bool IsRequest { get; }

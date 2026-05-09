@@ -8,7 +8,7 @@ using TypeToSquad.Utils;
 using TypeToSquad.Model.Markup;
 
 using SynthesizeRequest = WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest;
-using SynthesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SyntesisResultResponse;
+using SynthesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SynthesisResultResponse;
 
 
 namespace TypeToSquad.Gui.WindowScenes;

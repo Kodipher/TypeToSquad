@@ -11,15 +11,15 @@ namespace WinRTSpeechSynthServer.Protocol.Messages;
 
 public enum ResponseType : byte {
 	Unknown = 0x00,
-	SyntesisResult = 0x21,
+	SynthesisResult = 0x21,
 	AllVoices = 0x29,
 	TerminationAccepted = 0x2F,
 	HeartbeatEcho = 0x30,
-	UnknwonRequestType = 0xFF,
+	UnknownRequestType = 0xFF,
 }
 
 
-/// <summary>Base class for all responce messages passed during communication.</summary>
+/// <summary>Base class for all response messages passed during communication.</summary>
 public abstract record class Response : Message {
 
 	public sealed override bool IsRequest => false;
@@ -32,15 +32,15 @@ public abstract record class Response : Message {
 }
 
 
-public sealed record class SyntesisResultResponse : Response {
+public sealed record SynthesisResultResponse : Response {
 
-	public override ResponseType Type => ResponseType.SyntesisResult;
+	public override ResponseType Type => ResponseType.SynthesisResult;
 
-	/// <summary>The audio synthezied from the given message.</summary>
+	/// <summary>The audio synthesized from the given message.</summary>
 	public byte[] SynthesizedData { get; set; } = Array.Empty<byte>();
 
 	/// <summary>
-	/// Wether the given voice was used (true) or
+	/// Whether the given voice was used (true) or
 	/// the default voice was used as a fallback (false).
 	/// </summary>
 	public bool GivenVoiceExists { get; set; } = true;
@@ -58,7 +58,7 @@ public sealed record class SyntesisResultResponse : Response {
 }
 
 
-public sealed record class AllVoicesResponse : Response {
+public sealed record AllVoicesResponse : Response {
 
 	public override ResponseType Type => ResponseType.AllVoices;
 
@@ -79,21 +79,21 @@ public sealed record class AllVoicesResponse : Response {
 }
 
 
-public sealed record class UnknownRequestResponse : Response {
-	public override ResponseType Type => ResponseType.UnknwonRequestType;
+public sealed record UnknownRequestResponse : Response {
+	public override ResponseType Type => ResponseType.UnknownRequestType;
 	public override void ReadContents(BinaryReader payloadReader) { }
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 }
 
 
-public sealed record class TerminateAcceptedResponse : Response {
+public sealed record TerminateAcceptedResponse : Response {
 	public override ResponseType Type => ResponseType.TerminationAccepted;
 	public override void ReadContents(BinaryReader payloadReader) { }
 	public override void WriteContents(BinaryWriter payloadWriter) { }
 }
 
 
-public sealed record class HeartbeatEchoResponse : Response {
+public sealed record HeartbeatEchoResponse : Response {
 
 	public override ResponseType Type => ResponseType.HeartbeatEcho;
 

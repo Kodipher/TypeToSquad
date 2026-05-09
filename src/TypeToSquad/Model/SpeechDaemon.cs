@@ -216,7 +216,7 @@ public partial class SpeechDaemon : Node, IDisposable {
 
 	readonly static TimeSpan requestTimeout = TimeSpan.FromSeconds(5);
 
-	readonly ResponseReader responseReader = ResponseReader.CreateWithStanardRegistered();
+	readonly ResponseReader responseReader = ResponseReader.CreateWithStandardRegistered();
 	readonly ConcurrentQueue<Action> responseConsumptionCallbackQueue = new();
 
 	/// <summary>
