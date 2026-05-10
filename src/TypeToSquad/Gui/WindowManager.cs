@@ -26,7 +26,7 @@ public partial class WindowManager : Node {
 	
 	readonly Dictionary<WindowType, Window> currentChildrenByType = new();
 	
-	/// <summary> Creates an instance of one of the window scenes.</summary>
+	/// <summary>Creates an instance of one of the window scenes.</summary>
 	/// <remarks>
 	/// <see cref="Node._Ready"/> is not called by this method,
 	/// as this method does not add the <see cref="Window"/> into the scene tree.
@@ -45,8 +45,7 @@ public partial class WindowManager : Node {
 		if (windowSceneRoot is not Window window) {
 			throw new InvalidOperationException($"Scene set for window of type {windowType} must have a Window node as root.");
 		}
-
-		// Return
+		
 		return window;
 	}
 
@@ -60,12 +59,13 @@ public partial class WindowManager : Node {
 
 		GD.Print($"Window {windowType} requested.");
 
-		// Return existing
+		// Focus and return existing
 		if (currentChildrenByType.TryGetValue(windowType, out Window? existingWindow)) {
-			// Focus requested window
+
 			if (existingWindow.Mode == Window.ModeEnum.Minimized) {
 				existingWindow.Mode = Window.ModeEnum.Windowed;
 			}
+			
 			existingWindow.GrabFocus();
 
 			return existingWindow;
