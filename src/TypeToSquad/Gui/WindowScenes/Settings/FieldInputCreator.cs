@@ -1,5 +1,6 @@
-using System;
 using Godot;
+using System;
+using System.Numerics;
 
 using TypeToSquad.Model.Settings;
 
@@ -9,14 +10,12 @@ namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 public static class FieldInputCreator {
 
+	#region /--- General (switched by type) ---/
+	
 	/// <summary>
 	/// <para>
 	/// Creates a <see cref="Control"/> node that serves
 	/// as an input to a <see cref="Field"/>.
-	/// </para>
-	/// <para>
-	/// If <paramref name="isUnlinked"/> is set then the node
-	/// is created but will not set its <see cref="Field{T}.Value"/> automatically.
 	/// </para>
 	/// </summary>
 	/// <remarks>
@@ -24,93 +23,42 @@ public static class FieldInputCreator {
 	/// <see cref="Control.SizeFlagsVertical"/>,
 	/// <see cref="Control.SizeFlagsStretchRatio"/>.
 	/// </remarks>
-	/// <exception cref="NotSupportedException"/>
-	public static Control CreateFor(Field field, bool isUnlinked = false) {
+	/// <exception cref="NotSupportedException">Unsupported <see cref="Field"/> type.</exception>
+	public static Control CreateFor(Field field) {
 		return field switch {
-			FieldOptionsRuntime fieldOptions => CreateForOptions(fieldOptions, isUnlinked),
-			FieldNumericRange<int> fieldRangeInt => CreateForNumeric(fieldRangeInt, isUnlinked),
-			FieldNumericRange<double> fieldRangeDouble => CreateForNumeric(fieldRangeDouble, isUnlinked),
-			Field<bool> fieldBool => CreateForBool(fieldBool, isUnlinked),
-			Field<string> fieldString => CreateForString(fieldString, isUnlinked),
+			FieldOptionsRuntime fieldOptions => CreateForOptions(fieldOptions),
+			FieldNumericRange<int> fieldRangeInt => CreateForNumeric(fieldRangeInt),
+			FieldNumericRange<double> fieldRangeDouble => CreateForNumeric(fieldRangeDouble),
+			Field<bool> fieldBool => CreateForBool(fieldBool),
+			Field<string> fieldString => CreateForString(fieldString),
 			_ => throw new NotSupportedException()
 		};
-	}
-
-	/// <summary>
-	/// Returns the user input from any <see cref="Control"/> node
-	/// created by <see cref="CreateFor(Field, bool)"/>.
-	/// </summary>
-	/// <exception cref="NotSupportedException"/>
-	public static Variant GetControlInputValue(Control node) {
-		return node switch {
-			OptionButton optionButton => optionButton.GetItemMetadata(optionButton.Selected),
-			CheckBox checkBox => checkBox.ButtonPressed,
-			LineEdit lineEdit => lineEdit.Text,
-			SpinBox spinBox => spinBox.Value,
-			_ => throw new NotSupportedException()
-		};
-	}
-
-	/// <exception cref="NotSupportedException"/>
-	public static void SetControlInputValue(Control node, Variant value) {
-
-		switch (node) {
-			
-			case OptionButton optionButton: {
-				for (int i = 0; i < optionButton.ItemCount; i++) {
-					if (optionButton.GetItemMetadata(i).AsString() == value.AsString()) {
-						optionButton.Selected = i;
-						return;
-					}
-				}
-
-				GD.PushError($"Could not select current option. Could not find {value} among options.");
-				optionButton.Selected = -1;
-				return;
-			}
-			
-			case CheckBox checkBox:
-				checkBox.SetPressedNoSignal(value.AsBool());
-				return;
-			
-			case LineEdit lineEdit:
-				lineEdit.Text = value.AsString();
-				return;
-			
-			case SpinBox spinBox:
-				spinBox.SetValueNoSignal(value.AsDouble());
-				return;
-			
-			default:
-				throw new NotSupportedException();
-		}
-
 	}
 
 	/// <summary>
 	/// Connects a submission handler to the appropriate
-	/// node signal of a node created by <see cref="CreateFor(Field, bool)"/>.
+	/// node signal of a node created by <see cref="CreateFor(Field)"/>.
 	/// </summary>
-	/// <exception cref="NotSupportedException"></exception>
-	public static void ConnectOnControlSubmit(Control node, Action<Variant> onSubmit) {
+	/// <exception cref="NotSupportedException">Unsupported <see cref="Control"/> type.</exception>
+	public static void ConnectOnControlSubmit(Control node, Action onSubmit) {
 
 		switch (node) {
 			
 			case OptionButton optionButton:
-				optionButton.ItemSelected += index => onSubmit(optionButton.GetItemMetadata((int)index).AsString());
+				optionButton.ItemSelected += _ => onSubmit();
 				return;
 			
 			case CheckBox checkBox:
-				checkBox.Toggled += newValue => onSubmit(newValue);
+				checkBox.Toggled += _ => onSubmit();
 				return;
 			
 			case LineEdit lineEdit:
-				lineEdit.TextSubmitted += (text) => onSubmit(text);
-				lineEdit.FocusExited += () => onSubmit(lineEdit.Text);
+				lineEdit.TextSubmitted += _ => onSubmit();
+				lineEdit.FocusExited += onSubmit;
 				return;
 			
 			case SpinBox spinBox:
-				spinBox.ValueChanged += newValue => onSubmit(newValue);
+				spinBox.ValueChanged += _ => onSubmit();
 				return;
 			
 			default:
@@ -119,23 +67,12 @@ public static class FieldInputCreator {
 
 	}
 
-	#region /--- Case-specific creation ---/
+	#endregion
+	
+	public static LineEdit CreateForString(Field<string> field) {
 
-	public static LineEdit CreateForAnyUnlinked() {
-		return new LineEdit();
-	}
-
-
-	public static LineEdit CreateForString(Field<string> field, bool isUnlinked = false) {
-
-		// Create
-		var textInput = new LineEdit();
-
-		if (isUnlinked) return textInput;
-
-		// Link
-		textInput.Text = field.Value.ToString();
-
+		var textInput = new LineEdit() { Text = field.Value };
+		
 		void OnTextSubmit(string text) {
 			field.Value = text;
 			textInput.Text = field.Value;
@@ -145,27 +82,19 @@ public static class FieldInputCreator {
 
 		return textInput;
 	}
-
-
-	public static CheckBox CreateForBool(Field<bool> field, bool isUnlinked = false) {
+	
+	public static CheckBox CreateForBool(Field<bool> field) {
 		
-		// Create
 		var inputToggle = new CheckBox();
-
-		if (isUnlinked) return inputToggle;
-
-		// Link
+		
 		if (field.Value) inputToggle.ButtonPressed = true;
 		inputToggle.Toggled += newValue => field.Value = newValue;
 
 		return inputToggle;
 	}
 
-	public static SpinBox CreateForNumeric<[MustBeVariant] T>(FieldNumericRange<T> field, bool isUnlinked = false)
-	where T : struct, System.Numerics.INumber<T>
-	{
-
-		// Create
+	public static SpinBox CreateForNumeric<[MustBeVariant] T>(FieldNumericRange<T> field) where T : struct, INumber<T> {
+		
 		var fieldInput = new SpinBox() {
 			MinValue = double.CreateChecked(field.MinInclusive),
 			MaxValue = double.CreateChecked(field.MaxInclusive),
@@ -175,10 +104,7 @@ public static class FieldInputCreator {
 			Rounded = field.DigitsPrecision == 0,
 			Step = 1d / Math.Pow(10, field.DigitsPrecision) // 0.1^digits has precision errors
 		};
-
-		if (isUnlinked) return fieldInput;
-
-		// Link
+		
 		fieldInput.Value = double.CreateChecked(field.Value);
 		fieldInput.ValueChanged += newValue => field.Value = T.CreateChecked(newValue);
 
@@ -186,7 +112,7 @@ public static class FieldInputCreator {
 	}
 
 	/// <remarks>The actual value set to the field is stored in items' metadata.</remarks>
-	public static OptionButton CreateForOptions(FieldOptionsRuntime field, bool isUnlinked = false) {
+	public static OptionButton CreateForOptions(FieldOptionsRuntime field) {
 
 		// Create
 		var optionsInput = new OptionButton {
@@ -204,8 +130,6 @@ public static class FieldInputCreator {
 			optionsInput.SetItemMetadata(optionsInput.ItemCount - 1, option);
 		}
 
-		if (isUnlinked) return optionsInput;
-
 		// Link
 		int currentIndex = field.Options.IndexOf(field.Value);
 		if (currentIndex < 0) {
@@ -218,15 +142,9 @@ public static class FieldInputCreator {
 		
 		return optionsInput;
 	}
-
-
+	
 	/// <remarks>The actual value set to the field is stored in items' metadata.</remarks>
-	public static OptionButton CreateForEnum<[MustBeVariant] TEnum>(
-		FieldOptionsEnum<TEnum> field, 
-		bool isUnlinked = false
-	) 
-	where TEnum : struct, Enum
-	{
+	public static OptionButton CreateForEnum<[MustBeVariant] TEnum>(FieldOptionsEnum<TEnum> field) where TEnum : struct, Enum {
 
 		// Create
 		var optionsInput = new OptionButton {
@@ -238,9 +156,7 @@ public static class FieldInputCreator {
 			optionsInput.AddItem(option.ToString());
 			optionsInput.SetItemMetadata(optionsInput.ItemCount - 1, Variant.From(option));
 		}
-
-		if (isUnlinked) return optionsInput;
-
+		
 		// Link
 		for (int i = 0; i < optionsInput.ItemCount; i++) {
 			if (optionsInput.GetItemMetadata(i).As<TEnum>().Equals(field.Value)) {
@@ -253,7 +169,5 @@ public static class FieldInputCreator {
 
 		return optionsInput;
 	}
-
-	#endregion
-
+	
 }

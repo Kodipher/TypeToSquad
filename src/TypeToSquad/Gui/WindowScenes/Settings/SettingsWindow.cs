@@ -93,20 +93,20 @@ public partial class SettingsWindow : WindowEx {
 		var deviceSelect = ImplaceByProperInput(settings.Device, "%OutputDeviceInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			deviceSelect,
-			_ => this.CallOneFrameLater(AudioManager.Instance.InitOutputDeviceSetting)
+			() => this.CallOneFrameLater(AudioManager.Instance.InitOutputDeviceSetting)
 		);
 
 		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			maxConcurrentInput,
-			_ => this.CallOneFrameLater(AudioManager.Instance.EnsureConcurrentNodeMax)
+			() => this.CallOneFrameLater(AudioManager.Instance.EnsureConcurrentNodeMax)
 		);
 
 		// Input
 		var historySlotsInput = ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			historySlotsInput,
-			_ => this.CallOneFrameLater(HistoryTracker.Instance.EnforceHistoryCountMax)
+			() => this.CallOneFrameLater(HistoryTracker.Instance.EnforceHistoryCountMax)
 		);
 
 		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);
