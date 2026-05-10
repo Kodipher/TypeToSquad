@@ -67,7 +67,7 @@ public partial class LogMonitor : Node {
 
 				if (line.StartsWith("ERROR")) {
 					BlockChecks = true;
-					OnErrorFound();
+					EmitSignalOnErrorFound();
 					return;
 				}
 			}
@@ -82,7 +82,7 @@ public partial class LogMonitor : Node {
 			) {
 				GD.PushError($"Error in the LogMonitor: {ex}");
 				BlockChecks = true;
-				OnErrorFound();
+				EmitSignalOnErrorFound();
 			}
 		}	
 	}
@@ -115,8 +115,8 @@ public partial class LogMonitor : Node {
 		}
 	}
 
-	/// <summary>Invoked when <see cref="CheckLog"/> finds errors.</summary>
-	public event Action OnErrorFound = () => {};
+	/// <summary>Emitted when <see cref="CheckLog"/> finds errors.</summary>
+	[Signal] public delegate void OnErrorFoundEventHandler();
 
 	/// <summary>
 	/// Whether to block checks. 
