@@ -38,6 +38,8 @@ public abstract class Table : IVariantSavable {
 	
 	public abstract void AddEmpty();
 	public abstract void InsertEmpty(int index);
+
+	public abstract void MoveRow(int indexFrom, int indexTo);
 	
 	public abstract void RemoveAt(int index);
 	public abstract void Clear();
@@ -124,6 +126,12 @@ public class Table<TRowTuple> : Table, IList<TRowTuple>, IReadOnlyList<TRowTuple
 	public void Insert(int index, TRowTuple row) {
 		InsertEmpty(index);
 		this[index] = row;
+	}
+
+	public override void MoveRow(int indexFrom, int indexTo) {
+		var row = rows[indexFrom];
+		rows.RemoveAt(indexFrom);
+		rows.Insert(indexTo, row);
 	}
 
 	public bool Remove(TRowTuple row) => throw new NotImplementedException();
