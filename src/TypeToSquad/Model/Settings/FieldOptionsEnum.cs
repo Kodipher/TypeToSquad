@@ -8,7 +8,7 @@ namespace TypeToSquad.Model.Settings;
 /// <summary>A <see cref="Field{T}"/> that stores ahead-of-time known enum values.</summary>
 public class FieldOptionsEnum<[MustBeVariant] TEnum> : Field<TEnum> where TEnum : struct, Enum {
 
-	public override Variant ToSavableVariant() => this.value.ToString();
+	public override Variant ToSavableVariant() => Value.ToString();
 
 	public override void SetFromVariant(Variant value) {
 		Value = ReturnValid(value).As<TEnum>();

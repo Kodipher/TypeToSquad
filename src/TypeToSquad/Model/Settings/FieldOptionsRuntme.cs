@@ -56,7 +56,7 @@ public class FieldOptionsRuntime : Field<string> {
 		DefaultOption = Options[defaultOptionIndex];
 
 		// Force validity under the new condition
-		if (!IsValid(value)) value = ReturnValid(value);
+		if (!IsValid(Value)) Value = ReturnValid(Value);
 	}
 
 	public bool IsValid(string value) {

@@ -36,7 +36,6 @@ public static class FieldInputCreator {
 		};
 	}
 
-
 	/// <summary>
 	/// Returns the user input from any <see cref="Control"/> node
 	/// created by <see cref="CreateFor(Field, bool)"/>.
