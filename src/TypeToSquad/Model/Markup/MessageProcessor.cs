@@ -204,15 +204,15 @@ public static class MessageProcessor {
 		var speechDaemon = SpeechDaemon.Instance;
 
 		// Guards
-		if (speechDaemon.VoicesByName is null) throw new InvalidOperationException("Cannot find voice information.");
+		if (speechDaemon.VoicesByKey is null) throw new InvalidOperationException("Cannot find voice information.");
 
 
 		
 		StringBuilder sb = new StringBuilder();
 
 		// Header
-		string defaultVoiceName = settingsInstance.Voice;
-		string defaultVoiceLang = speechDaemon.VoicesByName[defaultVoiceName].Language;
+		string defaultVoiceName = settingsInstance.VoiceKey;
+		string defaultVoiceLang = speechDaemon.VoicesByKey[defaultVoiceName].Language;
 		sb.AppendFormat(SsmlHeaderFormat, defaultVoiceLang);
 
 		// Segments
@@ -240,9 +240,9 @@ public static class MessageProcessor {
 						settingsInstance
 						.VoiceChanges
 						.FirstOrDefault(row => row.hint == hintSegment.Context)
-						.voiceName;
+						.voiceKey;
 
-					if (!speechDaemon.VoicesByName.TryGetValue(voiceNameKey, out var voiceInfo)) {
+					if (!speechDaemon.VoicesByKey.TryGetValue(voiceNameKey, out var voiceInfo)) {
 						continue;
 					}
 

@@ -271,7 +271,7 @@ public partial class MainWindow : WindowEx {
 		SynthesizeRequest synthRequest = new SynthesizeRequest() {
 			InputString = requestString,
 			IsSsml = isSsml,
-			VoiceName = settingsInstance.Voice,
+			VoiceName = SpeechDaemon.Instance.VoicesByKey?[settingsInstance.VoiceKey].Name ?? "",
 			Pitch = settingsInstance.VoicePitch,
 			Rate = settingsInstance.VoiceRate,
 			Volume = settingsInstance.SynthesisVolumePercent / 100.0
@@ -284,7 +284,7 @@ public partial class MainWindow : WindowEx {
 				// Voice does not exist
 				if (!response.GivenVoiceExists) {
 					GD.PushError("Selected voice does not exist.");
-					var voiceField = settingsInstance.Voice;
+					var voiceField = settingsInstance.VoiceKey;
 					voiceField.Value = voiceField.DefaultValue;
 				}
 

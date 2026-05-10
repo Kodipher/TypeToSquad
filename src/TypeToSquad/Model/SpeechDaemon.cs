@@ -38,12 +38,19 @@ public partial class SpeechDaemon : Node, IDisposable {
 
 				var settingsInstance = UserSettingsManager.Instance.Settings;
 
-				settingsInstance.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
+				settingsInstance.VoiceKey.SetOptions(
+					voicesResponse
+						.Voices
+						.OrderBy(v => v.Language)
+						.Select(VoiceToSelectionKey), 
+					VoiceToSelectionKey(voicesResponse.DefaultVoice)
+				);
+				
 				settingsInstance.VoiceChanges.ChangePrototypeForColumn(
 					1, 
 					() => {
 						var field = new Settings.FieldOptionsRuntime();
-						field.SetOptions(settingsInstance.Voice.Options!, settingsInstance.Voice.DefaultOption!);
+						field.SetOptions(settingsInstance.VoiceKey.Options!, settingsInstance.VoiceKey.DefaultOption!);
 						return field;
 					}
 				);
@@ -380,12 +387,17 @@ public partial class SpeechDaemon : Node, IDisposable {
 
 	public VoiceInfo? DefaultVoice { get; private set; } = null;
 
-	public ReadOnlyDictionary<string, VoiceInfo>? VoicesByName { get; private set; } = null;
+	public ReadOnlyDictionary<string, VoiceInfo>? VoicesByKey { get; private set; } = null;
 
 	public void StoreVoiceInfos(AllVoicesResponse response) {
 		DefaultVoice = response.DefaultVoice;
-		VoicesByName = response.Voices.Select(voice => KeyValuePair.Create(voice.Name, voice)).ToDictionary().AsReadOnly();
+		VoicesByKey = response
+						.Voices
+						.Select(voice => KeyValuePair.Create(VoiceToSelectionKey(voice), voice)).ToDictionary()
+						.AsReadOnly();
 	}
+
+	public string VoiceToSelectionKey(VoiceInfo voice) => $"{voice.Name} ({voice.Language})"; 
 
 	#endregion
 

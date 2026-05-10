@@ -9,7 +9,7 @@ public partial class SimpleSettingsWindow : SettingsWindow {
 
 	protected override void SetupSettingInputs() {
 
-		ImplaceByProperInput(UserSettingsManager.Instance.Settings.Voice, "%MainVoiceInput");
+		ImplaceByProperInput(UserSettingsManager.Instance.Settings.VoiceKey, "%MainVoiceInput");
 
 		var deviceSelect = ImplaceByProperInput(UserSettingsManager.Instance.Settings.Device, "%OutputDeviceInput");
 		FieldInputCreator.ConnectOnControlSubmit(

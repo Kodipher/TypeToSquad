@@ -25,8 +25,8 @@ public record UserSettings {
 
 	// ===== ===== ===== VOICE ===== ===== =====
 
-	/// <summary>Name of the current tts voice.</summary>
-	public readonly FieldOptionsRuntime Voice = new();
+	/// <summary>Key of the current tts voice.</summary>
+	public readonly FieldOptionsRuntime VoiceKey = new();
 
 	/// <summary>The volume of the voice.</summary>
 	public readonly FieldNumericRange<int> SynthesisVolumePercent = new(0, 100, defaultValue: 100);
@@ -72,7 +72,7 @@ public record UserSettings {
 	public readonly FieldNumericRange<int> MaxReplacementPasses = new(0, 100, defaultValue: 20);
 
 	/// <summary>A table of voices change hints and voices they correspond to.</summary>
-	public readonly Table<(string hint, string voiceName)> VoiceChanges = new(
+	public readonly Table<(string hint, string voiceKey)> VoiceChanges = new(
 																() => new FieldStringContextHint(""),
 																() => new FieldOptionsRuntime()
 															);

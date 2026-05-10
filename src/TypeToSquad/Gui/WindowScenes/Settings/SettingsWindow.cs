@@ -82,7 +82,7 @@ public partial class SettingsWindow : WindowEx {
 		ImplaceByProperInput(settings.EnableErrorMonitoring, "%EnableMonitoringInput");
 
 		// Voice
-		ImplaceByProperInput(settings.Voice, "%MainVoiceInput");
+		ImplaceByProperInput(settings.VoiceKey, "%MainVoiceInput");
 		ImplaceByProperInput(settings.VoicePitch, "%VoicePitchInput");
 		ImplaceByProperInput(settings.VoiceRate, "%VoiceRateInput");
 
