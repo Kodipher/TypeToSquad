@@ -11,35 +11,36 @@ public class FieldOptionsEnum<[MustBeVariant] TEnum> : Field<TEnum> where TEnum 
 	public override Variant ToSavableVariant() => Value.ToString();
 
 	public override void SetFromVariant(Variant value) {
-		Value = ReturnValid(value).As<TEnum>();
+		
+		switch (value.VariantType) {
+			
+			case Variant.Type.String: {
+				
+				if (
+					Enum.TryParse(value.AsString(), out TEnum enumValue) || 
+					Enum.TryParse(value.AsString().ToPascalCase(), out enumValue)
+				) {
+					Value = enumValue;
+					return;
+				}
+
+				goto default;
+			}
+				
+			case Variant.Type.Int:
+			case Variant.Type.Float:
+				Value = ReturnValid(value.As<TEnum>());
+				break;
+			
+			default:
+				Value = DefaultValue;
+				return;
+		}
+		
 	}
 
-	public override TEnum ReturnValid(TEnum value) {
-		if (!Enum.IsDefined(value)) return DefaultValue;
-		return value;
-	}
-
-	public override Variant ReturnValid(Variant value) {
-
-		if (value.VariantType == Variant.Type.String) {
-
-			if (Enum.TryParse(value.AsString(), out TEnum enumValue)) {
-				return Variant.From(enumValue);
-			}
-
-			if (Enum.TryParse(value.AsString().ToPascalCase(), out enumValue)) {
-				return Variant.From(enumValue);
-			}
-
-			return Variant.From(DefaultValue);
-		}
-
-		if (value.VariantType == Variant.Type.Int || value.VariantType == Variant.Type.Float) {
-			if (!Enum.IsDefined(value.As<TEnum>())) return Variant.From(DefaultValue);
-			return value;
-		}
-
-		return Variant.From(DefaultValue);
+	protected override TEnum ReturnValid(TEnum value) {
+		return Enum.IsDefined(value) ? value : DefaultValue;
 	}
 
 	public FieldOptionsEnum(TEnum defaultValue) : base(defaultValue) {

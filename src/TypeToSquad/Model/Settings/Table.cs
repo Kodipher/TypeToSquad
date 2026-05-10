@@ -223,6 +223,9 @@ where TRowTuple: struct, ITuple
 
 		// No validators set
 		if (validators is null) return ArrayToTuple(values);
+		
+		GD.PushWarning("ReturnValidRow called. Validators ignored because refactor is pending.");
+		return ArrayToTuple(values);
 
 		// Copy input to avoid mutation
 		Variant[] rowValues = new Variant[ColumnCount];
@@ -234,7 +237,7 @@ where TRowTuple: struct, ITuple
 		// Validate each item
 		for (int i = 0; i < rowValues.Length; i++) {
 			if (validators[i] is null) continue;
-			rowValues[i] = validators[i]!.ReturnValid(rowValues[i]);
+			//rowValues[i] = validators[i]!.ReturnValid(rowValues[i]);
 		}
 
 		return ArrayToTuple(rowValues);

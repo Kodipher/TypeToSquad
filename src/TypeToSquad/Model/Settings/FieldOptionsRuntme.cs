@@ -62,7 +62,7 @@ public class FieldOptionsRuntime : Field<string> {
 		return Options.Contains(value);
 	}
 
-	public override string ReturnValid(string value) {
+	protected override string ReturnValid(string value) {
 		return IsValid(value) ? value : (DefaultOption ?? DefaultValue);
 	}
 

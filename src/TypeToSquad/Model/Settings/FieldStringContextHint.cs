@@ -7,7 +7,7 @@ namespace TypeToSquad.Model.Settings;
 
 public class FieldStringContextHint : Field<string> {
 
-	public override string ReturnValid(string value) {
+	protected override string ReturnValid(string value) {
 		return value
 				.Trim()
 				.Where(c => !(char.IsWhiteSpace(c) || c == '[' || c == ']'))

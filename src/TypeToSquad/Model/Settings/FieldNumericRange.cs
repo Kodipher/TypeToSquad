@@ -25,7 +25,7 @@ public class FieldNumericRange<[MustBeVariant] T> : Field<T> where T: struct, IN
 															[typeof(T), typeof(int)]
 														);
 	
-	public override T ReturnValid(T value) {
+	protected override T ReturnValid(T value) {
 		
 		if (RoundPrecisionMethod is not null) {
 			object? roundCallResult = RoundPrecisionMethod.Invoke(null, [value, DigitsPrecision]);
