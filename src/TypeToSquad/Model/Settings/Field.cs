@@ -65,7 +65,7 @@ public class Field<[MustBeVariant] T> : Field where T : notnull {
 	/// Equivalent of <see cref="ReturnValid(Variant)"/> 
 	/// but for the specific type <typeparamref name="T"/> of this <see cref="Field{T}"/>.
 	/// </summary>
-	public virtual T ReturnValid(T value) => value is not null ? value : DefaultValue;
+	public virtual T ReturnValid(T value) => value;
 	
 	public override Variant ReturnValid(Variant value) => Variant.From(ReturnValid(value.As<T>()));
 

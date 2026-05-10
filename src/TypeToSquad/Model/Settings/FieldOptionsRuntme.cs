@@ -60,7 +60,6 @@ public class FieldOptionsRuntime : Field<string> {
 	}
 
 	public bool IsValid(string value) {
-		if (value is null) return false;
 		if (Options is null) return true;
 		return Options.Contains(value);
 	}
