@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-
 using TypeToSquad.Utils;
 
 
@@ -20,8 +19,8 @@ namespace TypeToSquad.Model.Settings;
 /// are supported.
 /// </para>
 /// <para>
-/// Can convert between tuples and <see cref="Variant"/> arrays.
-/// Corrects length automatically.
+/// Stores data as arrays of <see cref="Field"/>s,
+/// ensuring all values are always valid.
 /// </para>
 /// <para>
 /// See <see cref="Table{TRowTuple}"/> for implementation.
@@ -31,68 +30,129 @@ public abstract class Table : IVariantSavable {
 
 	public abstract Variant ToSavableVariant();
 	public abstract void SetFromVariant(Variant value);
-
-	public abstract Variant[] GetAtAsArray(int index);
-	public abstract void SetAtAsArray(int index, Variant[] array);
+	
 	public abstract int Count { get; }
+	public abstract int ColumnCount { get; }
 
-	public abstract void AddAsArray(Variant[] array);
-	public abstract void InsertAsArray(int index, Variant[] array);
+	public abstract IReadOnlyList<Field> GetFieldsAt(int index);
+	
+	public abstract void AddEmpty();
+	public abstract void InsertEmpty(int index);
+	
 	public abstract void RemoveAt(int index);
 	public abstract void Clear();
-
-	public abstract Field?[] GetValidationProxies();
-	public abstract void RevalidateAllRows();
-
-	public abstract int ColumnCount { get; }
 }
 
 
 /// <inheritdoc cref="Table"/>
-public class Table<TRowTuple> : Table, IList<TRowTuple>, IReadOnlyList<TRowTuple> 
-where TRowTuple: struct, ITuple 
-{
+[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "StaticMemberInGenericType")] 
+public class Table<TRowTuple> : Table, IList<TRowTuple>, IReadOnlyList<TRowTuple> where TRowTuple: struct, ITuple {
 
-	#region /--- Storage, IList ---/
+	public Table(params Func<Field>[] rowPrototype) {
 
-	readonly List<TRowTuple> rows = new();
+		if (rowPrototype.Length != ColumnCount) {
+			throw new ArgumentException($"Column count mismatch. Tuple has {ColumnCount} columns but {rowPrototype.Length} delegates were given", nameof(rowPrototype));
+		}
 
-	public TRowTuple this[int index] {
-		get => rows[index];
-		set => rows[index] = ReturnValidRow(value);
+		this.rowPrototype = rowPrototype;
 	}
 
-	public override Variant[] GetAtAsArray(int index) => TupleToArray(this[index]);
-	public override void SetAtAsArray(int index, Variant[] array) => rows[index] = ReturnValidRow(array);
+	#region /--- Prototype row ---/
 
-	public override int Count => rows.Count;
+	readonly Func<Field>[] rowPrototype;
 
-	public void Add(TRowTuple row) => rows.Add(ReturnValidRow(row));
-	public override void AddAsArray(Variant[] array) => rows.Add(ReturnValidRow(array));
-	public void Insert(int index, TRowTuple row) => rows.Insert(index, ReturnValidRow(row));
-	public override void InsertAsArray(int index, Variant[] array) => rows.Insert(index, ReturnValidRow(array));
+	/// <summary>
+	/// Changes the type of <see cref="Field"/> for a particular column
+	/// and transfers the values to new instances of the prototype.
+	/// </summary>
+	public void ChangePrototypeForColumn(int columnIndex, Func<Field> prototype) {
+		rowPrototype[columnIndex] = prototype;
 
-	public override void RemoveAt(int index) => rows.RemoveAt(index);
-	public bool Remove(TRowTuple row) => rows.Remove(row);
-	public override void Clear() => rows.Clear();
+		for (int i = 0; i < Count; i++) {
+			Variant savedValue = rows[i][columnIndex].ValueVariant;
+			rows[i][columnIndex] = prototype();
+			rows[i][columnIndex].ValueVariant = savedValue;
+		}
+	}
+	
+	Field[] CreateEmptyRow() {
+		
+		Field[] newRow = new Field[ColumnCount];
+		for (int i = 0; i < ColumnCount; i++) {
+			newRow[i] = rowPrototype[i]();
+		}
 
-	public int IndexOf(TRowTuple row) => rows.IndexOf(row);
-	public bool Contains(TRowTuple row) => rows.Contains(row);
-
-	public void CopyTo(TRowTuple[] array, int arrayIndex) => rows.CopyTo(array, arrayIndex);
-
-	public IEnumerator<TRowTuple> GetEnumerator() => rows.GetEnumerator();
-	IEnumerator IEnumerable.GetEnumerator() => rows.GetEnumerator();
-
-	public bool IsReadOnly => false;
+		return newRow;
+	}
 
 	#endregion
 
+	readonly List<Field[]> rows = new();
+	
+	/// <summary>Number of rows in this table.</summary>
+	public override int Count => rows.Count;
+	
+	public sealed override int ColumnCount => tupleTypes.Length;
+
+	public TRowTuple this[int index] {
+		get {
+			Variant[] variantArray = new Variant[ColumnCount];
+			for (int j = 0; j < ColumnCount; j++) {
+				variantArray[j] = rows[index][j].ValueVariant;
+			}
+			
+			return ArrayToTuple(variantArray);
+		}
+		set {
+			Variant[] values = TupleToArray(value);
+			for (int j = 0; j < ColumnCount; j++) {
+				rows[index][j].ValueVariant = values[j];
+			}
+		}
+	}
+	
+	public override IReadOnlyList<Field> GetFieldsAt(int index) => rows[index].AsReadOnly();
+
+	public override void AddEmpty() => rows.Add(CreateEmptyRow());
+	public override void InsertEmpty(int index) => rows.Insert(index, CreateEmptyRow());
+	
+	public void Add(TRowTuple row) {
+		AddEmpty();
+		this[Count - 1] = row;
+	}
+	
+	public void Insert(int index, TRowTuple row) {
+		InsertEmpty(index);
+		this[index] = row;
+	}
+
+	public bool Remove(TRowTuple row) => throw new NotImplementedException();
+	public override void RemoveAt(int index) => rows.RemoveAt(index);
+	public override void Clear() => rows.Clear();
+	
+	public int IndexOf(TRowTuple row) => throw new NotImplementedException();
+	public bool Contains(TRowTuple row) => throw new NotImplementedException();
+
+	public void CopyTo(TRowTuple[] array, int arrayIndex) {
+		TRowTuple[] rowsOfTuples = this.ToArray();
+		rowsOfTuples.CopyTo(array, arrayIndex);
+	}
+
+	public IEnumerator<TRowTuple> GetEnumerator() {
+		for (int i = 0; i < Count; i++) {
+			yield return this[i];
+		}
+	}
+	
+	IEnumerator IEnumerable.GetEnumerator() => rows.GetEnumerator();
+
+	public bool IsReadOnly => false;
+	
 	public override Variant ToSavableVariant() {
 		Godot.Collections.Array savableArray = new();
 
-		foreach (var row in rows) {
-			savableArray.Add(new Godot.Collections.Array(TupleToArray(row)));
+		foreach (var tupleRow in this) {
+			savableArray.Add(new Godot.Collections.Array(TupleToArray(tupleRow)));
 		}
 
 		return savableArray;
@@ -100,33 +160,30 @@ where TRowTuple: struct, ITuple
 
 	public override void SetFromVariant(Variant value) {
 		foreach (var rowSource in value.AsGodotArray()) {
-			this.Add(ArrayToTuple(rowSource.AsGodotArray()));
+			Add(ArrayToTuple(rowSource.AsGodotArray()));
 		}
 	}
-
+	
 	#region /--- Array Conversion ---/
-
-	static readonly Lazy<Type[]> tupleTypes = new(() => {
-		if (typeof(TRowTuple).IsGenericType) return typeof(TRowTuple).GenericTypeArguments;
-		return Array.Empty<Type>();
-	});
-
-	static readonly Lazy<MethodInfo> tupleCreateMethod = new(() => {
-		return typeof(ValueTuple)
-			.GetMethods()
-			.Where(method => method.Name == nameof(ValueTuple.Create))
-			.Where(method => method.IsStatic)
-			.Single(method => method.GetGenericArguments().Length == tupleTypes.Value.Length)
-			.MakeGenericMethod(tupleTypes.Value);
-	});
-
-	/// <summary>Converts a variant array into a tupple row of this table.</summary>
-	protected static TRowTuple ArrayToTuple(Variant[] array) {
+	
+	static readonly Type[] tupleTypes = typeof(TRowTuple).IsGenericType ?
+											typeof(TRowTuple).GenericTypeArguments : 
+											Array.Empty<Type>();
+	
+	static readonly MethodInfo tupleCreateMethod = 
+										typeof(ValueTuple)
+											.GetMethods(BindingFlags.Public | BindingFlags.Static)
+											.Where(method => method.Name == nameof(ValueTuple.Create))
+											.Single(method => method.GetGenericArguments().Length == tupleTypes.Length)
+											.MakeGenericMethod(tupleTypes);
+	
+	/// <summary>Converts a variant array into a tuple row of this table.</summary>
+	static TRowTuple ArrayToTuple(Variant[] array) {
 
 		// Force correct size
-		if (array.Length != tupleTypes.Value.Length) {
+		if (array.Length != tupleTypes.Length) {
 
-			Variant[] lengthCheckedArray = new Variant[tupleTypes.Value.Length];
+			Variant[] lengthCheckedArray = new Variant[tupleTypes.Length];
 
 			int n = Math.Min(array.Length, lengthCheckedArray.Length);
 			for (int i = 0; i < n; i++) {
@@ -137,27 +194,22 @@ where TRowTuple: struct, ITuple
 		}
 
 		// Convert values to objects
-		object?[] tupleValues = new object?[tupleTypes.Value.Length];
+		object?[] tupleValues = new object?[tupleTypes.Length];
 		for (int i = 0; i < tupleValues.Length; i++) {
-			tupleValues[i] = array[i].AsUnsafe(tupleTypes.Value[i]);
+			tupleValues[i] = array[i].AsUnsafe(tupleTypes[i]);
 		}
 
 		// Create tuple
-		return (TRowTuple)(
-					tupleCreateMethod
-					.Value
-					.Invoke(null, tupleValues)
-					?? default(TRowTuple)
-				);
+		return (TRowTuple)(tupleCreateMethod.Invoke(null, tupleValues) ?? default(TRowTuple));
 	}
 
 	/// <inheritdoc cref="ArrayToTuple(Variant[])"/>
-	protected static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
+	static TRowTuple ArrayToTuple(Godot.Collections.Array array) {
 		return ArrayToTuple(array.ToArray());
 	}
 
 	/// <summary>Converts a tuple into a variant array.</summary>
-	protected static Variant[] TupleToArray(TRowTuple tuple) {
+	static Variant[] TupleToArray(TRowTuple tuple) {
 		Variant[] rowArray = new Variant[tuple.Length];
 
 		for (int i = 0; i < tuple.Length; i++) {
@@ -167,89 +219,7 @@ where TRowTuple: struct, ITuple
 
 		return rowArray;
 	}
-
-	public override int ColumnCount => tupleTypes.Value.Length;
-
+	
 	#endregion
-
-	#region /--- Validation ---/
-
-	Field?[]? validators = null; // is same length as tuple, checked in SetValidationProxies
-
-	public void ClearValidationProxies() => validators = null;
-
-	/// <summary>
-	/// Sets validators to be used for specific columns.
-	/// A <see langword="null"/> means the column is not validated.
-	/// </summary>
-	/// <remarks>
-	/// Only <see cref="Field.ReturnValid(Variant)"/> is used.
-	/// Values inside <see cref="Field"/>s are not written to or read.
-	///	</remarks>
-	public void SetValidationProxies(params Field?[] validators) {
-
-		// Guards
-		ArgumentNullException.ThrowIfNull(validators);
-		
-		if (validators.Length != ColumnCount) {
-			throw new ArgumentException($"Validators length mismatch. Expected length of {ColumnCount}, got {validators.Length}");
-		}
-
-		// Set validators (copy array)
-		this.validators = validators.ToArray();
-
-		// Ensure rows are valid
-		RevalidateAllRows();
-	}
-
-	/// <remarks>If proxies were not set, returns an array of nulls.</remarks>
-	public override Field?[] GetValidationProxies() {
-		if (this.validators is null) return new Field?[this.ColumnCount];
-		return this.validators.ToArray();
-	}
-
-	public virtual TRowTuple ReturnValidRow(TRowTuple row) {
-
-		// No validators set
-		if (validators is null) return row;
-
-		// Validate as array
-		Variant[] rowValues = TupleToArray(row);
-		return ReturnValidRow(rowValues);
-	}
-
-	/// <remarks>Input array is not mutated.</remarks>
-	public virtual TRowTuple ReturnValidRow(params Variant[] values) {
-
-		// No validators set
-		if (validators is null) return ArrayToTuple(values);
-		
-		GD.PushWarning("ReturnValidRow called. Validators ignored because refactor is pending.");
-		return ArrayToTuple(values);
-
-		// Copy input to avoid mutation
-		Variant[] rowValues = new Variant[ColumnCount];
-		int n = Math.Min(values.Length, rowValues.Length);
-		for (int i = 0; i < n; i++) {
-			rowValues[i] = values[i];
-		}
-
-		// Validate each item
-		for (int i = 0; i < rowValues.Length; i++) {
-			if (validators[i] is null) continue;
-			//rowValues[i] = validators[i]!.ReturnValid(rowValues[i]);
-		}
-
-		return ArrayToTuple(rowValues);
-	}
-
-	/// <summary>Forces all current rows through <see cref="ReturnValidRow(TRowTuple)"/>.</summary>
-	public override void RevalidateAllRows() {
-		for (int i = 0; i < this.Count; i++) {
-			this[i] = ReturnValidRow(this[i]);
-		}
-	}
-
-	#endregion
-
+	
 }

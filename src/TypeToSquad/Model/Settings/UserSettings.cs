@@ -62,23 +62,18 @@ public record UserSettings {
 	// ===== ===== ===== CONTEXTS ===== ===== =====
 
 	/// <summary>A table of text replacements to perform. Patterns are written using regex.</summary>
-	public readonly Table<(string context, string pattern, string replacement)> TextReplacements = new();
+	public readonly Table<(string context, string pattern, string replacement)> TextReplacements = new(
+																() => new FieldStringContextHint(""),
+																() => new Field<string>(""),
+																() => new Field<string>("")
+															);
 
 	/// <summary>Max number times text substitutions may run.</summary>
 	public readonly FieldNumericRange<int> MaxReplacementPasses = new(0, 100, defaultValue: 20);
 
 	/// <summary>A table of voices change hints and voices they correspond to.</summary>
-	public readonly Table<(string hint, string voiceName)> VoiceChanges = new();
-
-
-	// ===== ===== ===== ===== ===== =====
-
-
-	public UserSettings() {
-		// Init table validators
-		FieldStringContextHint contextHintValidator = new("");
-		TextReplacements.SetValidationProxies(contextHintValidator, null, null);
-		VoiceChanges.SetValidationProxies(contextHintValidator, Voice);
-	}
-
+	public readonly Table<(string hint, string voiceName)> VoiceChanges = new(
+																() => new FieldStringContextHint(""),
+																() => new FieldOptionsRuntime()
+															);
 }

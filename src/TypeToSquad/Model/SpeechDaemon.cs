@@ -39,7 +39,14 @@ public partial class SpeechDaemon : Node, IDisposable {
 				var settingsInstance = UserSettingsManager.Instance.Settings;
 
 				settingsInstance.Voice.SetOptions(voicesResponse.Voices.Select(v => v.Name), voicesResponse.DefaultVoice.Name);
-				settingsInstance.VoiceChanges.RevalidateAllRows(); // Because Voices validator changed state
+				settingsInstance.VoiceChanges.ChangePrototypeForColumn(
+					1, 
+					() => {
+						var field = new Settings.FieldOptionsRuntime();
+						field.SetOptions(settingsInstance.Voice.Options!, settingsInstance.Voice.DefaultOption!);
+						return field;
+					}
+				);
 
 				StoreVoiceInfos(voicesResponse);
 			}
