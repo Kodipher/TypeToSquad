@@ -16,7 +16,7 @@ public abstract partial class TableEditWindowBase : WindowEx {
 	
 	protected abstract string[] ColumnNames { get; }
 	
-	protected abstract Control.SizeFlags[] InputSizeFlags { get; }
+	protected abstract Control.SizeFlags[] InputSizeFlagsHorizontal { get; }
 	
 	#endregion
 
@@ -29,9 +29,7 @@ public abstract partial class TableEditWindowBase : WindowEx {
 
 		// Table edit
 		TableEdit tableEdit = this.GetNodeNotNull<TableEdit>("%TableEdit");
-		tableEdit.SetInputSizeFlagPreInit(InputSizeFlags);
-		tableEdit.InitiateFor(TargetTable);
-		tableEdit.SetColumnNamesPostInit(ColumnNames);
+		tableEdit.InitiateFor(TargetTable, ColumnNames, InputSizeFlagsHorizontal);
 	}
 
 	public void OnClose() {

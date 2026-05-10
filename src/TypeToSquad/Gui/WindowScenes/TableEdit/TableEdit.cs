@@ -30,13 +30,15 @@ public partial class TableEdit : ScrollContainer {
 	GridContainer mainGrid = null!; // Set in _Ready
 
 	Table? targetTable = null; // Set when initiated
-	SizeFlags[]? inputSizeFlags = null;
+	SizeFlags[]? inputSizeFlagsHorizontal = null;
 
+	Table TargetTable => targetTable ?? throw new NullReferenceException($"{nameof(TargetTable)} was not set.");
+	
 	public override void _Ready() {
 
 		// Find main grid
 		mainGrid = this.GetNodeNotNull<GridContainer>("%MainGrid");
-		mainGrid.Columns = gridRowTotalPrototypes;
+		mainGrid.Columns = RowAdditionalNodeCount;
 
 		// Find and move button prototypes
 		prototypeDump = this.GetNodeNotNull<Control>("%PrototypeDump");
@@ -53,12 +55,25 @@ public partial class TableEdit : ScrollContainer {
 			prototypeDump.AddChild(proto);
 		}
 
+		// Remove extra placeholders
+		// (but keep placeholders in the header row)
+		Control inputPlaceholder = this.GetNodeNotNull<Control>("%InputPlaceholder");
+		inputPlaceholder.UniqueNameInOwner = false;
+		inputPlaceholder.GetParent().RemoveChild(inputPlaceholder);
+		inputPlaceholder.QueueFree();
+
 		// Connect Add
 		this.GetNodeNotNull<Button>("%AddRowButton").Pressed += OnAddPressed;
 	}
 
 	#region /--- Row Prototype ---/
 
+	/// <summary>The number of nodes in a row which are not inputs for the table.</summary>
+	const int RowAdditionalNodeCount = 3;
+	
+	/// <summary>How many of the <see cref="RowAdditionalNodeCount"/> are to the left of input nodes.</summary>
+	const int RowAdditionalNodeCountLeft = 2;
+	
 	Control prototypeDump = null!; // Set in _Ready
 
 	Button upButtonPrototype = null!; // Set in _Ready
@@ -66,14 +81,10 @@ public partial class TableEdit : ScrollContainer {
 	Button deleteButtonPrototype = null!; // Set in _Ready
 	Label columnNamePrototype = null!; // Set in _Ready
 
-	const int gridRowTotalPrototypes = 3;
-	const int gridRowLeftPrototypes = 2;
+	/// <summary>Create a row of nodes for the grid container based on a row of fields in the target table.</summary>
+	IEnumerable<Control> CreateNodeRow(int tableRowIndex) {
 
-	IEnumerable<Control> CreateNewRowNodes() {
-
-		if (targetTable is null) throw new InvalidOperationException($"{nameof(targetTable)} was not set.");
-
-		// Up button
+		// Movement buttons
 		var upButton = upButtonPrototype.Duplicate() as Button ?? throw new NodeNullException();
 		upButton.Pressed += () => OnUpPressed(upButton);
 		yield return upButton;
@@ -83,24 +94,15 @@ public partial class TableEdit : ScrollContainer {
 		yield return downButton;
 
 		// Inputs
-		Field?[] validators = targetTable.GetValidationProxies();
-		for (int i = 0; i < validators.Length; i++) {
-			Field? validator = validators[i];
-			Control inputControl; 
-
-			if (validator is null) {
-				inputControl = FieldInputCreator.CreateForAnyUnlinked();
-			} else {
-				inputControl = FieldInputCreator.CreateFor(validator, isUnlinked: true);
-			}
-
-			FieldInputCreator.ConnectOnControlSubmit(inputControl, newVal => OnInputSubmit(inputControl, newVal));
-
-			if (inputSizeFlags is not null && i < inputSizeFlags.Length) {
-				inputControl.SizeFlagsHorizontal = inputSizeFlags[i];
+		IReadOnlyList<Field> rowFields = TargetTable.GetFieldsAt(tableRowIndex);
+		for (var j = 0; j < rowFields.Count; j++) {
+			
+			Control inputControl = FieldInputCreator.CreateFor(rowFields[j]);
+			
+			if (inputSizeFlagsHorizontal is not null && j < inputSizeFlagsHorizontal.Length) {
+				inputControl.SizeFlagsHorizontal = inputSizeFlagsHorizontal[j];
 			}
 			inputControl.SizeFlagsVertical = SizeFlags.ShrinkBegin;
-			inputControl.Visible = true;
 
 			yield return inputControl;
 		}
@@ -111,64 +113,50 @@ public partial class TableEdit : ScrollContainer {
 		yield return deleteButton;
 	}
 
-	#endregion
-
-	#region /--- Init ---/
-
-	public void InitiateFor(Table table) {
-		ThrowIfInitiated();
-
-		targetTable = table;
-
-		mainGrid.Columns = gridRowTotalPrototypes + table.ColumnCount;
-
-		// Header
-		for (int i = 0; i < table.ColumnCount; i++) {
-
+	IEnumerable<Label> CreateUnnamedHeaderLabels() {
+		
+		for (int i = 0; i < TargetTable.ColumnCount; i++) {
+			
 			Label columnName = columnNamePrototype.Duplicate() as Label ?? throw new NodeNullException();
 
-			if (inputSizeFlags is not null && i < inputSizeFlags.Length) {
-				columnName.SizeFlagsHorizontal = inputSizeFlags[i];
+			if (inputSizeFlagsHorizontal is not null && i < inputSizeFlagsHorizontal.Length) {
+				columnName.SizeFlagsHorizontal = inputSizeFlagsHorizontal[i];
 			}
 			columnName.SizeFlagsVertical = SizeFlags.ShrinkBegin;
+			
+			yield return columnName;
+		}
+	}
 
-			mainGrid.AddChild(columnName);
-			mainGrid.MoveChild(columnName, 0 + gridRowLeftPrototypes + i);;
+	#endregion
+
+	public void InitiateFor(Table table, string[] columnNames, SizeFlags[] inputSizeFlagsHorizontal) {
+		
+		if (targetTable != null) throw new InvalidOperationException($"{nameof(TargetTable)} was already set.");
+		
+		// Set
+		targetTable = table;
+		this.inputSizeFlagsHorizontal = inputSizeFlagsHorizontal.ToArray();
+		
+		// Setup grid header
+		mainGrid.Columns = RowAdditionalNodeCount + table.ColumnCount;
+
+		Label[] headerLabels = CreateUnnamedHeaderLabels().ToArray();
+		for (int i = 0; i < headerLabels.Length; i++) {
+			
+			if (i < columnNames.Length) {
+				headerLabels[i].Text = columnNames[i];
+			}
+			
+			mainGrid.AddChild(headerLabels[i]);
+			mainGrid.MoveChild(headerLabels[i], RowAdditionalNodeCountLeft + i);
 		}
 
 		// Rows
 		for (int i = 0; i < table.Count; i++) {
-			foreach (var rowNode in CreateNewRowNodes()) mainGrid.AddChild(rowNode);
-
-			int rowStartIndex = -(gridRowTotalPrototypes + table.ColumnCount);
-			// Negative index counting backwards from end
-
-			Variant[] rowData = table.GetAtAsArray(i);
-			for (int j = 0; j < rowData.Length; j++) {
-				var controlNode = mainGrid.GetChild<Control>(rowStartIndex + gridRowLeftPrototypes + j);
-				FieldInputCreator.SetControlInputValue(controlNode, rowData[j]);
-			}
+			foreach (var rowNode in CreateNodeRow(i)) mainGrid.AddChild(rowNode);
 		}
 	}
-
-	public void SetInputSizeFlagPreInit(params SizeFlags[] inputSizeFlags) {
-		ThrowIfInitiated();
-		this.inputSizeFlags = inputSizeFlags.ToArray();
-	}
-
-	public void SetColumnNamesPostInit(params string[] columnNames) {
-		ThrowIfNotInitiated();
-
-		if (columnNames.Length != targetTable!.ColumnCount) {
-			throw new ArgumentException($"Column count mismatch. Expected {targetTable.ColumnCount}, got {columnNames.Length}.");
-		}
-
-		for (int i = 0; i < columnNames.Length; i++) {
-			mainGrid.GetChild<Label>(gridRowLeftPrototypes + i).Text = columnNames[i];
-		}
-	}
-
-	#endregion
 
 	int GridIndexToTableIndex(int sourceIndex) {
 		return (sourceIndex / mainGrid.Columns) - 1;
@@ -179,15 +167,12 @@ public partial class TableEdit : ScrollContainer {
 	}
 
 	void OnUpPressed(Button source) {
-		ThrowIfNotInitiated();
 
 		// Move inside table
 		int rowIndex = GridIndexToTableIndex(source.GetIndex());
 		if (rowIndex < 1) return;
 
-		var rowData = targetTable!.GetAtAsArray(rowIndex);
-		targetTable.RemoveAt(rowIndex);
-		targetTable.InsertAsArray(rowIndex - 1, rowData);
+		TargetTable.MoveRow(rowIndex, rowIndex - 1);
 
 		// Move inside grid by moving a previous row down
 		int offset = TableIndexToGridRowStartIndex(rowIndex - 1);
@@ -195,17 +180,14 @@ public partial class TableEdit : ScrollContainer {
 			mainGrid.MoveChild(mainGrid.GetChild(offset), offset + 2*mainGrid.Columns - 1);
 		}
 	}
-
+	
 	void OnDownPressed(Button source) {
-		ThrowIfNotInitiated();
-
+		
 		// Move inside table
 		int rowIndex = GridIndexToTableIndex(source.GetIndex());
-		if (rowIndex >= targetTable!.Count - 1) return;
-
-		var rowData = targetTable.GetAtAsArray(rowIndex);
-		targetTable.RemoveAt(rowIndex);
-		targetTable.InsertAsArray(rowIndex + 1, rowData);
+		if (rowIndex >= TargetTable.Count - 1) return;
+		
+		TargetTable.MoveRow(rowIndex, rowIndex + 1);
 
 		// Move inside grid
 		int offset = TableIndexToGridRowStartIndex(rowIndex);
@@ -213,83 +195,32 @@ public partial class TableEdit : ScrollContainer {
 			mainGrid.MoveChild(mainGrid.GetChild(offset), offset + 2 * mainGrid.Columns - 1);
 		}
 	}
-
-	void OnInputSubmit(Control source, Variant newValue) {
-		ThrowIfNotInitiated();
-
-		// Find row and column index
-		int childIndex = source.GetIndex();
-		int rowIndex = GridIndexToTableIndex(childIndex);
-		int indexWithinRow = (childIndex % mainGrid.Columns) - gridRowLeftPrototypes;
-
-		// Change the value
-		Variant[] values;
-
-		values = targetTable!.GetAtAsArray(rowIndex);
-		values[indexWithinRow] = newValue;
-		targetTable!.SetAtAsArray(rowIndex, values);
-
-		// Update the node
-		values = targetTable!.GetAtAsArray(rowIndex);
-		FieldInputCreator.SetControlInputValue(source, values[indexWithinRow]);
-	}
-
+	
 	void OnDeletePressed(Button source) {
-		ThrowIfNotInitiated();
-
+		
 		// Find row index
 		int rowIndex = GridIndexToTableIndex(source.GetIndex());
 
 		// Focus another row to keep focus
-		int rowIndexToFocus = rowIndex == targetTable!.Count - 1 ? rowIndex - 1 : rowIndex + 1;
+		int rowIndexToFocus = rowIndex == TargetTable.Count - 1 ? rowIndex - 1 : rowIndex + 1;
 		int nodeIndexToFocus = TableIndexToGridRowStartIndex(rowIndexToFocus) + mainGrid.Columns - 1;
 		mainGrid.GetChild<Control>(nodeIndexToFocus).GrabFocus();
 
 		// Remove row
-		targetTable!.RemoveAt(rowIndex);
+		TargetTable.RemoveAt(rowIndex);
 
 		// Remove nodes
 		int offset = TableIndexToGridRowStartIndex(rowIndex);
-		for (int i = offset; i < offset + targetTable!.ColumnCount + gridRowTotalPrototypes; i++) {
+		for (int i = offset; i < offset + TargetTable.ColumnCount + RowAdditionalNodeCount; i++) {
 			mainGrid.GetChild(i).QueueFree();
 		}
 	}
-
+	
 	void OnAddPressed() {
-		ThrowIfNotInitiated();
-
-		// Add empty/default data row
-		targetTable!.AddAsArray(Array.Empty<Variant>());
-		Variant[] rowData = targetTable.GetAtAsArray(targetTable.Count - 1);
-		
-		// Add new row into the table
-		foreach (var rowNode in CreateNewRowNodes()) mainGrid.AddChild(rowNode);
-
-		// Fill new row with default data
-		int rowStartIndex = -(gridRowTotalPrototypes + targetTable.ColumnCount);
-
-		for (int j = 0; j < rowData.Length; j++) {
-			var controlNode = mainGrid.GetChild<Control>(rowStartIndex + gridRowLeftPrototypes + j);
-			FieldInputCreator.SetControlInputValue(controlNode, rowData[j]);
+		TargetTable.AddEmpty();
+		foreach (var rowNode in CreateNodeRow(TargetTable.Count - 1)) {
+			mainGrid.AddChild(rowNode);
 		}
 	}
-
-	#region /--- Throw helpers ---/
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void ThrowIfNotInitiated() {
-		if (targetTable is null) {
-			throw new InvalidOperationException($"{nameof(TableEdit)} was not initiated.");
-		}
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void ThrowIfInitiated() {
-		if (targetTable is not null) {
-			throw new InvalidOperationException($"{nameof(TableEdit)} was already initiated.");
-		}
-	}
-
-	#endregion
 
 }

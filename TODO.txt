@@ -8,7 +8,6 @@ TODO (features):
 - add the ability to use capture groups in replacement patterns
 
 TODO (internal):
-- refactor tables
 - refactor MessageLexer
 -- MessageLexer: check for content inside tags instead of letting the daemon crash
 - refactor autocomplete

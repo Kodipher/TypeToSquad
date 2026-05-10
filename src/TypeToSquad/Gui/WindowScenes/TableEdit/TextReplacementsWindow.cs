@@ -11,6 +11,6 @@ public partial class TextReplacementsWindow : TableEditWindowBase {
 	protected override string LogName => "Text Replacements";
 	protected override Table TargetTable => UserSettingsManager.Instance.Settings.TextReplacements;
 	protected override string[] ColumnNames => ["Context", "Pattern", "Replacement"];
-	protected override SizeFlags[] InputSizeFlags => [SizeFlags.ShrinkBegin, SizeFlags.ExpandFill, SizeFlags.ExpandFill];
+	protected override SizeFlags[] InputSizeFlagsHorizontal => [SizeFlags.ShrinkBegin, SizeFlags.ExpandFill, SizeFlags.ExpandFill];
 	
 }

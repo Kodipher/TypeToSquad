@@ -59,6 +59,10 @@ size_flags_horizontal = 0
 tooltip_text = "Move Row Down"
 text = "D"
 
+[node name="InputPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="DeleteButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
 unique_name_in_owner = true
 layout_mode = 2
