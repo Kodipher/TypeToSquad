@@ -3,7 +3,7 @@
 namespace TypeToSquad.Model.Markup;
 
 
-public abstract record class MessageSegment {
+public abstract record MessageSegment {
 
 	/// <summary>Start position of this segment in the source string.</summary>
 	/// <remarks>
@@ -35,7 +35,7 @@ public abstract record class MessageSegment {
 }
 
 
-public record class PlainTextSegment : MessageSegment {
+public record PlainTextSegment : MessageSegment {
 
 	public static PlainTextSegment CreateAsSubstring(int start, int endExclusive, string str) {
 		return CreateBaseAsSubstring<PlainTextSegment>(start, endExclusive, str);
@@ -52,7 +52,7 @@ public record class PlainTextSegment : MessageSegment {
 }
 
 
-public record class InvalidSegment : MessageSegment {
+public record InvalidSegment : MessageSegment {
 
 	public static InvalidSegment CreateAsSubstring(int start, int endExclusive, string str) {
 		return MessageSegment.CreateBaseAsSubstring<InvalidSegment>(start, endExclusive, str);
@@ -61,7 +61,7 @@ public record class InvalidSegment : MessageSegment {
 }
 
 
-public record class ContextSegment : MessageSegment {
+public record ContextSegment : MessageSegment {
 
 	/// <summary>Context of the segment (trimmed).</summary>
 	public string Context { get; private set; } = "";
@@ -81,7 +81,7 @@ public record class ContextSegment : MessageSegment {
 }
 
 
-public record class ContentSegment : MessageSegment {
+public record ContentSegment : MessageSegment {
 
 	/// <summary>The first position that separates hint and payload.</summary>
 	public int TypeTextEndExclusive { get; private set; } = -1;

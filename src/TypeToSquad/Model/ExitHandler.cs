@@ -8,7 +8,7 @@ namespace TypeToSquad.Model;
 
 public partial class ExitHandler : Node {
 	
-	#region //// Singleton
+	#region /--- Singleton ---/
 
 	public static ExitHandler Instance { get; private set; } = null!; // Set in _Ready
 

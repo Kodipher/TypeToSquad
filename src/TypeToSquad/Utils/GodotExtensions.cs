@@ -49,8 +49,8 @@ public static class GodotExtensions {
 			?? throw new ArgumentException($"Variant.From returned null")
 		);
 	}
-
-	readonly static Lazy<MethodInfo> variantFromMethod = new(
+	
+	static readonly Lazy<MethodInfo> variantFromMethod = new(
 		() => typeof(Variant)
 				.GetMethod(nameof(Variant.From)) 
 				?? throw new InvalidOperationException($"Could not find Variant.From method")
@@ -67,10 +67,10 @@ public static class GodotExtensions {
 	/// </para>
 	/// </summary>
 	public static object? AsUnsafe(this Variant variant, Type type) {
-		return variantAsMethod.Value.MakeGenericMethod([type]).Invoke(variant, []);
+		return variantAsMethod.Value.MakeGenericMethod(type).Invoke(variant, []);
 	}
 
-	readonly static Lazy<MethodInfo> variantAsMethod = new(
+	static readonly Lazy<MethodInfo> variantAsMethod = new(
 		() => typeof(Variant)
 				.GetMethod(nameof(Variant.As))
 				?? throw new InvalidOperationException($"Could not find Variant.As method")

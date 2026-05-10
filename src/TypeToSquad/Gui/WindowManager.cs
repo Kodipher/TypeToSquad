@@ -8,7 +8,7 @@ namespace TypeToSquad.Gui;
 
 public partial class WindowManager : Node {
 	
-	#region //// Singleton
+	#region /--- Singleton ---/
 
 	public static WindowManager Instance { get; private set; } = null!; // Set in _Ready
 
@@ -22,7 +22,7 @@ public partial class WindowManager : Node {
 		StageSingletonInstance();
 	}
 	
-	readonly static WindowSceneAssignment windowScenes = GD.Load<WindowSceneAssignment>("res://Gui/windowSceneAssingment.tres");
+	static readonly WindowSceneAssignment windowScenes = GD.Load<WindowSceneAssignment>("res://Gui/windowSceneAssingment.tres");
 	
 	readonly Dictionary<WindowType, Window> currentChildrenByType = new();
 	

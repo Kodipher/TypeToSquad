@@ -15,9 +15,9 @@ namespace TypeToSquad.Model.Markup;
 /// of some SSML features through markup.
 /// See docs folder for details.
 /// </summary>
-public static class MessageProsessor {
+public static class MessageProcessor {
 
-	#region //// Segment list operations
+	#region /--- Segment list operations ---/
 
 	/// <summary>
 	/// Returns a new list of segments where adjacent <see cref="PlainTextSegment"/>s
@@ -60,9 +60,9 @@ public static class MessageProsessor {
 
 	#endregion
 
-	#region //// Text replacements
+	#region /--- Text replacements ---/
 
-	const string allContextsMarker = "*";
+	const string AllContextsMarker = "*";
 
 	/// <summary>
 	/// Performs a single pass of text replacements 
@@ -83,7 +83,7 @@ public static class MessageProsessor {
 			// Context check
 			string contextTrimmed = context.Trim();
 			if (
-				contextTrimmed != allContextsMarker &&
+				contextTrimmed != AllContextsMarker &&
 				contextTrimmed != currentContext
 			) {
 				continue;
@@ -148,7 +148,7 @@ public static class MessageProsessor {
 
 	#endregion
 
-	#region //// Compile Plain Text
+	#region /--- Compile Plain Text ---/
 
 	static bool IsPlainTextOnly(IEnumerable<MessageSegment> segments) {
 
@@ -181,20 +181,20 @@ public static class MessageProsessor {
 
 	#endregion
 
-	#region //// Compile SSML
+	#region /--- Compile SSML ---/
 
-	const string ssmlHeaderFormat = """
+	const string SsmlHeaderFormat = """
 <speak version="1.0"
 	xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="{0}">
 """;
 
-	const string ssmlFooter = """</speak>""";
+	const string SsmlFooter = "</speak>";
 
-	const string ssmlVoiceOpen = """<voice name="{0}" xml:lang="{1}">""";
-	const string ssmlVoiceClose = """</voice>""";
+	const string SsmlVoiceOpen = """<voice name="{0}" xml:lang="{1}">""";
+	const string SsmlVoiceClose = "</voice>";
 
-	const string ssmlIpa = """<phoneme alphabet="ipa" ph="{0}"></phoneme>""";
-	const string ssmlBreak = """<break time="{0}"/>""";
+	const string SsmlIpa = """<phoneme alphabet="ipa" ph="{0}"></phoneme>""";
+	const string SsmlBreak = """<break time="{0}"/>""";
 
 	/// <remarks>Assumes invalid segments were already stripped.</remarks>
 	static string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
@@ -213,7 +213,7 @@ public static class MessageProsessor {
 		// Header
 		string defaultVoiceName = settingsInstance.Voice;
 		string defaultVoiceLang = speechDaemon.VoicesByName[defaultVoiceName].Language;
-		sb.AppendFormat(ssmlHeaderFormat, defaultVoiceLang);
+		sb.AppendFormat(SsmlHeaderFormat, defaultVoiceLang);
 
 		// Segments
 		bool isInsideVoice = false;
@@ -230,7 +230,7 @@ public static class MessageProsessor {
 
 				// Voice changes
 				if (isInsideVoice) {
-					sb.Append(ssmlVoiceClose);
+					sb.Append(SsmlVoiceClose);
 					isInsideVoice = false;
 				}
 
@@ -249,7 +249,7 @@ public static class MessageProsessor {
 					string voiceName = SecurityElement.Escape(voiceInfo.Name);
 					string voiceLang = SecurityElement.Escape(voiceInfo.Language);
 
-					sb.AppendFormat(ssmlVoiceOpen, voiceName, voiceLang);
+					sb.AppendFormat(SsmlVoiceOpen, voiceName, voiceLang);
 					isInsideVoice = true;
 				}
 			}
@@ -260,7 +260,7 @@ public static class MessageProsessor {
 				switch (contentSegment.Type) {
 
 					case ContentType.Ipa:
-						sb.AppendFormat(ssmlIpa, SecurityElement.Escape(contentSegment.Payload));
+						sb.AppendFormat(SsmlIpa, SecurityElement.Escape(contentSegment.Payload));
 						break;
 
 					case ContentType.Audio:
@@ -268,7 +268,7 @@ public static class MessageProsessor {
 						break;
 
 					case ContentType.Wait:
-						sb.AppendFormat(ssmlBreak, SecurityElement.Escape(contentSegment.Payload));
+						sb.AppendFormat(SsmlBreak, SecurityElement.Escape(contentSegment.Payload));
 						break;
 
 					default:
@@ -280,8 +280,8 @@ public static class MessageProsessor {
 			// [continue]
 		}
 
-		if (isInsideVoice) sb.Append(ssmlVoiceClose);
-		sb.Append(ssmlFooter);
+		if (isInsideVoice) sb.Append(SsmlVoiceClose);
+		sb.Append(SsmlFooter);
 
 		return sb.ToString();
 	}

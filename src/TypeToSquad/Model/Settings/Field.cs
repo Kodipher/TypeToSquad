@@ -11,12 +11,13 @@ namespace TypeToSquad.Model.Settings;
 /// The validator is independent of the stored value.
 /// </summary>
 public abstract class Field : IVariantSavable {
+	
 	public abstract Variant ToSavableVariant();
 	public abstract void SetFromVariant(Variant value);
 
 	/// <summary>
-	/// Given an input value, returns a valid value.
-	/// If the input itself is valid, a value equal to it is returned.
+	/// Checks if the input is valid.
+	/// Returns the input if it is, returns a different valid value otherwise.
 	/// </summary>
 	/// <remarks>
 	/// Assumes <paramref name="value"/> is immutable.
@@ -32,7 +33,7 @@ public abstract class Field : IVariantSavable {
 /// </remarks>
 public class Field<[MustBeVariant] T> : Field where T : notnull {
 
-	#region //// Value
+	#region /--- Value ---/
 
 	/// <summary>
 	/// The raw internal value of the <see cref="Field{T}"/>. 
@@ -52,12 +53,11 @@ public class Field<[MustBeVariant] T> : Field where T : notnull {
 	public override Variant ToSavableVariant() => Variant.From(in this.value);
 	public override void SetFromVariant(Variant value) => Value = value.As<T>();
 
-
 	public static implicit operator T(Field<T> field) => field.Value;
 
 	#endregion
 
-	#region //// Validation
+	#region /--- Validation ---/
 
 	public T DefaultValue { get; private init; }
 

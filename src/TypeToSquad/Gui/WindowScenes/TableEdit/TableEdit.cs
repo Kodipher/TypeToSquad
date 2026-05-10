@@ -57,7 +57,7 @@ public partial class TableEdit : ScrollContainer {
 		this.GetNodeNotNull<Button>("%AddRowButton").Pressed += OnAddPressed;
 	}
 
-	#region //// Row Prototype
+	#region /--- Row Prototype ---/
 
 	Control prototypeDump = null!; // Set in _Ready
 
@@ -113,7 +113,7 @@ public partial class TableEdit : ScrollContainer {
 
 	#endregion
 
-	#region //// Init
+	#region /--- Init ---/
 
 	public void InitiateFor(Table table) {
 		ThrowIfInitiated();
@@ -274,7 +274,7 @@ public partial class TableEdit : ScrollContainer {
 		}
 	}
 
-	#region //// Throw helpers
+	#region /--- Throw helpers ---/
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void ThrowIfNotInitiated() {

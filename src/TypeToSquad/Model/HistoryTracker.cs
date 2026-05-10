@@ -9,7 +9,7 @@ namespace TypeToSquad.Model;
 
 public partial class HistoryTracker : Node {
 
-	#region //// Singleton
+	#region /--- Singleton ---/
 
 	public static HistoryTracker Instance { get; private set; } = null!; // Set in _Ready
 
@@ -60,7 +60,7 @@ public partial class HistoryTracker : Node {
 		}
 	}
 
-	#region //// Navigation
+	#region /--- Navigation ---/
 
 	/// <summary>Current navigation node and </summary>
 	LinkedListNode<string>? currentHistoryNode = null;

@@ -10,7 +10,7 @@ namespace TypeToSquad.Model;
 
 public partial class LogMonitor : Node {
 
-	#region //// Singleton
+	#region /--- Singleton ---/
 
 	public static LogMonitor Instance { get; private set; } = null!; // Set in _Ready
 
@@ -26,18 +26,18 @@ public partial class LogMonitor : Node {
 
 
 	/*
-	const string settingNameLoggingEnabled = @"debug/file_logging/enable_file_logging";
+	const string ProjectSettingNameLoggingEnabled = @"debug/file_logging/enable_file_logging";
 
 	public void ToggleLogging(bool enabled) {
-		ProjectSettings.SetSetting(settingNameLoggingEnabled, enabled);
+		ProjectSettings.SetSetting(ProjectSettingNameLoggingEnabled, enabled);
 	}
 	*/
 
-	const string settingNameLoggingPath = @"debug/file_logging/log_path";
+	const string ProjectSettingNameLoggingPath = @"debug/file_logging/log_path";
 
 	/// <summary>Returns absolute location of the log file on disk.</summary>
 	public static string GetLogfilePath() {
-		string userLocalPath = ProjectSettings.GetSetting(settingNameLoggingPath).AsString();
+		string userLocalPath = ProjectSettings.GetSetting(ProjectSettingNameLoggingPath).AsString();
 		return ProjectSettings.GlobalizePath(userLocalPath);
 	}
 

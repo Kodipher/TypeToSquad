@@ -12,7 +12,7 @@ namespace TypeToSquad.Gui.WindowScenes;
 
 public partial class ShortcutWindow : WindowEx {
 
-	#region //// Displayed Shortcuts
+	#region /--- Displayed Shortcuts ---/
 
 	/// <summary>A list of shortcuts to display.</summary>
 	[Export]

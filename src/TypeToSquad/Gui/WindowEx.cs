@@ -11,7 +11,7 @@ namespace TypeToSquad.Gui;
 [GlobalClass]
 public partial class WindowEx : Window {
 
-	#region //// Auto focus on ready
+	#region /--- Auto focus on ready ---/
 
 	/// <summary>
 	/// <para>
@@ -39,7 +39,7 @@ public partial class WindowEx : Window {
 
 	#endregion
 
-	#region //// Theme swap on keyboard input
+	#region /--- Theme swap on keyboard input ---/
 
 	/// <summary>
 	/// The main theme used by window.
@@ -54,7 +54,7 @@ public partial class WindowEx : Window {
 	/// when keyboard input is detected.
 	/// </summary>
 	/// <remarks>
-	/// Only stylebox patches are supported.
+	/// Only <see cref="StyleBox"/> patches are supported.
 	/// </remarks>
 	[Export]
 	public Theme? KeyboardPatchTheme { get; set; } = null;
@@ -130,8 +130,8 @@ public partial class WindowEx : Window {
 
 		foreach (var type in KeyboardPatchTheme.GetTypeList()) {
 			foreach (var property in KeyboardPatchTheme.GetStyleboxList(type)) {
-				var proeprtyOverride = KeyboardPatchTheme.GetStylebox(property, type);
-				this.Theme.SetStylebox(property, type, proeprtyOverride);
+				var propertyOverride = KeyboardPatchTheme.GetStylebox(property, type);
+				this.Theme.SetStylebox(property, type, propertyOverride);
 			}
 		}
 
@@ -140,7 +140,7 @@ public partial class WindowEx : Window {
 
 	#endregion
 
-	#region //// UI Zoom
+	#region /--- UI Zoom ---/
 
 	// Note: experimental
 

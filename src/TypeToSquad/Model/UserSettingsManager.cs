@@ -26,7 +26,7 @@ public partial class UserSettingsManager : Node {
 		Load();
 	}
 
-	#region //// Singleton
+	#region /--- Singleton ---/
 
 	public static UserSettingsManager Instance { get; private set; } = null!; // Set in _Ready
 
@@ -36,11 +36,11 @@ public partial class UserSettingsManager : Node {
 
 	#endregion
 
-	#region //// Saving and Loading
+	#region /--- Saving and Loading ---/
 
 	public const string SettingsFilepath = "user_settings.json";
 
-	readonly static ReadOnlyCollection<FieldInfo> UserSettingsSavableFields = 
+	public static readonly ReadOnlyCollection<FieldInfo> UserSettingsSavableFields = 
 									typeof(UserSettings)
 									.GetFields(BindingFlags.Instance | BindingFlags.Public)
 									.Where(fi => fi.FieldType.IsAssignableTo(typeof(IVariantSavable)))

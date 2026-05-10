@@ -11,7 +11,7 @@ namespace TypeToSquad.Gui;
 [GlobalClass]
 public partial class TextEditEx : TextEdit {
 
-	#region //// OnUnicodeInput Signal
+	#region /--- OnUnicodeInput Signal ---/
 
 	public override void _HandleUnicodeInput(int unicodeChar, int caretIndex) {
 

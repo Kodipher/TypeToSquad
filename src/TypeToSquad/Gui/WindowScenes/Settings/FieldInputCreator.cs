@@ -134,7 +134,7 @@ public static class FieldInputCreator {
 		throw new NotSupportedException();
 	}
 
-	#region //// Case-specific creation
+	#region /--- Case-specific creation ---/
 
 	public static LineEdit CreateForAnyUnlinked() {
 		return new LineEdit();

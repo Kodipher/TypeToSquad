@@ -29,9 +29,9 @@ public enum ContentType {
 /// </summary>
 public static class MessageLexer {
 
-	#region //// Content and context type parsing
+	#region /--- Content and context type parsing ---/
 
-	readonly public static ReadOnlyDictionary<string, ContentType> contextHintStrings =
+	public static readonly ReadOnlyDictionary<string, ContentType> ContextHintStrings =
 		new Dictionary<string, ContentType>() {
 			["ipa"] = ContentType.Ipa,
 			["snd"] = ContentType.Audio,
@@ -47,7 +47,7 @@ public static class MessageLexer {
 	static ContentSegment CreateTypedContentSegment(ContentSegment segment) {
 
 		var contextType =
-			contextHintStrings
+			ContextHintStrings
 			.FirstOrDefault(
 				pair => pair.Key == segment.TypeText,
 				KeyValuePair.Create("", ContentType.Invalid)

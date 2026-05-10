@@ -53,7 +53,7 @@ public class Table<TRowTuple> : Table, IList<TRowTuple>, IReadOnlyList<TRowTuple
 where TRowTuple: struct, ITuple 
 {
 
-	#region //// Storage, IList
+	#region /--- Storage, IList ---/
 
 	readonly List<TRowTuple> rows = new();
 
@@ -104,20 +104,19 @@ where TRowTuple: struct, ITuple
 		}
 	}
 
-	#region //// Array Conversion
+	#region /--- Array Conversion ---/
 
-	readonly static Lazy<Type[]> tupleTypes = new(() => {
+	static readonly Lazy<Type[]> tupleTypes = new(() => {
 		if (typeof(TRowTuple).IsGenericType) return typeof(TRowTuple).GenericTypeArguments;
 		return Array.Empty<Type>();
 	});
 
-	readonly static Lazy<MethodInfo> tupleCreateMethod = new(() => {
+	static readonly Lazy<MethodInfo> tupleCreateMethod = new(() => {
 		return typeof(ValueTuple)
 			.GetMethods()
 			.Where(method => method.Name == nameof(ValueTuple.Create))
 			.Where(method => method.IsStatic)
-			.Where(method => method.GetGenericArguments().Length == tupleTypes.Value.Length)
-			.Single()
+			.Single(method => method.GetGenericArguments().Length == tupleTypes.Value.Length)
 			.MakeGenericMethod(tupleTypes.Value);
 	});
 
@@ -127,14 +126,14 @@ where TRowTuple: struct, ITuple
 		// Force correct size
 		if (array.Length != tupleTypes.Value.Length) {
 
-			Variant[] legnthCheckedArray = new Variant[tupleTypes.Value.Length];
+			Variant[] lengthCheckedArray = new Variant[tupleTypes.Value.Length];
 
-			int n = Math.Min(array.Length, legnthCheckedArray.Length);
+			int n = Math.Min(array.Length, lengthCheckedArray.Length);
 			for (int i = 0; i < n; i++) {
-				legnthCheckedArray[i] = array[i];
+				lengthCheckedArray[i] = array[i];
 			}
 
-			array = legnthCheckedArray;
+			array = lengthCheckedArray;
 		}
 
 		// Convert values to objects
@@ -173,7 +172,7 @@ where TRowTuple: struct, ITuple
 
 	#endregion
 
-	#region //// Validation
+	#region /--- Validation ---/
 
 	Field?[]? validators = null; // is same length as tuple, checked in SetValidationProxies
 
@@ -211,7 +210,7 @@ where TRowTuple: struct, ITuple
 
 	public virtual TRowTuple ReturnValidRow(TRowTuple row) {
 
-		// No validators sets
+		// No validators set
 		if (validators is null) return row;
 
 		// Validate as array
@@ -222,7 +221,7 @@ where TRowTuple: struct, ITuple
 	/// <remarks>Input array is not mutated.</remarks>
 	public virtual TRowTuple ReturnValidRow(params Variant[] values) {
 
-		// No validators sets
+		// No validators set
 		if (validators is null) return ArrayToTuple(values);
 
 		// Copy input to avoid mutation

@@ -10,7 +10,7 @@ namespace TypeToSquad.Model;
 /// <summary>Manages playback of spoken messages.</summary>
 public partial class AudioManager : Node {
 
-	#region //// Singleton
+	#region /--- Singleton ---/
 
 	public static AudioManager Instance { get; private set; } = null!; // Set in _Ready
 

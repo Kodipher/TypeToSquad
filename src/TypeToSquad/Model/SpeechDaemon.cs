@@ -50,7 +50,7 @@ public partial class SpeechDaemon : Node, IDisposable {
 		ConsumeResponses();
 	}
 
-	#region //// Singleton
+	#region /--- Singleton ---/
 
 	public static SpeechDaemon Instance { get; private set; } = null!; // Set in _Ready
 
@@ -60,15 +60,15 @@ public partial class SpeechDaemon : Node, IDisposable {
 
 	#endregion
 
-	#region //// Daemon Process
+	#region /--- Daemon Process ---/
 
 	Process? daemonProcess = null;
 	string currentPipeName = "";
 
-	const string relativeExecutablePath = @"WinRTSpeechDaemon\WinRTSpeechSynthServer.exe";
-	const string pipeNameFormat = @"TTSSpeechDaemon_{0:x8}";
+	const string RelativeExecutablePath = @"WinRTSpeechDaemon\WinRTSpeechSynthServer.exe";
+	const string PipeNameFormat = @"TTSSpeechDaemon_{0:x8}";
 
-	readonly static TimeSpan daemonKillTimeout = TimeSpan.FromSeconds(1);
+	static readonly TimeSpan daemonKillTimeout = TimeSpan.FromSeconds(1);
 
 	static string GetDaemonExecutablePath() {
 
@@ -79,12 +79,12 @@ public partial class SpeechDaemon : Node, IDisposable {
 			projectRootPath = Path.GetDirectoryName(OS.GetExecutablePath()) ?? "";
 		}
 
-		return Path.Combine(projectRootPath, relativeExecutablePath);
+		return Path.Combine(projectRootPath, RelativeExecutablePath);
 	}
 
 	static string CreateUniquePipeName() {
 		int disambiguator = Random.Shared.NextUInt31();
-		return string.Format(pipeNameFormat, disambiguator);
+		return string.Format(PipeNameFormat, disambiguator);
 	}
 
 	public void StartDaemon() {
@@ -112,7 +112,9 @@ public partial class SpeechDaemon : Node, IDisposable {
 			GD.PushError("Daemon could not be started.");
 			currentPipeName = "";
 			return;
-		} else if (daemonProcess.HasExited) {
+		}
+		
+		if (daemonProcess.HasExited) {
 			GD.PushError("Daemon processes unexpectedly instantly exited.");
 			CloseAndDisposeDaemon();
 			return;
@@ -206,7 +208,7 @@ public partial class SpeechDaemon : Node, IDisposable {
 
 	#endregion
 
-	#region //// Communication with Daemon
+	#region /--- Communication with Daemon ---/
 
 	/*
 		Request are sent and processed asynchronously,
@@ -214,7 +216,7 @@ public partial class SpeechDaemon : Node, IDisposable {
 		so callbacks are bound with the responses and queued.
 	*/
 
-	readonly static TimeSpan requestTimeout = TimeSpan.FromSeconds(5);
+	static readonly TimeSpan requestTimeout = TimeSpan.FromSeconds(5);
 
 	readonly ResponseReader responseReader = ResponseReader.CreateWithStandardRegistered();
 	readonly ConcurrentQueue<Action> responseConsumptionCallbackQueue = new();
@@ -237,7 +239,6 @@ public partial class SpeechDaemon : Node, IDisposable {
 			response = SendRequest(request);
 			
 			// Enqueue response (as consumption callback)
-			if (response is null) return;
 			responseConsumptionCallbackQueue.Enqueue(() => callback(response));
 
 		}).ContinueWith((task) => {
@@ -371,7 +372,7 @@ public partial class SpeechDaemon : Node, IDisposable {
 
 	#endregion
 
-	#region //// Voice Storage
+	#region /--- Voice Storage ---/
 
 	public VoiceInfo? DefaultVoice { get; private set; } = null;
 
@@ -384,7 +385,7 @@ public partial class SpeechDaemon : Node, IDisposable {
 
 	#endregion
 
-	#region //// Disposable
+	#region /--- Disposable ---/
 
 	private bool isDisposed = false;
 

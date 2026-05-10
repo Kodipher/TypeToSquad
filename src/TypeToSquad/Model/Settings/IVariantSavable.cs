@@ -6,7 +6,7 @@ namespace TypeToSquad.Model.Settings;
 
 // A non-generic inheritance root
 // to avoid getting data via reflection
-interface IVariantSavable {
+internal interface IVariantSavable {
 
 	/// <summary>Gets content as <see cref="Variant"/> for purposes of saving.</summary>
 	Variant ToSavableVariant();

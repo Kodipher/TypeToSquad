@@ -16,7 +16,7 @@ namespace TypeToSquad.Gui.WindowScenes;
 
 public partial class MainWindow : WindowEx {
 
-	#region //// Setup
+	#region /--- Setup ---/
 
 	// Nodes
 	BaseButton speakButton = null!;
@@ -98,7 +98,7 @@ public partial class MainWindow : WindowEx {
 
 	#endregion
 
-	#region //// Tag autocomplete, Tab handling
+	#region /--- Tag autocomplete, Tab handling ---/
 
 	/// <remarks>Assumes partial valid tags.</remarks>
 	public void OnCharacterTyped(char typedChar, int caretIndex) {
@@ -128,7 +128,7 @@ public partial class MainWindow : WindowEx {
 		if (currentName.Length == 0) return; // do not act on empty names
 
 		// Find all context names
-		var contentHints = TypeToSquad.Model.Markup.MessageLexer.contextHintStrings.Keys;
+		var contentHints = TypeToSquad.Model.Markup.MessageLexer.ContextHintStrings.Keys;
 
 		string[] contextHints = Enumerable.Concat(
 									settingsInstance
@@ -266,7 +266,7 @@ public partial class MainWindow : WindowEx {
 		HistoryTracker.Instance.NavigateReset();
 
 		// Speak
-		(string requestString, bool isSsml) = MessageProsessor.ProcessMessage(messageTextEdit.Text);
+		(string requestString, bool isSsml) = MessageProcessor.ProcessMessage(messageTextEdit.Text);
 
 		SynthesizeRequest synthRequest = new SynthesizeRequest() {
 			InputString = requestString,

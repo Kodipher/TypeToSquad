@@ -12,7 +12,7 @@ namespace TypeToSquad.Model.Markup;
 [GlobalClass]
 public partial class MessageSyntaxHighlighter : Godot.SyntaxHighlighter {
 
-	#region //// Segment cache
+	#region /--- Segment cache ---/
 
 	string? cacheKey = null;
 	List<MessageSegment>? segmentsCache = null;
@@ -30,18 +30,18 @@ public partial class MessageSyntaxHighlighter : Godot.SyntaxHighlighter {
 
 	#endregion
 
-	#region //// Colors
+	#region /--- Colors ---/
 
-	readonly static Color colorDefault = new(1, 1, 1);
-	readonly static Color colorInvalid = new(colorDefault, 0.5f);
+	static readonly Color colorDefault = new(1, 1, 1);
+	static readonly Color colorInvalid = new(colorDefault, 0.5f);
 
-	readonly static Color colorContextReplacement = new(1, 1, 0);
-	readonly static Color colorContextNone = new(colorContextReplacement, 0.5f);
-	readonly static Color colorContextVoice = new(0, 1, 1);
-	readonly static Color colorContextEmpty = new(0.5f, 0.7f, 1);
+	static readonly Color colorContextReplacement = new(1, 1, 0);
+	static readonly Color colorContextNone = new(colorContextReplacement, 0.5f);
+	static readonly Color colorContextVoice = new(0, 1, 1);
+	static readonly Color colorContextEmpty = new(0.5f, 0.7f, 1);
 
-	readonly static Color colorContent = new(1, 0, 1);
-	readonly static Color colorContentPayload = new(1, 0.5f, 1);
+	static readonly Color colorContent = new(1, 0, 1);
+	static readonly Color colorContentPayload = new(1, 0.5f, 1);
 
 	#endregion
 

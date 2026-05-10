@@ -10,8 +10,10 @@ namespace TypeToSquad.Model.Settings;
 /// Only fields implementing <see cref="IVariantSavable"/> are saved.
 /// Properties are ignored.
 /// </remarks>
-public record class UserSettings {
-
+public record UserSettings {
+	
+	// ReSharper disable InconsistentNaming
+	
 	// ===== ===== ===== GENERAL ===== ===== =====
 
 	/// <summary>Whether to show advanced settings.</summary>
