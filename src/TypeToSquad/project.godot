@@ -64,6 +64,7 @@ enabled=PackedStringArray("res://addons/copy_files_on_export/plugin.cfg")
 [gui]
 
 timers/button_shortcut_feedback_highlight_time=0.1
+theme/custom="uid://cg2oy1w7gxbkx"
 
 [input]
 
