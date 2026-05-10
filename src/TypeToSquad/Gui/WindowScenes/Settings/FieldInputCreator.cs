@@ -26,28 +26,14 @@ public static class FieldInputCreator {
 	/// </remarks>
 	/// <exception cref="NotSupportedException"/>
 	public static Control CreateFor(Field field, bool isUnlinked = false) {
-	
-		if (field is FieldOptionsRuntime fieldOptions) {
-			return CreateForOptions(fieldOptions, isUnlinked);
-		}
-
-		if (field is FieldNumericRange<int> fieldRangeInt) {
-			return CreateForInt(fieldRangeInt, isUnlinked);
-		}
-
-		if (field is FieldNumericRange<double> fieldRangeDouble) {
-			return CreateForDouble(fieldRangeDouble, isUnlinked);
-		}
-
-		if (field is Field<bool> fieldBool) {
-			return CreateForBool(fieldBool, isUnlinked);
-		}
-
-		if (field is Field<string> fieldString) {
-			return CreateForString(fieldString, isUnlinked);
-		}
-
-		throw new NotSupportedException();
+		return field switch {
+			FieldOptionsRuntime fieldOptions => CreateForOptions(fieldOptions, isUnlinked),
+			FieldNumericRange<int> fieldRangeInt => CreateForNumeric(fieldRangeInt, isUnlinked),
+			FieldNumericRange<double> fieldRangeDouble => CreateForNumeric(fieldRangeDouble, isUnlinked),
+			Field<bool> fieldBool => CreateForBool(fieldBool, isUnlinked),
+			Field<string> fieldString => CreateForString(fieldString, isUnlinked),
+			_ => throw new NotSupportedException()
+		};
 	}
 
 
@@ -57,81 +43,81 @@ public static class FieldInputCreator {
 	/// </summary>
 	/// <exception cref="NotSupportedException"/>
 	public static Variant GetControlInputValue(Control node) {
-		
-		if (node is OptionButton optionButton) {
-			return optionButton.GetItemMetadata(optionButton.Selected);
-		}
-		if (node is CheckBox checkBox) return checkBox.ButtonPressed;
-		if (node is LineEdit lineEdit) return lineEdit.Text;
-		if (node is SpinBox spinBox) return spinBox.Value;
-
-		throw new NotSupportedException();
+		return node switch {
+			OptionButton optionButton => optionButton.GetItemMetadata(optionButton.Selected),
+			CheckBox checkBox => checkBox.ButtonPressed,
+			LineEdit lineEdit => lineEdit.Text,
+			SpinBox spinBox => spinBox.Value,
+			_ => throw new NotSupportedException()
+		};
 	}
 
 	/// <exception cref="NotSupportedException"/>
 	public static void SetControlInputValue(Control node, Variant value) {
 
-		if (node is OptionButton optionButton) {
-
-			for (int i = 0; i < optionButton.ItemCount; i++) {
-				if (optionButton.GetItemMetadata(i).AsString() == value.AsString()) {
-					optionButton.Selected = i;
-					return;
+		switch (node) {
+			
+			case OptionButton optionButton: {
+				for (int i = 0; i < optionButton.ItemCount; i++) {
+					if (optionButton.GetItemMetadata(i).AsString() == value.AsString()) {
+						optionButton.Selected = i;
+						return;
+					}
 				}
+
+				GD.PushError($"Could not select current option. Could not find {value} among options.");
+				optionButton.Selected = -1;
+				return;
 			}
-
-			GD.PushError($"Could not select current option. Could not find {value} among options.");
-			optionButton.Selected = -1;
-			return;
+			
+			case CheckBox checkBox:
+				checkBox.SetPressedNoSignal(value.AsBool());
+				return;
+			
+			case LineEdit lineEdit:
+				lineEdit.Text = value.AsString();
+				return;
+			
+			case SpinBox spinBox:
+				spinBox.SetValueNoSignal(value.AsDouble());
+				return;
+			
+			default:
+				throw new NotSupportedException();
 		}
 
-		if (node is CheckBox checkBox) {
-			checkBox.SetPressedNoSignal(value.AsBool());
-			return;
-		}
-
-		if (node is LineEdit lineEdit) {
-			lineEdit.Text = value.AsString();
-			return;
-		}
-
-		if (node is SpinBox spinBox) {
-			spinBox.SetValueNoSignal(value.AsDouble());
-			return;
-		}
-
-		throw new NotSupportedException();
 	}
 
 	/// <summary>
-	/// Connects a submission handler to the approprate
+	/// Connects a submission handler to the appropriate
 	/// node signal of a node created by <see cref="CreateFor(Field, bool)"/>.
 	/// </summary>
 	/// <exception cref="NotSupportedException"></exception>
 	public static void ConnectOnControlSubmit(Control node, Action<Variant> onSubmit) {
 
-		if (node is OptionButton optionButton) {
-			optionButton.ItemSelected += index => onSubmit(optionButton.GetItemMetadata((int)index).AsString());
-			return;
+		switch (node) {
+			
+			case OptionButton optionButton:
+				optionButton.ItemSelected += index => onSubmit(optionButton.GetItemMetadata((int)index).AsString());
+				return;
+			
+			case CheckBox checkBox:
+				checkBox.Toggled += newValue => onSubmit(newValue);
+				return;
+			
+			case LineEdit lineEdit:
+				lineEdit.TextSubmitted += (text) => onSubmit(text);
+				lineEdit.FocusExited += () => onSubmit(lineEdit.Text);
+				return;
+			
+			case SpinBox spinBox:
+				spinBox.ValueChanged += newValue => onSubmit(newValue);
+				return;
+			
+			default:
+				throw new NotSupportedException();
 		}
 
-		if (node is CheckBox checkBox) {
-			checkBox.Toggled += newValue => onSubmit(newValue);
-			return;
-		}
-
-		if (node is LineEdit lineEdit) {
-			lineEdit.TextSubmitted += (text) => onSubmit(text);
-			lineEdit.FocusExited += () => onSubmit(lineEdit.Text);
-			return;
-		}
-
-		if (node is SpinBox spinBox) {
-			spinBox.ValueChanged += newValue => onSubmit(newValue);
-			return;
-		}
-
-		throw new NotSupportedException();
 	}
 
 	#region /--- Case-specific creation ---/
@@ -176,51 +162,29 @@ public static class FieldInputCreator {
 		return inputToggle;
 	}
 
-	public static SpinBox CreateForInt(FieldNumericRange<int> field, bool isUnlinked = false) {
+	public static SpinBox CreateForNumeric<[MustBeVariant] T>(FieldNumericRange<T> field, bool isUnlinked = false)
+	where T : struct, System.Numerics.INumber<T>
+	{
 
 		// Create
 		var fieldInput = new SpinBox() {
-			MinValue = field.MinInclusive,
-			MaxValue = field.MaxInclusive,
+			MinValue = double.CreateChecked(field.MinInclusive),
+			MaxValue = double.CreateChecked(field.MaxInclusive),
 			AllowLesser = false,
 			AllowGreater = false,
 
-			Rounded = true,
-			Step = 1
+			Rounded = field.DigitsPrecision == 0,
+			Step = 1d / Math.Pow(10, field.DigitsPrecision) // 0.1^digits has precision errors
 		};
 
 		if (isUnlinked) return fieldInput;
 
 		// Link
-		fieldInput.Value = field.Value;
-		fieldInput.ValueChanged += newValue => field.Value = (int)newValue;
+		fieldInput.Value = double.CreateChecked(field.Value);
+		fieldInput.ValueChanged += newValue => field.Value = T.CreateChecked(newValue);
 
 		return fieldInput;
 	}
-
-
-	public static SpinBox CreateForDouble(FieldNumericRange<double> field, bool isUnlinked = false, double valueStep = 0.1) {
-
-		// Create
-		var fieldInput = new SpinBox() {
-			MinValue = field.MinInclusive,
-			MaxValue = field.MaxInclusive,
-			AllowLesser = false,
-			AllowGreater = false,
-
-			Rounded = false,
-			Step = valueStep
-		};
-
-		if (isUnlinked) return fieldInput;
-
-		// Link
-		fieldInput.Value = field.Value;
-		fieldInput.ValueChanged += newValue => field.Value = newValue;
-
-		return fieldInput;
-	}
-
 
 	/// <remarks>The actual value set to the field is stored in items' metadata.</remarks>
 	public static OptionButton CreateForOptions(FieldOptionsRuntime field, bool isUnlinked = false) {
