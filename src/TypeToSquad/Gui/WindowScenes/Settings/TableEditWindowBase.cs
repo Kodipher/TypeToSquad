@@ -3,7 +3,7 @@ using TypeToSquad.Model.Settings;
 using TypeToSquad.Utils;
 
 
-namespace TypeToSquad.Gui.WindowScenes.TableEdit;
+namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 
 public abstract partial class TableEditWindowBase : WindowEx {

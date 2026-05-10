@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bnk332u7rxegx"]
 
-[ext_resource type="Script" uid="uid://bm018rwyy2jcm" path="res://Gui/WindowScenes/TableEdit/TableEdit.cs" id="1_t8jsl"]
+[ext_resource type="Script" uid="uid://bm018rwyy2jcm" path="res://Gui/WindowScenes/Settings/TableEdit.cs" id="1_t8jsl"]
 
 [node name="TableEdit" type="ScrollContainer"]
 anchors_preset = 15

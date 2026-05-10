@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-using TypeToSquad.Gui.WindowScenes.Settings;
 using TypeToSquad.Model.Settings;
 using TypeToSquad.Utils;
 
 
-namespace TypeToSquad.Gui.WindowScenes.TableEdit;
+namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 
 /// <summary>

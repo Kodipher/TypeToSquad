@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://dbta153u4bv7x" path="res://Gui/WindowSceneAssignment.cs" id="1_x1nwk"]
 [ext_resource type="PackedScene" uid="uid://bcpfjd6g106yg" path="res://Gui/WindowScenes/Settings/settings_window.tscn" id="2_slovu"]
 [ext_resource type="PackedScene" uid="uid://s0vn2q14tstu" path="res://Gui/WindowScenes/shortcut_window.tscn" id="3_2vp4u"]
-[ext_resource type="PackedScene" uid="uid://b2w437qnsyeoh" path="res://Gui/WindowScenes/TableEdit/text_replacements_window.tscn" id="4_h8t8v"]
-[ext_resource type="PackedScene" uid="uid://dwl0hryvg21fb" path="res://Gui/WindowScenes/TableEdit/voice_changes_window.tscn" id="5_xvcwc"]
+[ext_resource type="PackedScene" uid="uid://b2w437qnsyeoh" path="res://Gui/WindowScenes/Settings/text_replacements_window.tscn" id="4_h8t8v"]
+[ext_resource type="PackedScene" uid="uid://dwl0hryvg21fb" path="res://Gui/WindowScenes/Settings/voice_changes_window.tscn" id="5_xvcwc"]
 [ext_resource type="PackedScene" uid="uid://0w4yxg65pc57" path="res://Gui/WindowScenes/main_window.tscn" id="6_slovu"]
 
 [resource]

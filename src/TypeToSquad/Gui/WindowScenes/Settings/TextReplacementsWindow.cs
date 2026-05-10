@@ -3,7 +3,7 @@ using TypeToSquad.Model.Settings;
 using SizeFlags = Godot.Control.SizeFlags;
 
 
-namespace TypeToSquad.Gui.WindowScenes.TableEdit;
+namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 
 public partial class TextReplacementsWindow : TableEditWindowBase {

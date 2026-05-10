@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://dwl0hryvg21fb"]
 
-[ext_resource type="Script" uid="uid://bn1ct7bb4x2ih" path="res://Gui/WindowScenes/TableEdit/VoiceChangesWindow.cs" id="1_ldd13"]
+[ext_resource type="Script" uid="uid://bn1ct7bb4x2ih" path="res://Gui/WindowScenes/Settings/VoiceChangesWindow.cs" id="1_ldd13"]
 [ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_b1usy"]
-[ext_resource type="PackedScene" uid="uid://bnk332u7rxegx" path="res://Gui/WindowScenes/TableEdit/table_edit.tscn" id="2_dpusg"]
+[ext_resource type="PackedScene" uid="uid://bnk332u7rxegx" path="res://Gui/WindowScenes/Settings/table_edit.tscn" id="2_dpusg"]
 [ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_mqpet"]
 
 [node name="VoiceChangesWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
