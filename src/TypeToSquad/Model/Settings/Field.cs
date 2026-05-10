@@ -16,8 +16,15 @@ namespace TypeToSquad.Model.Settings;
 /// </para>
 /// </summary>
 public abstract class Field : IVariantSavable {
-	public abstract Variant ToSavableVariant();
-	public abstract void SetFromVariant(Variant value);
+	
+	/// <summary>
+	/// The value of this <see cref="Field{T}"/>, as a <see cref="Variant"/>.
+	/// When setting, values are forced to become valid if aren't.
+	/// </summary>
+	public abstract Variant ValueVariant { get; set; }
+	
+	public Variant ToSavableVariant() => ValueVariant;
+	public void SetFromVariant(Variant value) => ValueVariant = value;
 }
 
 
@@ -38,12 +45,15 @@ public class Field<[MustBeVariant] T> : Field where T : notnull {
 		get => valueBacking;
 		set => valueBacking = ReturnValid(value);
 	}
+
+	/// <inheritdoc/>
+	/// <remarks>Converts to/from <see cref="T"/>.</remarks>
+	public override Variant ValueVariant {
+		get => Variant.From(in valueBacking);
+		set => Value = value.As<T>();
+	}
 	
 	protected virtual T ReturnValid(T value) => value;
-	
-	public override Variant ToSavableVariant() => Variant.From(in valueBacking);
-	
-	public override void SetFromVariant(Variant value) => Value = value.As<T>();
 	
 	public static implicit operator T(Field<T> field) => field.Value;
 
