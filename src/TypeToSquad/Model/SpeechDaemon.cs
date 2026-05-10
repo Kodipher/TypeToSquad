@@ -283,8 +283,7 @@ public partial class SpeechDaemon : Node, IDisposable {
 			throw new ArgumentException("There must be at least one callback.", nameof(chainCallbacks));
 		}
 
-		Action<int, Response> indexedCallback = null!;
-		indexedCallback = (index, response) => {
+		void IndexedCallback(int index, Response response) {
 
 			// Guards
 			ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -301,17 +300,15 @@ public partial class SpeechDaemon : Node, IDisposable {
 				return;
 			}
 
+			// End in the middle
+			if (nextRequest is null) return;
+			
 			// Dispatch next
-			if (nextRequest is null) {
-				GD.PushWarning("Found request chain with a null in the middle. Skipping further requests.");
-				return;
-			} else {
-				this.DispatchRequest(nextRequest, (resp) => indexedCallback(index+1, resp));
-			}
-		};
+			this.DispatchRequest(nextRequest, resp => IndexedCallback(index + 1, resp));
+		}
 
 		// Start the chain
-		DispatchRequest(startingRequest, (resp) => indexedCallback(0, resp));
+		DispatchRequest(startingRequest, resp => IndexedCallback(0, resp));
 	}
 
 	/// <summary>
