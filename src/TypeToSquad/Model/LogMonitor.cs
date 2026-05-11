@@ -123,7 +123,10 @@ public partial class LogMonitor : Node {
 			WaitTime = delaySeconds
 		};
 		
-		delayTimer.Timeout += CheckLog;
+		delayTimer.Timeout += () => {
+			CheckLog();
+			delayTimer.QueueFree();
+		};
 		
 		this.AddChild(delayTimer);
 	}
