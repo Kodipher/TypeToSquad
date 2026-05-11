@@ -12,6 +12,8 @@ public partial class EntryPoint : Node {
 
 	void PostReady() {
 		WindowManager.Instance.CreateWindowIntoRoot(WindowType.Main);
+		Model.LogMonitor.Instance.CheckLogDelayed();
+		Model.LogMonitor.Instance.CheckLogDelayed(Model.LogMonitor.DelayedCheckDefaultDelaySeconds * 3);
 	}
 
 }

@@ -1,8 +1,6 @@
 TODO (features):
 - change how contexts work; maybe replace with custom content tags.
 - handle voice list not being loaded yet when settings is opened
-- change how/when log file is monitored
--- make use of timer nodes
 - feature: direct hardware input to grab and release focus
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly

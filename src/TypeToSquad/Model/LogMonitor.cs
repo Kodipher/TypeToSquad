@@ -8,6 +8,10 @@ using FileAccess = System.IO.FileAccess;
 namespace TypeToSquad.Model;
 
 
+/// <summary>
+/// Checks the engine's log for errors.
+/// Does not run constantly, instead exposes <see cref="CheckLog"/> and <see cref="CheckLogDelayed"/>.
+/// </summary>
 public partial class LogMonitor : Node {
 
 	#region /--- Singleton ---/
@@ -103,6 +107,25 @@ public partial class LogMonitor : Node {
 
 			throw;
 		}	
+	}
+
+	public const double DelayedCheckDefaultDelaySeconds = 2;
+	
+	/// <summary>
+	/// Runs <see cref="CheckLogDelayed"/> after some delay.
+	/// Internally creates a <see cref="Timer"/>.
+	/// </summary>
+	public void CheckLogDelayed(double delaySeconds = DelayedCheckDefaultDelaySeconds) {
+
+		Timer delayTimer = new Timer() {
+			Autostart = true,
+			OneShot = true,
+			WaitTime = delaySeconds
+		};
+		
+		delayTimer.Timeout += CheckLog;
+		
+		this.AddChild(delayTimer);
 	}
 
 	/// <summary>

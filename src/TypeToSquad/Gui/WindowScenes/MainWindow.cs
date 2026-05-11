@@ -256,6 +256,8 @@ public partial class MainWindow : WindowEx {
 		// Skip empty messages
 		if (string.IsNullOrWhiteSpace(messageTextEdit.Text)) return;
 
+		LogMonitor.Instance.CheckLogDelayed();
+		
 		// Add to history
 		GD.Print("Speaking.");
 		HistoryTracker.Instance.AddHistoryEntry(messageTextEdit.Text);
