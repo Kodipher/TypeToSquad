@@ -26,6 +26,9 @@ public partial class LogMonitor : Node {
 
 	public override void _Ready() {
 		StageSingletonInstance();
+		
+		CheckLogDelayed();
+		CheckLogDelayed(DelayedCheckDefaultDelaySeconds * 3);
 	}
 
 	/// <summary>Whether monitoring is done at all, regardless of if an error was found or not.</summary>
