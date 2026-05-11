@@ -24,7 +24,22 @@ public partial class LogMonitor : Node {
 		StageSingletonInstance();
 	}
 
+	/// <summary>Whether monitoring is done at all, regardless of if an error was found or not.</summary>
+	public bool IsMonitoring => UserSettingsManager.Instance.Settings.EnableErrorMonitoring;
 
+	/// <summary>
+	/// Set when an error is found.
+	/// Blocks further checks while set.
+	/// Not readonly - clear this flag to continue monitoring.
+	/// </summary>
+	public bool IsErrorFound { get; private set; } = false;
+
+	public void ContinueMonitoringPastError() {
+		SeekToLogEnd();
+		IsErrorFound = false;
+	}
+	
+	
 	/*
 	const string ProjectSettingNameLoggingEnabled = @"debug/file_logging/enable_file_logging";
 
@@ -45,13 +60,14 @@ public partial class LogMonitor : Node {
 	long lastCheckEndPosition = 0;
 
 	/// <summary>
-	/// Reads the log for errors since the position of last read.
-	/// If an error is found then <see cref="OnErrorFound"/> is invoked
-	/// and further checks are blocked.
+	/// Reads the log for errors since the position of last read now.
+	/// If the log checking setting is disabled, does nothing.
+	/// If an error is found then <see cref="OnErrorFound"/> is invoked and further checks are blocked.
 	/// </summary>
 	public void CheckLog() {
 	
-		if (BlockChecks) return;
+		if (!IsMonitoring) return;
+		if (IsErrorFound) return;
 
 		try {
 			string path = GetLogfilePath();
@@ -66,7 +82,7 @@ public partial class LogMonitor : Node {
 				lastCheckEndPosition = fs.Position;
 
 				if (line.StartsWith("ERROR")) {
-					BlockChecks = true;
+					IsErrorFound = true;
 					EmitSignalOnErrorFound();
 					return;
 				}
@@ -81,7 +97,7 @@ public partial class LogMonitor : Node {
 				ex is UnauthorizedAccessException
 			) {
 				GD.PushError($"Error in the LogMonitor: {ex}");
-				BlockChecks = true;
+				IsErrorFound = true;
 				EmitSignalOnErrorFound();
 			}
 
@@ -113,6 +129,8 @@ public partial class LogMonitor : Node {
 				ex is UnauthorizedAccessException
 			) {
 				GD.PushError($"Error in the LogMonitor: {ex}");
+				IsErrorFound = true;
+				EmitSignalOnErrorFound();
 			}
 			
 			throw;
@@ -121,12 +139,5 @@ public partial class LogMonitor : Node {
 
 	/// <summary>Emitted when <see cref="CheckLog"/> finds errors.</summary>
 	[Signal] public delegate void OnErrorFoundEventHandler();
-
-	/// <summary>
-	/// Whether to block checks. 
-	/// Automatically set when an error is found.
-	/// Not readonly.
-	/// </summary>
-	public bool BlockChecks { get; set; } = false;
 
 }
