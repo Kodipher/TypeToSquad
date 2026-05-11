@@ -1,7 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Concurrent;
 using System.Linq;
 
@@ -27,43 +25,6 @@ namespace TypeToSquad.Model;
 /// </summary>
 public partial class SpeechDaemon : Node, IDisposable {
 
-	public override void _Ready() {
-		StageSingletonInstance();
-
-		StartDaemon();
-		
-		DispatchRequest<AllVoicesResponse>( // find voices
-			new GetVoicesRequest(),
-			voicesResponse => {
-
-				var settingsInstance = UserSettingsManager.Instance.Settings;
-
-				settingsInstance.VoiceKey.SetOptions(
-					voicesResponse
-						.Voices
-						.OrderBy(v => v.Language)
-						.Select(VoiceToSelectionKey), 
-					VoiceToSelectionKey(voicesResponse.DefaultVoice)
-				);
-				
-				settingsInstance.VoiceChanges.ChangePrototypeForColumn(
-					1, 
-					() => {
-						var field = new Settings.FieldOptionsRuntime();
-						field.SetOptions(settingsInstance.VoiceKey.Options!, settingsInstance.VoiceKey.DefaultOption!);
-						return field;
-					}
-				);
-
-				StoreVoiceInfos(voicesResponse);
-			}
-		);
-	}
-
-	public override void _Process(double delta) {
-		ConsumeResponses();
-	}
-
 	#region /--- Singleton ---/
 
 	public static SpeechDaemon Instance { get; private set; } = null!; // Set in _Ready
@@ -73,6 +34,15 @@ public partial class SpeechDaemon : Node, IDisposable {
 	}
 
 	#endregion
+	
+	public override void _Ready() {
+		StageSingletonInstance();
+		StartDaemon();
+	}
+
+	public override void _Process(double delta) {
+		ConsumeResponses();
+	}
 
 	#region /--- Daemon Process ---/
 
@@ -380,24 +350,6 @@ public partial class SpeechDaemon : Node, IDisposable {
 			}
 		}
 	}
-
-	#endregion
-
-	#region /--- Voice Storage ---/
-
-	public VoiceInfo? DefaultVoice { get; private set; } = null;
-
-	public ReadOnlyDictionary<string, VoiceInfo>? VoicesByKey { get; private set; } = null;
-
-	public void StoreVoiceInfos(AllVoicesResponse response) {
-		DefaultVoice = response.DefaultVoice;
-		VoicesByKey = response
-						.Voices
-						.Select(voice => KeyValuePair.Create(VoiceToSelectionKey(voice), voice)).ToDictionary()
-						.AsReadOnly();
-	}
-
-	public string VoiceToSelectionKey(VoiceInfo voice) => $"{voice.Name} ({voice.Language})"; 
 
 	#endregion
 

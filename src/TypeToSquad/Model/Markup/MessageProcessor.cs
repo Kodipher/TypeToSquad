@@ -201,18 +201,18 @@ public static class MessageProcessor {
 
 		// Singleton shortcuts
 		var settingsInstance = UserSettingsManager.Instance.Settings;
-		var speechDaemon = SpeechDaemon.Instance;
+		var voiceStorage = DaemonVoiceStorage.Instance;
 
 		// Guards
-		if (speechDaemon.VoicesByKey is null) throw new InvalidOperationException("Cannot find voice information.");
+		if (voiceStorage.VoicesByKey is null) throw new InvalidOperationException("Cannot find voice information.");
 
 
 		
 		StringBuilder sb = new StringBuilder();
 
 		// Header
-		string defaultVoiceName = settingsInstance.VoiceKey;
-		string defaultVoiceLang = speechDaemon.VoicesByKey[defaultVoiceName].Language;
+		string defaultVoiceKey = settingsInstance.VoiceKey;
+		string defaultVoiceLang = voiceStorage.VoicesByKey[defaultVoiceKey].Language;
 		sb.AppendFormat(SsmlHeaderFormat, defaultVoiceLang);
 
 		// Segments
@@ -242,10 +242,7 @@ public static class MessageProcessor {
 						.FirstOrDefault(row => row.hint == hintSegment.Context)
 						.voiceKey;
 
-					if (!speechDaemon.VoicesByKey.TryGetValue(voiceNameKey, out var voiceInfo)) {
-						continue;
-					}
-
+					var voiceInfo = voiceStorage.GetVoiceByKey(voiceNameKey);
 					string voiceName = SecurityElement.Escape(voiceInfo.Name);
 					string voiceLang = SecurityElement.Escape(voiceInfo.Language);
 

@@ -271,7 +271,7 @@ public partial class MainWindow : WindowEx {
 		SynthesizeRequest synthRequest = new SynthesizeRequest() {
 			InputString = requestString,
 			IsSsml = isSsml,
-			VoiceName = SpeechDaemon.Instance.VoicesByKey?[settingsInstance.VoiceKey].Name ?? "",
+			VoiceName = DaemonVoiceStorage.Instance.GetVoiceByKey(settingsInstance.VoiceKey).Name,
 			Pitch = settingsInstance.VoicePitch,
 			Rate = settingsInstance.VoiceRate,
 			Volume = settingsInstance.SynthesisVolumePercent / 100.0
