@@ -46,15 +46,27 @@ text = "Show Advanced Settings"
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="EnableMonitoringLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/General"]
+[node name="EnableErrorNotificationsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/General"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Enable or disable checking for logged errors.
+tooltip_text = "Enable or disable notifications for when an error is logged.
 (Note: Messages are never logged)"
 mouse_filter = 1
-text = "Enable Error Monitoring"
+text = "Enable Error Notifications"
 
-[node name="EnableMonitoringInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/General"]
+[node name="EnableErrorNotificationsInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/General"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EnableWarnNotificationsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/General"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Enable or disable notifications for when a warning is logged.
+(Note: Messages are never logged)"
+mouse_filter = 1
+text = "Enable Warning Notifications"
+
+[node name="EnableWarnNotificationsInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/General"]
 unique_name_in_owner = true
 layout_mode = 2
 

@@ -1,17 +1,10 @@
 using Godot;
-using System;
-using System.IO;
-
-using FileAccess = System.IO.FileAccess;
 
 
 namespace TypeToSquad.Model;
 
 
-/// <summary>
-/// Checks the engine's log for errors.
-/// Does not run constantly, instead exposes <see cref="CheckLog"/> and <see cref="CheckLogDelayed"/>.
-/// </summary>
+/// <summary>Checks the logging pipeline and emits a signal when an error or warning is logged.</summary>
 public partial class LogMonitor : Node {
 
 	#region /--- Singleton ---/
@@ -23,38 +16,65 @@ public partial class LogMonitor : Node {
 	}
 
 	#endregion
+	
+	public partial class SignalingLogger : Logger {
 
+		public override void _LogError(
+			string function, 
+			string file, 
+			int line, 
+			string code, 
+			string rationale, 
+			bool editorNotify, 
+			int errorType,
+			Godot.Collections.Array<ScriptBacktrace> scriptBacktraces
+		) {
+			switch ((ErrorType)errorType) {
+				case ErrorType.Script:
+				case ErrorType.Error: 
+				case ErrorType.Shader:
+					EmitSignalOnErrorLogged();
+					return;
+
+				case ErrorType.Warning:
+					EmitSignalOnWarningLogged();
+					break;
+				
+				default:
+					EmitSignalOnErrorLogged();
+					throw new System.ArgumentOutOfRangeException(nameof(errorType), errorType, null);
+			}
+		}
+
+		[Signal] public delegate void OnErrorLoggedEventHandler();
+		
+		[Signal] public delegate void OnWarningLoggedEventHandler();
+		
+	}
+
+	SignalingLogger Logger { get; set; } = null!; // Set in _Ready;
+	
+	[Signal] public delegate void LoggerNotificationEventHandler();
+	
 	public override void _Ready() {
 		StageSingletonInstance();
+
+		Logger = new SignalingLogger();
+
+		Logger.OnErrorLogged += () => {
+			if (!UserSettingsManager.Instance.Settings.EnableErrorNotifications) return;
+			EmitSignalLoggerNotification();
+		};
 		
-		CheckLogDelayed();
-		CheckLogDelayed(DelayedCheckDefaultDelaySeconds * 3);
+		Logger.OnWarningLogged += () => {
+			if (!UserSettingsManager.Instance.Settings.EnableWarningNotifications) return;
+			EmitSignalLoggerNotification();
+		};
+		
+		OS.AddLogger(Logger);
 	}
 
-	/// <summary>Whether monitoring is done at all, regardless of if an error was found or not.</summary>
-	public bool IsMonitoring => UserSettingsManager.Instance.Settings.EnableErrorMonitoring;
-
-	/// <summary>
-	/// Set when an error is found.
-	/// Blocks further checks while set.
-	/// Not readonly - clear this flag to continue monitoring.
-	/// </summary>
-	public bool IsErrorFound { get; private set; } = false;
-
-	public void ContinueMonitoringPastError() {
-		SeekToLogEnd();
-		IsErrorFound = false;
-	}
 	
-	
-	/*
-	const string ProjectSettingNameLoggingEnabled = @"debug/file_logging/enable_file_logging";
-
-	public void ToggleLogging(bool enabled) {
-		ProjectSettings.SetSetting(ProjectSettingNameLoggingEnabled, enabled);
-	}
-	*/
-
 	const string ProjectSettingNameLoggingPath = @"debug/file_logging/log_path";
 
 	/// <summary>Returns absolute location of the log file on disk.</summary>
@@ -62,111 +82,5 @@ public partial class LogMonitor : Node {
 		string userLocalPath = ProjectSettings.GetSetting(ProjectSettingNameLoggingPath).AsString();
 		return ProjectSettings.GlobalizePath(userLocalPath);
 	}
-
 	
-	long lastCheckEndPosition = 0;
-
-	/// <summary>
-	/// Reads the log for errors since the position of last read now.
-	/// If the log checking setting is disabled, does nothing.
-	/// If an error is found then <see cref="OnErrorFound"/> is invoked and further checks are blocked.
-	/// </summary>
-	public void CheckLog() {
-	
-		if (!IsMonitoring) return;
-		if (IsErrorFound) return;
-
-		try {
-			string path = GetLogfilePath();
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-			using var sr = new StreamReader(fs);
-
-			fs.Seek(lastCheckEndPosition, SeekOrigin.Begin);
-
-			while (!sr.EndOfStream) {
-
-				string line = sr.ReadLine() ?? "";
-				lastCheckEndPosition = fs.Position;
-
-				if (line.StartsWith("ERROR")) {
-					IsErrorFound = true;
-					EmitSignalOnErrorFound();
-					return;
-				}
-			}
-
-		} catch (Exception ex) {
-
-			if (
-				ex is IOException ||
-				ex is ArgumentException ||
-				ex is System.Security.SecurityException ||
-				ex is UnauthorizedAccessException
-			) {
-				GD.PushError($"Error in the LogMonitor: {ex}");
-				IsErrorFound = true;
-				EmitSignalOnErrorFound();
-			}
-
-			throw;
-		}	
-	}
-
-	public const double DelayedCheckDefaultDelaySeconds = 2;
-	
-	/// <summary>
-	/// Runs <see cref="CheckLogDelayed"/> after some delay.
-	/// Internally creates a <see cref="Timer"/>.
-	/// </summary>
-	public void CheckLogDelayed(double delaySeconds = DelayedCheckDefaultDelaySeconds) {
-
-		Timer delayTimer = new Timer() {
-			Autostart = true,
-			OneShot = true,
-			WaitTime = delaySeconds
-		};
-		
-		delayTimer.Timeout += () => {
-			CheckLog();
-			delayTimer.QueueFree();
-		};
-		
-		this.AddChild(delayTimer);
-	}
-
-	/// <summary>
-	/// Forces the next read in <see cref="CheckLog"/>
-	/// at the point where it is currently the end.
-	/// This effectively skips all errors already present in the log.
-	/// </summary>
-	public void SeekToLogEnd() {
-
-		try {
-			string path = GetLogfilePath();
-			using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-			using var sr = new StreamReader(fs);
-			
-			fs.Seek(0, SeekOrigin.End);
-			lastCheckEndPosition = fs.Position;
-
-		} catch (Exception ex) {
-
-			if (
-				ex is IOException ||
-				ex is ArgumentException ||
-				ex is System.Security.SecurityException ||
-				ex is UnauthorizedAccessException
-			) {
-				GD.PushError($"Error in the LogMonitor: {ex}");
-				IsErrorFound = true;
-				EmitSignalOnErrorFound();
-			}
-			
-			throw;
-		}
-	}
-
-	/// <summary>Emitted when <see cref="CheckLog"/> finds errors.</summary>
-	[Signal] public delegate void OnErrorFoundEventHandler();
-
 }

@@ -41,8 +41,7 @@ public partial class MainWindow : WindowEx {
 		errorIndicator.Hide();
 		errorIndicator.Pressed += OnErrorIndicatorPressed;
 
-		LogMonitor.Instance.OnErrorFound += errorIndicator.Show;
-		LogMonitor.Instance.CheckLog();
+		LogMonitor.Instance.LoggerNotification += errorIndicator.Show;
 
 		// Init buttons
 		speakButton = this.GetNodeNotNull<BaseButton>("%SpeakButton");
@@ -245,7 +244,6 @@ public partial class MainWindow : WindowEx {
 	public void OnErrorIndicatorPressed() {
 		GD.Print("Opening log file.");
 		errorIndicator.Hide();
-		LogMonitor.Instance.ContinueMonitoringPastError();
 		OS.ShellOpen(LogMonitor.GetLogfilePath());
 	}
 
@@ -255,8 +253,6 @@ public partial class MainWindow : WindowEx {
 
 		// Skip empty messages
 		if (string.IsNullOrWhiteSpace(messageTextEdit.Text)) return;
-
-		LogMonitor.Instance.CheckLogDelayed();
 		
 		// Add to history
 		GD.Print("Speaking.");

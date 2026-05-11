@@ -19,8 +19,11 @@ public record UserSettings {
 	/// <summary>Whether to show advanced settings.</summary>
 	public readonly Field<bool> UseAdvancedSettings = new(false);
 
-	/// <summary>Whether to monitor the log file for errors.</summary>
-	public readonly Field<bool> EnableErrorMonitoring = new(true);
+	/// <summary>Whether to enable error notifications from LogMonitor.</summary>
+	public readonly Field<bool> EnableErrorNotifications = new(true);
+	
+	/// <summary>Whether to enable warning notifications from LogMonitor.</summary>
+	public readonly Field<bool> EnableWarningNotifications = new(false);
 
 
 	// ===== ===== ===== VOICE ===== ===== =====

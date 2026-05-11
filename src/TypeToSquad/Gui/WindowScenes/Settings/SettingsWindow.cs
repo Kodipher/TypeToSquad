@@ -44,7 +44,6 @@ public partial class SettingsWindow : WindowEx {
 		windowManager.GetExistingWindowAtSelf(WindowType.EditVoiceChanges)?.QueueFree();
 
 		UserSettingsManager.Instance.Save();
-		if (UserSettingsManager.Instance.Settings.EnableErrorMonitoring) LogMonitor.Instance.CheckLog();
 
 		this.QueueFree();
 	}
@@ -79,7 +78,8 @@ public partial class SettingsWindow : WindowEx {
 		var settings = UserSettingsManager.Instance.Settings;
 
 		// General
-		ImplaceByProperInput(settings.EnableErrorMonitoring, "%EnableMonitoringInput");
+		ImplaceByProperInput(settings.EnableErrorNotifications, "%EnableErrorNotificationsInput");
+		ImplaceByProperInput(settings.EnableWarningNotifications, "%EnableWarnNotificationsInput");
 
 		// Voice
 		ImplaceByProperInput(settings.VoiceKey, "%MainVoiceInput");
