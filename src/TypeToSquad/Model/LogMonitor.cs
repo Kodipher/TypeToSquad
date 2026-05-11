@@ -84,6 +84,8 @@ public partial class LogMonitor : Node {
 				BlockChecks = true;
 				EmitSignalOnErrorFound();
 			}
+
+			throw;
 		}	
 	}
 
@@ -112,6 +114,8 @@ public partial class LogMonitor : Node {
 			) {
 				GD.PushError($"Error in the LogMonitor: {ex}");
 			}
+			
+			throw;
 		}
 	}
 
