@@ -1,10 +1,10 @@
 TODO (features):
-- change how contexts work; maybe replace with custom content tags.
-- handle voice list not being loaded yet when settings is opened
-- feature: direct hardware input to grab and release focus
+- feature: user tags
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
+- feature: direct hardware input to grab and release focus
 - add the ability to use capture groups in replacement patterns
+- add proper icons to TableEdit
 
 TODO (internal):
 - refactor MessageLexer
@@ -15,11 +15,9 @@ TODO (internal):
 -- handle text selection
 
 TODO (misc quality):
-- update TableEdit
--- proper icons
--- add insert at (insert after) button
 - min window sizes for all windows
 - check tab order in all windows
 - document [wait {time}] format
+- handle voice list not being loaded yet when settings is opened
 
 TO TEST:
