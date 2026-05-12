@@ -80,7 +80,7 @@ metadata/_tab_index = 1
 [node name="MainVoiceLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voice"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "The primary voice to use during voice synthesis."
+tooltip_text = "The primary voice to use during synthesis."
 mouse_filter = 1
 text = "Main Voice"
 
@@ -92,7 +92,7 @@ size_flags_horizontal = 3
 [node name="VoiceVolumeLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voice"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Audio volume of voice during synthesis."
+tooltip_text = "Audio volume during synthesis."
 mouse_filter = 1
 text = "Voice Volume"
 
@@ -104,7 +104,7 @@ size_flags_horizontal = 3
 [node name="VoicePitchLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voice"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Pitch of voice during synthesis."
+tooltip_text = "Pitch of the voice during synthesis."
 mouse_filter = 1
 text = "Voice Pitch"
 
@@ -116,7 +116,7 @@ size_flags_horizontal = 3
 [node name="VoiceRateLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Voice"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Rate (speed) of voice during synthesis."
+tooltip_text = "Rate (speed) of speech during synthesis."
 mouse_filter = 1
 text = "Speaking Rate"
 
@@ -275,7 +275,7 @@ size_flags_horizontal = 0
 [node name="EnableTagCompletionLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "When enabled, open tags are completed automatically
+tooltip_text = "When enabled, tags are completed automatically
 when only one valid possibility remains during tying."
 mouse_filter = 1
 text = "Enable Tag Completion"
