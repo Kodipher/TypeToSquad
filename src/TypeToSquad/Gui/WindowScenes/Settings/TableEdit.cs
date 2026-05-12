@@ -197,18 +197,18 @@ public partial class TableEdit : ScrollContainer {
 	
 	void OnDeletePressed(Button source) {
 		
-		// Find row index
 		int rowIndex = GridIndexToTableIndex(source.GetIndex());
 
-		// Focus another row to keep focus
-		int rowIndexToFocus = rowIndex == TargetTable.Count - 1 ? rowIndex - 1 : rowIndex + 1;
-		int nodeIndexToFocus = TableIndexToGridRowStartIndex(rowIndexToFocus) + mainGrid.Columns - 1;
-		mainGrid.GetChild<Control>(nodeIndexToFocus).GrabFocus();
+		// Move focus to another row
+		if (TargetTable.Count > 1) {
+			int rowIndexToFocus = rowIndex == TargetTable.Count - 1 ? rowIndex - 1 : rowIndex + 1;
+			int nodeIndexToFocus = TableIndexToGridRowStartIndex(rowIndexToFocus) + mainGrid.Columns - 1;
+			mainGrid.GetChild<Control>(nodeIndexToFocus).GrabFocus();
+		}
 
 		// Remove row
 		TargetTable.RemoveAt(rowIndex);
 
-		// Remove nodes
 		int offset = TableIndexToGridRowStartIndex(rowIndex);
 		for (int i = offset; i < offset + TargetTable.ColumnCount + RowAdditionalNodeCount; i++) {
 			mainGrid.GetChild(i).QueueFree();
