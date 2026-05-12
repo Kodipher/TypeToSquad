@@ -135,7 +135,7 @@ public partial class MainWindow : WindowEx {
 										.Select(row => row.hint),
 									settingsInstance
 										.TextReplacements
-										.Select(row => row.context)
+										.Select(row => "context")
 								)
 								.Distinct()
 								.ToArray();
@@ -236,7 +236,7 @@ public partial class MainWindow : WindowEx {
 
 
 	public void OnSettingsPressed() {
-		bool useAdvanceSettings = UserSettingsManager.Instance.Settings.UseAdvancedSettings;
+		bool useAdvanceSettings = UserSettingsManager.Instance.Settings.ShowAdvancedSettings;
 		var windowType = useAdvanceSettings ? WindowType.Settings : WindowType.SimpleSettings;
 		WindowManager.Instance.CreateWindowAtSelfUnique(windowType);
 	}

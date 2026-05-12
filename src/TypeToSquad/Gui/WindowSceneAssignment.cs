@@ -13,7 +13,9 @@ public enum WindowType {
 	Settings,
 	Shortcuts,
 	EditReplacements,
-	EditVoiceChanges
+	EditVoiceChanges,
+	EditSoundEffects,
+	EditUserTags
 }
 
 

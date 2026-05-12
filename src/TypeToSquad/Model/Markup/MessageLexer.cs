@@ -82,7 +82,7 @@ public static class MessageLexer {
 		// Check for replacements
 		bool hintInReplacements = settingsInstance
 								.TextReplacements
-								.Any(row => row.context.Trim() == segment.Context);
+								.Any(row => "context" == segment.Context);
 		if (hintInReplacements) {
 			currentUses |= ContextUses.Replacements;
 		}

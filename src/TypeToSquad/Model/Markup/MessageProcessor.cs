@@ -78,8 +78,10 @@ public static class MessageProcessor {
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 
 		string newText = segment.Text;
-		foreach (var (context, pattern, replacement) in settingsInstance.TextReplacements) {
+		foreach (var (pattern, replacement) in settingsInstance.TextReplacements) {
 
+			string context = "";
+			
 			// Context check
 			string contextTrimmed = context.Trim();
 			if (

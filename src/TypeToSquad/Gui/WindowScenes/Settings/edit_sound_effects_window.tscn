@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://dkrcn84423bnw"]
+
+[ext_resource type="Script" uid="uid://bwmlre338rpf5" path="res://Gui/WindowScenes/Settings/EditSoundEffectsWindow.cs" id="1_dohru"]
+[ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_jtqog"]
+[ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_3d4hw"]
+[ext_resource type="PackedScene" uid="uid://bnk332u7rxegx" path="res://Gui/WindowScenes/Settings/table_edit.tscn" id="4_xnsf1"]
+
+[node name="EditSoundEffectsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
+oversampling_override = 1.0
+title = "Edit Sound Effects"
+initial_position = 2
+size = Vector2i(800, 500)
+min_size = Vector2i(300, 200)
+script = ExtResource("1_dohru")
+AutoFocusNode = NodePath("MarginContainer/VBoxContainer/SaveButton")
+MainTheme = ExtResource("2_jtqog")
+KeyboardPatchTheme = ExtResource("3_3d4hw")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TableEdit" parent="MarginContainer/VBoxContainer" instance=ExtResource("4_xnsf1")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SaveButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Close"

@@ -17,7 +17,7 @@ public record UserSettings {
 	// ===== ===== ===== GENERAL ===== ===== =====
 
 	/// <summary>Whether to show advanced settings.</summary>
-	public readonly Field<bool> UseAdvancedSettings = new(false);
+	public readonly Field<bool> ShowAdvancedSettings = new(false);
 
 	/// <summary>Whether to enable error notifications from LogMonitor.</summary>
 	public readonly Field<bool> EnableErrorNotifications = new(true);
@@ -54,29 +54,45 @@ public record UserSettings {
 
 	/// <summary>Number of previous inputs held in memory.</summary>
 	public readonly FieldNumericRange<int> HistorySlots = new(0, short.MaxValue, defaultValue: 32);
+	
+	/// <summary>Max number of times text substitutions may run.</summary>
+	public readonly FieldNumericRange<int> MaxReplacementPasses = new(0, 100, defaultValue: 20);
 
+	/// <summary>A table of text replacements to perform. Patterns are written using regex.</summary>
+	public readonly Table<(string pattern, string replacement)> TextReplacements = new(
+		() => new Field<string>(""),
+		() => new Field<string>("")
+	);
+
+
+	// ===== ===== ===== MARKUP ===== ===== =====
+	
+	/// <summary>A table of voices change hints and voices they correspond to.</summary>
+	public readonly Table<(string hint, string voiceKey)> VoiceChanges = new(
+		() => new FieldTagContent(),
+		() => new FieldOptionsRuntime()
+	);
+	
+	/// <summary>A table of sound effect hints and file paths they correspond to.</summary>
+	/// <remarks>NOT IMPLEMENTED</remarks>
+	public readonly Table<(string hint, string path, int volumePercent)> SoundEffects = new(
+		() => new FieldTagContent(),
+		() => new Field<string>(""),
+		() => new FieldNumericRange<int>(0, 100, defaultValue: 100)
+	);
+	
+	/// <summary>A table of custom tags and their content rules.</summary>
+	/// <remarks>NOT IMPLEMENTED</remarks>
+	public readonly Table<(string type, string pattern, string replacement)> UserTags = new(
+		() => new FieldTagContent(disallowWhitespace: true),
+		() => new FieldTagContent(),
+		() => new Field<string>("")
+	);
+	
 	/// <summary>Whether pressing Tab can open and close tags.</summary>
 	public readonly Field<bool> TabToInsertTag = new(true);
 
 	/// <summary>Whether to automatically complete tags during writing.</summary>
 	public readonly Field<bool> AutocompleteTags = new(false);
-
-
-	// ===== ===== ===== CONTEXTS ===== ===== =====
-
-	/// <summary>A table of text replacements to perform. Patterns are written using regex.</summary>
-	public readonly Table<(string context, string pattern, string replacement)> TextReplacements = new(
-																() => new FieldStringContextHint(""),
-																() => new Field<string>(""),
-																() => new Field<string>("")
-															);
-
-	/// <summary>Max number times text substitutions may run.</summary>
-	public readonly FieldNumericRange<int> MaxReplacementPasses = new(0, 100, defaultValue: 20);
-
-	/// <summary>A table of voices change hints and voices they correspond to.</summary>
-	public readonly Table<(string hint, string voiceKey)> VoiceChanges = new(
-																() => new FieldStringContextHint(""),
-																() => new FieldOptionsRuntime()
-															);
+	
 }

@@ -20,7 +20,7 @@ public partial class SettingsWindow : WindowEx {
 		// Advanced settings toggle
 		{
 			var enableAdvancedCheckbox = this.GetNodeNotNull<BaseButton>("%ShowAdvancedInput");
-			Field<bool> advancedSettingsField = UserSettingsManager.Instance.Settings.UseAdvancedSettings;
+			Field<bool> advancedSettingsField = UserSettingsManager.Instance.Settings.ShowAdvancedSettings;
 
 			if (advancedSettingsField.Value) enableAdvancedCheckbox.ButtonPressed = true;
 			enableAdvancedCheckbox.Toggled += newValue => {
@@ -96,7 +96,7 @@ public partial class SettingsWindow : WindowEx {
 			() => this.CallOneFrameLater(AudioManager.Instance.InitOutputDeviceSetting)
 		);
 
-		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurentInput");
+		var maxConcurrentInput = ImplaceByProperInput(settings.MaxConcurrentStreams, "%MaxConcurrentInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			maxConcurrentInput,
 			() => this.CallOneFrameLater(AudioManager.Instance.EnsureConcurrentNodeMax)
@@ -109,12 +109,15 @@ public partial class SettingsWindow : WindowEx {
 			() => this.CallOneFrameLater(HistoryTracker.Instance.EnforceHistoryCountMax)
 		);
 
+		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
+		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
+		
 		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);
 
 		// Contexts
-		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
-		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
 		LinkButtonToExternalWindow("%OpenVoiceChangesButton", WindowType.EditVoiceChanges);
+		LinkButtonToExternalWindow("%OpenSoundEffectsButton", WindowType.EditSoundEffects);
+		LinkButtonToExternalWindow("%OpenUserTagsButton", WindowType.EditUserTags);
 		ImplaceByProperInput(settings.TabToInsertTag, "%EnableTabToInsertTagInput");
 		ImplaceByProperInput(settings.AutocompleteTags, "%EnableTagCompletionInput");
 

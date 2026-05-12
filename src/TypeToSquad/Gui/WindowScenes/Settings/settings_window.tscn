@@ -5,6 +5,7 @@
 [ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_5ide3"]
 
 [node name="SettingsWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
+oversampling_override = 1.0
 title = "Settings"
 initial_position = 2
 size = Vector2i(700, 300)
@@ -142,15 +143,15 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MaxConcurentLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Output"]
+[node name="MaxConcurrentLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Output"]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Maximum number of synthesized clips played at the same time.
 Oldest playing clips are discarded to keep the number of clips within this bound."
 mouse_filter = 1
-text = "Max Concurent Outputs"
+text = "Max Concurrent Outputs"
 
-[node name="MaxConcurentInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Output"]
+[node name="MaxConcurrentInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Output"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -177,6 +178,32 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="ReplacementPassesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "The maximum number of times to try and substitute text according to the replacement rules.
+Exists to prevent infinite substitutions."
+mouse_filter = 1
+text = "Max Replacement Passes"
+
+[node name="ReplacementPassesInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ReplacementsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Rules for automatic text substitution."
+mouse_filter = 1
+text = "Text Replacements"
+
+[node name="OpenReplacementsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Edit"
+
 [node name="OpenShortcutsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Input"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -184,65 +211,68 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 text = "View Input Shortcuts"
 
-[node name="Contexts" type="GridContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+[node name="Markup" type="GridContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
 columns = 2
 metadata/_tab_index = 4
 
-[node name="ReplacementsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
+[node name="VoiceChangesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Rules for automatic text substitution.
-Rules are context-specific."
-mouse_filter = 1
-text = "Text Replacements"
-
-[node name="OpenReplacementsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Edit"
-
-[node name="ReplacementPassesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
-layout_mode = 2
-size_flags_horizontal = 0
-tooltip_text = "The maximum number of times to try and substitute text according to the above rules.
-Set to avoid infinite substitutions."
-mouse_filter = 1
-text = "Replacement Passes Limit"
-
-[node name="ReplacementPassesInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="VoiceChangesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
-layout_mode = 2
-size_flags_horizontal = 0
-tooltip_text = "Rules for which voice to use inside a context."
+tooltip_text = "Hints for the [voice #] tag.
+The [voice #] tag changes the voice
+mid-message."
 mouse_filter = 1
 text = "Voice Changes"
 
-[node name="OpenVoiceChangesButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
+[node name="OpenVoiceChangesButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Edit"
 
-[node name="EnableTabToInsertTagLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
+[node name="SoundEffectLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Hints for the [audio #] tag.
+The [audio #] tag inserts audio
+(commonly sound effect) mid-message."
+mouse_filter = 1
+text = "Sound Effects"
+
+[node name="OpenSoundEffectsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Edit"
+
+[node name="UserTagsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Custom tags and their handling."
+mouse_filter = 1
+text = "Custom Tags"
+
+[node name="OpenUserTagsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Edit"
+
+[node name="EnableTabToInsertTagLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "When enabled, pressing Tab will open or close a tag."
 mouse_filter = 1
 text = "Tab to Insert Tag"
 
-[node name="EnableTabToInsertTagInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
+[node name="EnableTabToInsertTagInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="EnableTagCompletionLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
+[node name="EnableTagCompletionLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "When enabled, open tags are completed automatically
@@ -250,7 +280,7 @@ when only one valid possibility remains during tying."
 mouse_filter = 1
 text = "Enable Tag Completion"
 
-[node name="EnableTagCompletionInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Contexts"]
+[node name="EnableTagCompletionInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Markup"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0

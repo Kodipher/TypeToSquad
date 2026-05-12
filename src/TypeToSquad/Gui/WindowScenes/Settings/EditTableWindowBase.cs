@@ -6,7 +6,7 @@ using TypeToSquad.Utils;
 namespace TypeToSquad.Gui.WindowScenes.Settings;
 
 
-public abstract partial class TableEditWindowBase : WindowEx {
+public abstract partial class EditTableWindowBase : WindowEx {
 
 	#region /--- Setup stuff, set in children ---/
 	
