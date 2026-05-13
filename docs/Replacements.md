@@ -3,7 +3,7 @@
 Portions of written text can be automatically replaced.
 This allows for pronunciation corrections.
 
-The matching pattern is written as a regex.
+The matching pattern is written as a (case insensitive by default) regex.
 Each pattern is applied to text that is between tags and message bounds.
 A pattern never matches tags.
 

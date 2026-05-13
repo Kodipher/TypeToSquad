@@ -9,9 +9,8 @@ a running change (e.g. `[voice de]`).
 Additionally, there is a special empty tag `[]` that
 clears any running changes set by other tags.
 
-A tag is composed of a type and a possible argument (value), separated by a space,
-e.g. `[wait 0.5s]` is a tag of type `wait` with a value of `0.5s`.
-
+A tag is composed of a type (case sensitive) and a possible argument (value), 
+separated by a space, e.g. `[wait 0.5s]` is a tag of type `wait` with a value of `0.5s`.
 A tag with no explicit argument, like `[foo]`, has an empty string as its value.
 
 Invalid syntax (nested tags, unclosed tags, unknown tags) is skipped over.
