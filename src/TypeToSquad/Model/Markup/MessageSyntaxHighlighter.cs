@@ -35,14 +35,13 @@ public partial class MessageSyntaxHighlighter : Godot.SyntaxHighlighter {
 	static readonly Color colorDefault = new(1, 1, 1);
 	static readonly Color colorInvalid = new(colorDefault, 0.5f);
 
-	static readonly Color colorContextReplacement = new(1, 1, 0);
-	static readonly Color colorContextNone = new(colorContextReplacement, 0.5f);
-	static readonly Color colorContextVoice = new(0, 1, 1);
-	static readonly Color colorContextEmpty = new(0.5f, 0.7f, 1);
-
-	static readonly Color colorContent = new(1, 0, 1);
-	static readonly Color colorContentPayload = new(1, 0.5f, 1);
-
+	static readonly Color colorTag = new(1, 0, 1);
+	static readonly Color colorTagArgument = new(1, 0.5f, 1);
+	static readonly Color colorTagRunningChange = new(0, 1, 1);
+	static readonly Color colorTagRunningChangeArgument = new(0.5f, 1, 1);
+	
+	static readonly Color colorTagInvalid = new(colorTag, 0.5f);
+	
 	#endregion
 
 	public override GodotDictionary _GetLineSyntaxHighlighting(int line) {
@@ -68,49 +67,47 @@ public partial class MessageSyntaxHighlighter : Godot.SyntaxHighlighter {
 		}
 
 		// Find colors
+		int nextSegmentStartI = 0;
 		for (int segmentI = 0; segmentI < segmentsCache.Count; segmentI++) {
+			
 			MessageSegment currentSegment = segmentsCache[segmentI];
 
+			int currentSegmentStartI = nextSegmentStartI;
+			int currentSegmentEndExclusiveI = nextSegmentStartI + currentSegment.Text.Length;
+
+			nextSegmentStartI = currentSegmentEndExclusiveI; // for next loop iteration
+			
 			// Bounds check
-			if (curLineStart >= currentSegment.EndExclusive) continue;
-			if (curLineEndExclusive <= currentSegment.Start) break;
+			if (curLineStart >= currentSegmentEndExclusiveI) continue;
+			if (curLineEndExclusive <= currentSegmentStartI) break;
 
-			// Add color change for misc
-			if (currentSegment is PlainTextSegment) {
-				AddColorChange(currentSegment.Start, colorDefault);
+			// Add colors
+			if (currentSegment.IsPlainText) {
+				AddColorChange(currentSegmentStartI, colorDefault);
 
-			} else if (currentSegment is InvalidSegment) {
-				AddColorChange(currentSegment.Start, colorInvalid);
-
-			// Add color change for contexts
-			} else if (currentSegment is ContextSegment contextSegment) {
-
-				if (contextSegment.ContextUses == ContextUses.Empty) {
-					AddColorChange(currentSegment.Start, colorContextEmpty);
-
-				} else if (contextSegment.ContextUses.HasFlag(ContextUses.VoiceChange)) {
-					AddColorChange(currentSegment.Start, colorContextVoice);
-
-				} else if (contextSegment.ContextUses.HasFlag(ContextUses.Replacements)) {
-					AddColorChange(currentSegment.Start, colorContextReplacement);
-
-				} else {
-					AddColorChange(currentSegment.Start, colorContextNone);
-				}
-
-			// Add color change for content
-			} else if (currentSegment is ContentSegment contentSegment) {
-				if (contentSegment.Type == ContentType.Invalid) {
-					AddColorChange(currentSegment.Start, colorInvalid);
-				} else {
-					AddColorChange(contentSegment.Start, colorContent);
-					AddColorChange(contentSegment.TypeTextEndExclusive, colorContentPayload);
-					AddColorChange(contentSegment.EndExclusive - 1, colorContent);
-				}
+			} else if (!currentSegment.IsValid) {
+				AddColorChange(currentSegmentStartI, colorInvalid);
+				
+			} else if (!MessageLexer.IsTagTypeValid(currentSegment.TagType)) {
+				AddColorChange(currentSegmentStartI, colorTagInvalid);
 
 			} else {
-				AddColorChange(currentSegment.Start, colorInvalid);
-				GD.PushError("Unknown segment in syntax highlighter.");
+
+				bool isRunningChange = MessageLexer.IsTagRunningChange(currentSegment.TagType);
+
+				Color tagColor = isRunningChange ? colorTagRunningChange : colorTag;
+				Color argumentColor = isRunningChange ? colorTagRunningChangeArgument : colorTagArgument;
+
+				_ = MessageLexer.ParseTag(currentSegment.Text, out int? argumentStartIndexInSeg);
+
+				if (argumentStartIndexInSeg.HasValue) {
+					AddColorChange(currentSegmentStartI, tagColor); // [
+					AddColorChange(currentSegmentStartI + argumentStartIndexInSeg.Value, argumentColor);
+					AddColorChange(currentSegmentEndExclusiveI - 1, tagColor); // ]
+				} else {
+					AddColorChange(currentSegmentStartI, tagColor); // [
+				}
+				
 			}
 
 		}

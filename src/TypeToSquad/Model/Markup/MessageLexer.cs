@@ -1,26 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 
 namespace TypeToSquad.Model.Markup;
-
-
-[Flags]
-public enum ContextUses {
-	None = 0,
-	Empty = 1,          // Empty contexts have special treatment
-	Replacements = 2,
-	VoiceChange = 4
-}
-
-public enum ContentType {
-	Invalid = 0,
-	Ipa = 1,
-	Audio = 2,
-	Wait = 3
-}
 
 
 /// <summary>
@@ -28,89 +10,32 @@ public enum ContentType {
 /// where each segment is either plain text or a tag.
 /// </summary>
 public static class MessageLexer {
-
-	#region /--- Content and context type parsing ---/
-
-	public static readonly ReadOnlyDictionary<string, ContentType> ContextHintStrings =
-		new Dictionary<string, ContentType>() {
-			["ipa"] = ContentType.Ipa,
-			["snd"] = ContentType.Audio,
-			["audio"] = ContentType.Audio,
-			["wait"] = ContentType.Wait,
-			["break"] = ContentType.Wait
-		}.AsReadOnly();
-
-	/// <summary>
-	/// Given a <see cref="ContentSegment"/>, returns a new <see cref="ContentSegment"/> 
-	/// with <see cref="ContentSegment.Type"/> set.
-	/// </summary>
-	static ContentSegment CreateTypedContentSegment(ContentSegment segment) {
-
-		var contextType =
-			ContextHintStrings
-			.FirstOrDefault(
-				pair => pair.Key == segment.TypeText,
-				KeyValuePair.Create("", ContentType.Invalid)
-			).Value;
-
-		return ContentSegment.CreateWithType(segment, contextType);
-	}
-
-	/// <summary>
-	/// Given a <see cref="ContextSegment"/>, returns a new <see cref="ContextSegment"/> 
-	/// with <see cref="ContextSegment.ContextUses"/> set.
-	/// </summary>
-	static ContextSegment CreateTypedContextSegment(ContextSegment segment) {
-
-		var settingsInstance = UserSettingsManager.Instance.Settings;
-
-		// Empty context
-		if (string.IsNullOrWhiteSpace(segment.Context)) {
-			return ContextSegment.CreateWithUses(segment, ContextUses.Empty);
-		}
-
-		ContextUses currentUses = ContextUses.None;
-
-		// Check for languages
-		bool hintInLanguages = settingsInstance
-								.VoiceChanges
-								.Any(row => row.hint.Trim() == segment.Context);
-		if (hintInLanguages) {
-			currentUses |= ContextUses.VoiceChange;
-		}
-
-		// Check for replacements
-		bool hintInReplacements = settingsInstance
-								.TextReplacements
-								.Any(row => "context" == segment.Context);
-		if (hintInReplacements) {
-			currentUses |= ContextUses.Replacements;
-		}
-
-		// Create new one
-		return ContextSegment.CreateWithUses(segment, currentUses);
-	}
-
-	#endregion
-
+	
 	/// <summary>Returns a list of segments that make up the message.</summary>
+	/// <remarks>The segments' <see cref="MessageSegment.Text"/>s add up perfectly to the initial string.</remarks>
 	public static List<MessageSegment> SegmentMessage(string message) {
 
-		/// <summary>
-		/// Iterates message string index until 
-		/// the tag is closed or the message is over.
-		/// </summary>
-		/// <remarks>
-		/// <paramref name="i"/> is assumed to start 
-		/// at the opening of the tag.
-		/// </remarks>
-		void ScanUntilClosed(ref int i, out bool hasNested) {
+		List<MessageSegment> segments = new();
 
+		int currentSegmentStartI = 0;
+
+		for (int i = 0; i < message.Length; i++) {
+
+			// Scan until tag opening is found
+			if (message[i] != '[') continue;
+
+			// Add text before tag (if there is any between tags)
+			if (i != currentSegmentStartI) {
+				segments.Add(MessageSegment.MakePlain(message[currentSegmentStartI..i]));
+				currentSegmentStartI = i;
+			}
+
+			// Find closing tag (assuming nesting)
 			int additionalDepth = 0;
-			hasNested = false;
+			bool hasNested = false;
 
 			i++; // "consume" tag opening
-			for (; i < message.Length; i++) {
+			for (/*[nop]*/; i < message.Length; i++) {
 
 				if (message[i] == '[') {
 					additionalDepth++;
@@ -124,144 +49,111 @@ public static class MessageLexer {
 					continue;
 				}
 
+				/*[continue]*/
 			}
-		}
-
-		bool IsSegmentContent(int openingI, int closingI, out int hintExclusiveEndI) {
-
-			// A tag is a content if there is whitesapce
-			// separating non-whitespace on either side
-			int firstNonWhitespace = -1;
-			int lastNonWhitespace = -1;
-			hintExclusiveEndI = -1; // first whitespace after first nonwhitespace
-
-			for (int i = openingI + 1; i <= closingI - 1; i++) {
-
-				if (char.IsWhiteSpace(message[i])) {
-
-					if (hintExclusiveEndI != -1) continue;
-					if (firstNonWhitespace == -1) continue;
-					hintExclusiveEndI = i;
-
-				} else {
-
-					if (firstNonWhitespace == -1) firstNonWhitespace = i;
-					lastNonWhitespace = i;
-				}
-
-			}
-
-			// No non-whitespace
-			if (firstNonWhitespace == -1) return false;
-
-			// No whitespace after first non-whitespace
-			if (hintExclusiveEndI == -1) return false;
-
-			// No non-whitespace in the middle
-			if (hintExclusiveEndI > lastNonWhitespace) return false;
-
-			return true;
-		}
-
-		// ----------
-
-
-		List<MessageSegment> segments = new();
-
-		int currentSegmentStartI = 0;
-
-		for (int i = 0; i < message.Length; i++) {
-
-			// Scan until tag opening is found
-			if (message[i] != '[') continue;
-
-			// Add text before tag
-			if (i != currentSegmentStartI) {
-				segments.Add(
-					PlainTextSegment.CreateAsSubstring(
-						start: currentSegmentStartI,
-						endExclusive: i,
-						str: message
-					)
-				);
-
-				currentSegmentStartI = i;
-			}
-
-			// Find closing (assuming nesting)
-			ScanUntilClosed(ref i, out bool hasNested);
+			
+			// here: `i` is at ']' or == message.Length
 
 			// Unclosed tag
 			if (i >= message.Length) {
-				segments.Add(
-					InvalidSegment.CreateAsSubstring(
-						start: currentSegmentStartI,
-						endExclusive: message.Length,
-						str: message
-					)
-				);
+				segments.Add(MessageSegment.MakeInvalid(message[currentSegmentStartI..]));
 				currentSegmentStartI = message.Length;
 				break;
 			}
 
 			// Closed tag but has nesting
 			if (hasNested) {
-				segments.Add(
-					InvalidSegment.CreateAsSubstring(
-						start: currentSegmentStartI,
-						endExclusive: i + 1,
-						str: message
-					)
-				);
+				segments.Add(MessageSegment.MakeInvalid(message[currentSegmentStartI..(i + 1)]));
 				currentSegmentStartI = i + 1;
 				continue;
 			}
-
-			bool isContent = IsSegmentContent(currentSegmentStartI, i, out int hintEndExclusive);
-
-			// Content
-			if (isContent) {
-				segments.Add(
-					CreateTypedContentSegment(
-						ContentSegment.CreateAsSubstring(
-							start: currentSegmentStartI,
-							endExclusive: i + 1,
-							hintEndExclusive: hintEndExclusive,
-							str: message
-						)
-					)
-				);
-				currentSegmentStartI = i + 1;
-				continue;
-			}
-
-			// Context (not content)
-			segments.Add(
-				CreateTypedContextSegment(
-					ContextSegment.CreateAsSubstring(
-						start: currentSegmentStartI,
-						endExclusive: i + 1,
-						str: message
-					)
-				)
-			);
+			
+			// Valid tag
+			segments.Add(MessageSegment.MakeTag(message[currentSegmentStartI..(i + 1)]));
 			currentSegmentStartI = i + 1;
 
 			// [continue]
 		}
 
-		// Add a segment lasting till the end if not there
+		// Add till the end
 		if (currentSegmentStartI < message.Length) {
-			segments.Add(
-				PlainTextSegment.CreateAsSubstring(
-					start: currentSegmentStartI,
-					endExclusive: message.Length,
-					str: message
-				)
-			);
+			segments.Add(MessageSegment.MakePlain(message[currentSegmentStartI..]));
 		}
 
 		return segments;
 	}
 
+	public static (string type, string argument) ParseTag(string tagWithBrackets, out int? argumentStartIndex) {
+		
+		int typeStartIndex = -1;
+		int typeExclusiveEndIndex = -1;
+
+		for (int i = 1; i < tagWithBrackets.Length - 1; i++) {
+			if (char.IsWhiteSpace(tagWithBrackets[i])) continue;
+			typeStartIndex = i;
+			break;
+		}
+
+		if (typeStartIndex < 0) {
+			// Empty tag
+			argumentStartIndex = null;
+			return ("", "");
+		}
+		
+		for (int i = typeStartIndex; i < tagWithBrackets.Length - 1; i++) {
+			if (!char.IsWhiteSpace(tagWithBrackets[i])) continue;
+			typeExclusiveEndIndex = i;
+			break;
+		}
+		
+		if (typeExclusiveEndIndex < 0) {
+			// Empty argument
+			argumentStartIndex = null;
+			return (tagWithBrackets[typeStartIndex..(tagWithBrackets.Length - 1)], "");
+		}
+
+		argumentStartIndex = typeExclusiveEndIndex + 1;
+
+		if (argumentStartIndex >= tagWithBrackets.Length - 1) {
+			// Empty argument (but with space separator)
+			argumentStartIndex = null;
+			return (tagWithBrackets[typeStartIndex..typeExclusiveEndIndex], "");
+		}
+		
+		return (
+				tagWithBrackets[typeStartIndex..typeExclusiveEndIndex],
+				tagWithBrackets[(typeExclusiveEndIndex + 1)..(tagWithBrackets.Length - 1)]
+			);
+	}
+
+	#region /--- Tag Types ---/
+
+	public const string TagTypeEmpty = "";
+	public const string TagTypePhonetic = "ipa";
+	public const string TagTypeVoice = "voice";
+	public const string TagTypeAudio = "audio";
+	public const string TagTypeBreak = "break";
+	public const string TagTypeBreakAlt = "wait";
+
+	public static readonly ReadOnlyCollection<string> BuildInTagTypes = new[] {
+																			TagTypeEmpty,
+																			TagTypePhonetic,
+																			TagTypeVoice,
+																			TagTypeAudio,
+																			TagTypeBreak,
+																			TagTypeBreakAlt
+																		}.AsReadOnly();
+
+	public static bool IsTagTypeValid(string tagType) {
+		return BuildInTagTypes.Contains(tagType);
+	}
+
+	public static bool IsTagRunningChange(string tagType) {
+		// As a function for potential future use
+		// (allows expanding the concept)
+		return tagType == TagTypeVoice || tagType == TagTypeEmpty;
+	}
+	
+	#endregion
+	
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -16,127 +17,82 @@ namespace TypeToSquad.Model.Markup;
 /// See docs folder for details.
 /// </summary>
 public static class MessageProcessor {
-
-	#region /--- Segment list operations ---/
-
-	/// <summary>
-	/// Returns a new list of segments where adjacent <see cref="PlainTextSegment"/>s
-	/// in the source <paramref name="segments"/> array are joined into one.
-	/// <b>Note:</b> the indexes in the returned segments may become invalid.
-	/// </summary>
+	
+	/// <summary>Returns a new list of segments where adjacent plain text segments are joined into one.</summary>
 	public static List<MessageSegment> CombineAdjacentPlainTextSegments(List<MessageSegment> segments) {
 
 		List<MessageSegment> newSegments = new();
 
 		foreach (MessageSegment seg in segments) {
-
-			// Add non-text segments directly
-			if (seg is not PlainTextSegment) {
+			
+			// Add non-plain-text
+			if (!seg.IsPlainText) {
 				newSegments.Add(seg);
 				continue;
 			}
 
-			// Add text segments not after text segments
-			if (newSegments.Count == 0 || newSegments[^1] is not PlainTextSegment) {
+			// Add plain-text after non-plain-text
+			if (newSegments.Count == 0 || !newSegments[^1].IsPlainText) {
 				newSegments.Add(seg);
 				continue;
 			}
 
 			// Join text segments
-			newSegments[^1] = PlainTextSegment.CreateFromText(newSegments[^1].Text + seg.Text);
+			newSegments[^1] = MessageSegment.MakePlain(newSegments[^1].Text + seg.Text);
 		}
 
 		return newSegments;
 	}
-
-	/// <summary>Removes invalid segments and invalid content segments</summary>
-	public static void StripInvalidSegmentsInPlace(List<MessageSegment> segments) {
-		segments.RemoveAll(seg => {
-			if (seg is InvalidSegment) return true;
-			if (seg is ContentSegment conSeg && conSeg.Type == ContentType.Invalid) return true;
-			return false;
-		});
+	
+	static string StringJoinValidSegments(IEnumerable<MessageSegment> segments) {
+		StringBuilder sb = new StringBuilder();
+		foreach (var seg in segments) {
+			if (seg.IsValid) sb.Append(seg.Text);
+		}
+		return sb.ToString();
 	}
-
-	#endregion
-
+	
 	#region /--- Text replacements ---/
-
-	const string AllContextsMarker = "*";
-
-	/// <summary>
-	/// Performs a single pass of text replacements 
-	/// on a plain text single segment.
-	/// </summary>
-	/// <remarks>
-	/// Does not perform replacements in place,
-	/// instead returns the new string.
-	/// The new string may contain tags.
-	/// </remarks>
-	static (string newText, bool anyReplaced) ReplaceTextSinglePass(PlainTextSegment segment, string currentContext) {
+	
+	/// <summary>Performs a single pass of text replacements on a string.</summary>
+	/// <remarks>The new string may contain tags.</remarks>
+	static string PerformReplacementsOnString(string text) {
 
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 
-		string newText = segment.Text;
-		foreach (var (pattern, replacement) in settingsInstance.TextReplacements) {
-
-			string context = "";
-			
-			// Context check
-			string contextTrimmed = context.Trim();
-			if (
-				contextTrimmed != AllContextsMarker &&
-				contextTrimmed != currentContext
-			) {
-				continue;
-			}
+		string newText = text;
+		
+		foreach ((string pattern, string replacement) in settingsInstance.TextReplacements) {
 
 			// Empty pattern
 			if (string.IsNullOrWhiteSpace(pattern)) continue;
 
 			// Try replace
 			Regex patternRegex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-			newText = patternRegex.Replace(segment.Text, replacement);
-
-			// Exit on first replacement
-			if (newText != segment.Text) break;
+			newText = patternRegex.Replace(newText, replacement);
 		}
-
-		// No replacement
-		if (newText == segment.Text) {
-			return (segment.Text, false);
-		}
-
-		return (newText, true);
+		
+		return newText;
 	}
 
-	/// <summary>
-	/// Creates a new list of segments by performing 1 pass of text replacements in current segments.
-	/// <b>Note:</b> the indexes in the returned segments may become invalid.
-	/// </summary>
-	static List<MessageSegment> ReplaceTextSinglePassAll(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
-		anyTextReplaced = false;
-
-		string currentContext = "";
+	/// <summary>Creates a new list of segments by performing 1 pass of text replacements in current segments.</summary>
+	static List<MessageSegment> PerformReplacements(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
+		
 		List<MessageSegment> newSegments = new();
+		anyTextReplaced = false;
 
 		foreach (MessageSegment seg in segments) {
 
-			// Context changes
-			if (seg is ContextSegment hintSeg) {
-				currentContext = hintSeg.Context;
-			}
-
 			// Add everything but text directly
-			if (seg is not PlainTextSegment textSeg) {
+			if (!seg.IsPlainText) {
 				newSegments.Add(seg);
 				continue;
 			}
 
 			// Perform replacements in text
-			(string newText, bool textReplaced) = ReplaceTextSinglePass(textSeg, currentContext);
+			string newText = PerformReplacementsOnString(seg.Text);
 
-			if (textReplaced) {
+			if (newText != seg.Text) {
 				anyTextReplaced = true;
 				newSegments.AddRange(MessageLexer.SegmentMessage(newText));
 				continue;
@@ -150,41 +106,38 @@ public static class MessageProcessor {
 
 	#endregion
 
-	#region /--- Compile Plain Text ---/
+	#region /--- User Tags ---/
+	
+	/// <summary>Returns a new list of segments where user tags have been handled.</summary>
+	static List<MessageSegment> HandleUserTags(List<MessageSegment> segments) {
+		
+		List<MessageSegment> newSegments = new();
 
-	static bool IsPlainTextOnly(IEnumerable<MessageSegment> segments) {
+		foreach (MessageSegment seg in segments) {
 
-		foreach (var seg in segments) {
-
-			if (seg is PlainTextSegment) continue;
-
-			if (
-				seg is ContextSegment contextSeg && 
-				(contextSeg.ContextUses == ContextUses.Empty ||
-				contextSeg.ContextUses == ContextUses.Replacements)
-			) {
+			// Add non-tags
+			if (!seg.IsValid || seg.IsPlainText) {
+				newSegments.Add(seg);
 				continue;
 			}
 
-			return false;
+			// Add build-in
+			if (MessageLexer.BuildInTagTypes.Contains(seg.TagType)) {
+				newSegments.Add(seg);
+				continue;
+			}
+			
+			// Handle user tag
+			newSegments.Add(seg with { IsValid = false }); // todo: implement user tags
 		}
 
-		return true;
+		return newSegments;
 	}
-
-	static string SegmentedMessageToPlainText(IEnumerable<MessageSegment> segments) {
-		StringBuilder sb = new StringBuilder();
-		foreach (var seg in segments) {
-			if (seg is not PlainTextSegment) continue;
-			sb.Append(seg.Text);
-		}
-		return sb.ToString();
-	}
-
+	
 	#endregion
-
+	
 	#region /--- Compile SSML ---/
-
+	
 	const string SsmlHeaderFormat = """
 <speak version="1.0"
 	xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="{0}">
@@ -197,89 +150,96 @@ public static class MessageProcessor {
 
 	const string SsmlIpa = """<phoneme alphabet="ipa" ph="{0}"></phoneme>""";
 	const string SsmlBreak = """<break time="{0}"/>""";
-
-	/// <remarks>Assumes invalid segments were already stripped.</remarks>
+	
+	/// <remarks>User tags must be handled before this method is called.</remarks>
 	static string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
-
-		// Singleton shortcuts
+		
+		// Shortcuts
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 		var voiceStorage = DaemonVoiceStorage.Instance;
-
-		// Guards
-		if (voiceStorage.VoicesByKey is null) throw new InvalidOperationException("Cannot find voice information.");
-
-
+		
 		
 		StringBuilder sb = new StringBuilder();
-
+		
 		// Header
-		string defaultVoiceKey = settingsInstance.VoiceKey;
-		string defaultVoiceLang = voiceStorage.VoicesByKey[defaultVoiceKey].Language;
-		sb.AppendFormat(SsmlHeaderFormat, defaultVoiceLang);
-
-		// Segments
+		string defaultVoiceLang = voiceStorage.GetVoiceByKey(settingsInstance.VoiceKey).Language;
+		sb.AppendFormat(SsmlHeaderFormat, SecurityElement.Escape(defaultVoiceLang));
+		
+		// Content
 		bool isInsideVoice = false;
 
 		foreach (var seg in segments) {
 
-			if (seg is PlainTextSegment) {
-				string segText = seg.Text;
-				segText = SecurityElement.Escape(segText);
-				sb.Append(segText);
-			}
+			if (!seg.IsValid) continue;
 
-			if (seg is ContextSegment hintSegment) {
+			if (seg.IsTag) {
 
-				// Voice changes
-				if (isInsideVoice) {
-					sb.Append(SsmlVoiceClose);
-					isInsideVoice = false;
-				}
-
-				if (hintSegment.ContextUses.HasFlag(ContextUses.VoiceChange)) {
+				switch (seg.TagType) {
 					
-					string voiceNameKey = 
-						settingsInstance
-						.VoiceChanges
-						.FirstOrDefault(row => row.hint == hintSegment.Context)
-						.voiceKey;
-
-					var voiceInfo = voiceStorage.GetVoiceByKey(voiceNameKey);
-					string voiceName = SecurityElement.Escape(voiceInfo.Name);
-					string voiceLang = SecurityElement.Escape(voiceInfo.Language);
-
-					sb.AppendFormat(SsmlVoiceOpen, voiceName, voiceLang);
-					isInsideVoice = true;
-				}
-			}
-
-			// Content
-			if (seg is ContentSegment contentSegment) {
-
-				switch (contentSegment.Type) {
-
-					case ContentType.Ipa:
-						sb.AppendFormat(SsmlIpa, SecurityElement.Escape(contentSegment.Payload));
+					case MessageLexer.TagTypeEmpty:
+						if (isInsideVoice) {
+							sb.Append(SsmlVoiceClose);
+							isInsideVoice = false;
+						}
+						break;
+					
+					case MessageLexer.TagTypePhonetic:
+						sb.AppendFormat(SsmlIpa, SecurityElement.Escape(seg.TagArgument));
 						break;
 
-					case ContentType.Audio:
+					case MessageLexer.TagTypeVoice: {
+						
+						if (isInsideVoice) {
+							sb.Append(SsmlVoiceClose);
+							isInsideVoice = false;
+						}
+
+						if (seg.TagArgument == "") break;
+						
+						string? voiceKey = settingsInstance
+											.VoiceChanges
+											.Where(row => row.hint == seg.TagArgument)
+											.Select(string? (row) => row.voiceKey)
+											.FirstOrDefault();
+
+						if (voiceKey is null) break;
+
+						var voiceInfo = voiceStorage.GetVoiceByKey(voiceKey);
+						string voiceName = SecurityElement.Escape(voiceInfo.Name);
+						string voiceLang = SecurityElement.Escape(voiceInfo.Language);
+
+						sb.AppendFormat(SsmlVoiceOpen, voiceName, voiceLang);
+						isInsideVoice = true;
+					} break;
+					
+					case MessageLexer.TagTypeAudio:
+						if (seg.TagArgument == "") break;
 						throw new NotImplementedException("Inserting audio is not implemented.");
 						break;
-
-					case ContentType.Wait:
-						sb.AppendFormat(SsmlBreak, SecurityElement.Escape(contentSegment.Payload));
+					
+					case MessageLexer.TagTypeBreak:
+					case MessageLexer.TagTypeBreakAlt:
+						sb.AppendFormat(SsmlBreak, SecurityElement.Escape(seg.TagArgument));
 						break;
-
+					
 					default:
-						throw new NotSupportedException("Unknown inline content segmet.");
+						throw new InvalidOperationException("Unhandled tag found.");
 				}
 
+				continue;
 			}
+			
+			// Plain text
+			string segText = seg.Text;
+			segText = SecurityElement.Escape(segText);
+			sb.Append(segText);
 
 			// [continue]
 		}
 
 		if (isInsideVoice) sb.Append(SsmlVoiceClose);
+		
+		// Footer
 		sb.Append(SsmlFooter);
 
 		return sb.ToString();
@@ -289,28 +249,27 @@ public static class MessageProcessor {
 
 	/// <summary>
 	/// Processes the message, performing analysis and text replacements.
-	/// Returns a plain text or an ssml message.
+	/// Returns a plain text or a message in SSML format.
 	/// </summary>
 	public static (string requestString, bool isSsml) ProcessMessage(string message) {
 
 		var segments = MessageLexer.SegmentMessage(message);
-
+		
 		// Text replacements
 		for (int i = 0, n = UserSettingsManager.Instance.Settings.MaxReplacementPasses; i < n; i++) {
-			segments = ReplaceTextSinglePassAll(segments, out bool anyReplaced);
-			segments = CombineAdjacentPlainTextSegments(segments);
+			segments = PerformReplacements(segments, out bool anyReplaced);
+			//segments = CombineAdjacentPlainTextSegments(segments);
 			if (!anyReplaced) break;
 
 			if (i == n - 1) GD.PushError("Text replacement passes limit reached.");
 		}
-
-		// Stip non-content stuff
-		StripInvalidSegmentsInPlace(segments);
-		segments = CombineAdjacentPlainTextSegments(segments);
+		
+		// User tags
+		segments = HandleUserTags(segments);
 
 		// Text-only message
-		if (IsPlainTextOnly(segments)) {
-			return (SegmentedMessageToPlainText(segments), false);
+		if (segments.All(seg => !seg.IsValid || seg.IsPlainText)) {
+			return (StringJoinValidSegments(segments), false);
 		}
 
 		// Message with contexts
