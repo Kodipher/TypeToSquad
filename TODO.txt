@@ -1,20 +1,20 @@
 TODO (features):
 - reimplement autocomplete and tag on tab
 - feature: user tags
-- feature: smml audio tag usage
+- feature: ssml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
 - feature: direct hardware input to grab and release focus
 - add proper icons to TableEdit
 
 TODO (internal):
-- refactor MessageLexer
--- MessageLexer: check for content inside tags instead of letting the daemon crash
 - refactor autocomplete
 -- consider changing autocomplete and tab to insert tag to handle (invalid) nested tags
 -- consider changing autocomplete logic to handle typing in the middle of the text
 -- handle text selection
 
 TODO (misc quality):
+- handle regex format errors 
+- handle tag content errors instead of instead of letting the daemon crash  
 - min window sizes for all windows
 - check tab order in all windows
 - document [wait {time}] format
