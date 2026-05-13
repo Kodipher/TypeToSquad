@@ -107,6 +107,7 @@ public partial class MainWindow : WindowEx {
 		// Autocomplete disabled
 		if (!settingsInstance.AutocompleteTags) return;
 
+		/*
 		// Find latest opening
 		caretIndex = caretIndex == -1 ? 0 : caretIndex;
 
@@ -171,6 +172,7 @@ public partial class MainWindow : WindowEx {
 		// Insert
 		if (autoCompleteText is null) return;
 		messageTextEdit.InsertTextAtCaret(autoCompleteText, caretIndex);
+		*/
 	}
 
 	/// <remarks>

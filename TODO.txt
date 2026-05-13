@@ -1,4 +1,5 @@
 TODO (features):
+- reimplement autocomplete and tag on tab
 - feature: user tags
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
