@@ -156,29 +156,29 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Input" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+[node name="Text" type="VBoxContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/TabContainer/Input"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/TabContainer/Text"]
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2
 
-[node name="HistorySlotsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+[node name="HistorySlotsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Text/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "The number of previous messages to keep in memory."
 mouse_filter = 1
 text = "History Slots"
 
-[node name="HistorySlotsInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+[node name="HistorySlotsInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Text/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ReplacementPassesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+[node name="ReplacementPassesLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Text/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "The maximum number of times to try and substitute text according to the replacement rules.
@@ -186,25 +186,25 @@ Exists to prevent infinite substitutions."
 mouse_filter = 1
 text = "Max Replacement Passes"
 
-[node name="ReplacementPassesInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+[node name="ReplacementPassesInput" type="Control" parent="MarginContainer/VBoxContainer/TabContainer/Text/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ReplacementsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+[node name="ReplacementsLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Text/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Rules for automatic text substitution."
 mouse_filter = 1
 text = "Text Replacements"
 
-[node name="OpenReplacementsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Input/GridContainer"]
+[node name="OpenReplacementsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Text/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Edit"
 
-[node name="OpenShortcutsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Input"]
+[node name="OpenShortcutsButton" type="Button" parent="MarginContainer/VBoxContainer/TabContainer/Text"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
