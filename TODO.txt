@@ -4,7 +4,6 @@ TODO (features):
 - feature: smml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
 - feature: direct hardware input to grab and release focus
-- add the ability to use capture groups in replacement patterns
 - add proper icons to TableEdit
 
 TODO (internal):
