@@ -57,7 +57,9 @@ however additional rules apply to tags:
 3. New tags are not recognized until all the rules have been checked, meaning
    - the `[` and `]` characters are treated as text during matching and
    - the markup syntax only become final after the last rule.
-4. Text replacements still apply after the rules, but locality is still in effect:
+4. After the rules are applied, the processed content becomes plain text.
+   - Event if no rule applied to a piece of text within the argument, it is still retained.
+5. Text replacements still apply after the rules, but locality is still in effect:
    - Text replacements do not match across tag boundaries,
      even after the tag is replaced with its processed argument.
 
