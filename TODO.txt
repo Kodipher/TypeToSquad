@@ -1,5 +1,4 @@
 TODO (features):
-- reimplement autocomplete and tag on tab
 - feature: ssml audio tag usage
 -- if only 1 audio tag exists: shortcut to loading the sound directly
 - feature: direct hardware input to grab and release focus

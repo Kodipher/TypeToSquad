@@ -152,7 +152,7 @@ public static class MessageLexer {
 
 	public static IEnumerable<string> GetUserTags() {
 		var settingsInstance = UserSettingsManager.Instance.Settings;
-		return settingsInstance.UserTags.Select(row => row.type);
+		return settingsInstance.UserTags.Select(row => row.type).Distinct();
 	}
 	
 	public static bool IsTagTypeValid(string tagType) {

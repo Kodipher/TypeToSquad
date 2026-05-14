@@ -102,10 +102,11 @@ public partial class MainWindow : WindowEx {
 		
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 		
-		// Autocomplete disabled
-		if (!settingsInstance.AutocompleteTags) return;
+		// Autocomplete
+		if (settingsInstance.AutocompleteTags) {
+			MessageCompletionProvider.TryAutocompleteTag(messageTextEdit, caretIndex);
+		}
 		
-		// todo
 	}
 
 	public void OnSettingsPressed() {
