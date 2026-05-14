@@ -1,14 +1,9 @@
 TODO (features):
-- feature: ssml audio tag usage
--- if only 1 audio tag exists: shortcut to loading the sound directly
+- feature: compile message with multiple requests, allowing for more features
+- feature: fix audio tag usage, handle sound effect volume
 - feature: direct hardware input to grab and release focus
+- extend autocomplete to work on voice and audio tags
 - add proper icons to TableEdit
-
-TODO (internal):
-- refactor autocomplete
--- consider changing autocomplete and tab to insert tag to handle (invalid) nested tags
--- consider changing autocomplete logic to handle typing in the middle of the text
--- handle text selection
 
 TODO (misc quality):
 - handle regex format errors 
