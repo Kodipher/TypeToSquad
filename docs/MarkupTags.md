@@ -39,3 +39,39 @@ that has the hint `buzzer` in the sound effect table.
 Empty hints have special handling:
 - `[audio]` does nothing
 - `[voice]` resets the voice to default.
+
+
+## Custom Tags
+
+Custom tags serve as macros/shortcuts.
+In a way, they inline additional text content, according to the custom rules.
+
+Technically, shortcuts are achievable with text replacements alone,
+however additional rules apply to tags:
+
+1. The rules are local to the tag, meaning:
+   - the rules only active inside the tag of the specified type and
+   - the rules don't match anything outside of that tag.
+2. Each rule is only applied once per tag.
+   - The rules are still applied in the order they are in the table.
+3. New tags are not recognized until all the rules have been checked, meaning
+   - the `[` and `]` characters are treated as text during matching and
+   - the markup syntax only become final after the last rule.
+4. Text replacements still apply after the rules, but locality is still in effect:
+   - Text replacements do not match across tag boundaries,
+     even after the tag is replaced with its processed argument.
+
+Rules with empty patterns are skipped.
+
+No rules are applied to built-in tags.
+
+
+### Tricks
+
+- Multiple rules can exist for the same tag type and will be applied in order.
+- If an argument is irrelevant, this pattern - `^.*$` - always produces 1 match, no matter the input.
+- If one rule matches the output of another unintentionally, there is a botch to fix that:
+  - This pattern - `(?<!{[^}]*)THING(?!}[^{]*)` - matches `THING` that is not
+    inside of curly braces `{}`.
+  - This trick can be used to effectively isolate the output of a rule by
+    putting it inside braces, which can be removed at the very with a separate rule.
