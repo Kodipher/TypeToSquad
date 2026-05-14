@@ -74,7 +74,6 @@ public record UserSettings {
 	);
 	
 	/// <summary>A table of sound effect hints and file paths they correspond to.</summary>
-	/// <remarks>NOT IMPLEMENTED</remarks>
 	public readonly Table<(string hint, string path, int volumePercent)> SoundEffects = new(
 		() => new FieldTagContent(),
 		() => new Field<string>(""),
@@ -82,10 +81,9 @@ public record UserSettings {
 	);
 	
 	/// <summary>A table of custom tags and their content rules.</summary>
-	/// <remarks>NOT IMPLEMENTED</remarks>
 	public readonly Table<(string type, string pattern, string replacement)> UserTags = new(
 		() => new FieldTagContent(disallowWhitespace: true),
-		() => new FieldTagContent(),
+		() => new Field<string>(""),
 		() => new Field<string>("")
 	);
 	
