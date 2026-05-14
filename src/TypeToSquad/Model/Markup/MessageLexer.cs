@@ -10,6 +10,9 @@ namespace TypeToSquad.Model.Markup;
 /// where each segment is either plain text or a tag.
 /// </summary>
 public static class MessageLexer {
+
+	public const char TagOpen = '[';
+	public const char TagClose = ']';
 	
 	/// <summary>Returns a list of segments that make up the message.</summary>
 	/// <remarks>The segments' <see cref="MessageSegment.Text"/>s add up perfectly to the initial string.</remarks>
@@ -22,7 +25,7 @@ public static class MessageLexer {
 		for (int i = 0; i < message.Length; i++) {
 
 			// Scan until tag opening is found
-			if (message[i] != '[') continue;
+			if (message[i] != TagOpen) continue;
 
 			// Add text before tag (if there is any between tags)
 			if (i != currentSegmentStartI) {
@@ -37,13 +40,13 @@ public static class MessageLexer {
 			i++; // "consume" tag opening
 			for (/*[nop]*/; i < message.Length; i++) {
 
-				if (message[i] == '[') {
+				if (message[i] == TagOpen) {
 					additionalDepth++;
 					hasNested = true;
 					continue;
 				}
 
-				if (message[i] == ']') {
+				if (message[i] == TagClose) {
 					if (additionalDepth == 0) break;
 					additionalDepth--;
 					continue;

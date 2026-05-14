@@ -55,7 +55,10 @@ public static class MessageProcessor {
 	#region /--- Text replacements ---/
 	
 	/// <summary>Performs a single pass of text replacements on a string.</summary>
-	/// <remarks>The new string may contain tags.</remarks>
+	/// <remarks>
+	/// The new string may contain tags.
+	/// When it does, the replacement will also be interrupted.
+	/// </remarks>
 	static string PerformReplacementsOnString(string text) {
 
 		var settingsInstance = UserSettingsManager.Instance.Settings;
@@ -70,6 +73,14 @@ public static class MessageProcessor {
 			// Try replace
 			Regex patternRegex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 			newText = patternRegex.Replace(newText, replacement);
+
+			// Stop if introduced tags to parse tags
+			bool hasReplaced = text != newText;
+			if (hasReplaced) {
+				bool newHasTags = newText.Contains(MessageLexer.TagOpen) || newText.Contains(MessageLexer.TagClose);
+				if (newHasTags) break;
+			}
+
 		}
 		
 		return newText;
