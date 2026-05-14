@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 
 namespace TypeToSquad.Model.Markup;
@@ -147,8 +148,17 @@ public static class MessageLexer {
 																			TagTypeBreakAlt
 																		}.AsReadOnly();
 
+	public static IEnumerable<string> GetUserTags() {
+		var settingsInstance = UserSettingsManager.Instance.Settings;
+		return settingsInstance.UserTags.Select(row => row.type);
+	}
+	
 	public static bool IsTagTypeValid(string tagType) {
-		return BuildInTagTypes.Contains(tagType);
+		
+		if (BuildInTagTypes.Contains(tagType)) return true;
+		if (GetUserTags().Contains(tagType)) return true;
+		
+		return false;
 	}
 
 	public static bool IsTagRunningChange(string tagType) {

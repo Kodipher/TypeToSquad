@@ -52,7 +52,7 @@ public static class MessageProcessor {
 		return sb.ToString();
 	}
 	
-	#region /--- Text replacements ---/
+	#region /--- Text replacements, User Tags ---/
 	
 	/// <summary>Performs a single pass of text replacements on a string.</summary>
 	/// <remarks>
@@ -114,20 +114,39 @@ public static class MessageProcessor {
 
 		return newSegments;
 	}
+	
+	/// <summary>Performs replacement rules on the tag argument</summary>
+	/// <remarks>Does not return early when a tag is added, unlike <see cref="PerformReplacementsOnString"/>.</remarks>
+	/// <returns>The processed tag argument.</returns>
+	static string PerformTagRulesOnString(string tagType, string tagArgument) {
+		
+		var settingsInstance = UserSettingsManager.Instance.Settings;
 
-	#endregion
+		string processedArg = tagArgument;
+		
+		foreach ((string type, string pattern, string replacement) in  settingsInstance.UserTags) {
+			
+			// Skip irrelevant
+			if (type != tagType) continue;
+		
+			// Replace
+			Regex patternRegex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+			processedArg = patternRegex.Replace(processedArg, replacement);
+		}
 
-	#region /--- User Tags ---/
+		return processedArg;
+	}
 	
 	/// <summary>Returns a new list of segments where user tags have been handled.</summary>
-	static List<MessageSegment> HandleUserTags(List<MessageSegment> segments) {
+	static List<MessageSegment> PerformUserTagsPass(List<MessageSegment> segments, out bool anyFound) {
 		
 		List<MessageSegment> newSegments = new();
+		anyFound = false;
 
 		foreach (MessageSegment seg in segments) {
 
 			// Add non-tags
-			if (!seg.IsValid || seg.IsPlainText) {
+			if (!seg.IsTag || !seg.IsValid) {
 				newSegments.Add(seg);
 				continue;
 			}
@@ -139,7 +158,9 @@ public static class MessageProcessor {
 			}
 			
 			// Handle user tag
-			newSegments.Add(seg with { IsValid = false }); // todo: implement user tags
+			string processedContent = PerformTagRulesOnString(seg.TagType, seg.TagArgument);
+			newSegments.AddRange(MessageLexer.SegmentMessage(processedContent));
+			anyFound = true;
 		}
 
 		return newSegments;
@@ -266,17 +287,15 @@ public static class MessageProcessor {
 
 		var segments = MessageLexer.SegmentMessage(message);
 		
-		// Text replacements
+		// User tags and Text replacements
 		for (int i = 0, n = UserSettingsManager.Instance.Settings.MaxReplacementPasses; i < n; i++) {
+			segments = PerformUserTagsPass(segments, out bool anyFound);
 			segments = PerformReplacementPass(segments, out bool anyReplaced);
-			//segments = CombineAdjacentPlainTextSegments(segments);
-			if (!anyReplaced) break;
+			//segments = CombineAdjacentPlainTextSegments(segments); // keep locality of user tags
+			if (!anyReplaced && !anyFound) break;
 
 			if (i == n - 1) GD.PushError("Text replacement passes limit reached.");
 		}
-		
-		// User tags
-		segments = HandleUserTags(segments);
 
 		// Text-only message
 		if (segments.All(seg => !seg.IsValid || seg.IsPlainText)) {
