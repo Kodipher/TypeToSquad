@@ -68,7 +68,7 @@ public static class MessageProcessor {
 		foreach ((string pattern, string replacement) in settingsInstance.TextReplacements) {
 
 			// Empty pattern
-			if (string.IsNullOrWhiteSpace(pattern)) continue;
+			if (string.IsNullOrEmpty(pattern)) continue;
 
 			// Try replace
 			Regex patternRegex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
