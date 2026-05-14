@@ -14,6 +14,8 @@ public static class MessageLexer {
 
 	public const char TagOpen = '[';
 	public const char TagClose = ']';
+	public const string TagOpenAsString = "[";
+	public const string TagCloseAsString = "]";
 	
 	/// <summary>Returns a list of segments that make up the message.</summary>
 	/// <remarks>The segments' <see cref="MessageSegment.Text"/>s add up perfectly to the initial string.</remarks>

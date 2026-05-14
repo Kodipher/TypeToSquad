@@ -88,154 +88,25 @@ public partial class MainWindow : WindowEx {
 		}
 
 		if (inputEventKey.IsActionPressed("insert_tag")) {
-			bool setAsHandled = OnInsertTagPressed();
-			if (setAsHandled) SetInputAsHandled();
-			return;
+			if (UserSettingsManager.Instance.Settings.TabToInsertTag) {
+				OnInsertTagPressed();
+				SetInputAsHandled();
+			}
 		}
 
 	}
 
 	#endregion
-
-	#region /--- Tag autocomplete, Tab handling ---/
-
-	/// <remarks>Assumes partial valid tags.</remarks>
+	
 	public void OnCharacterTyped(int typedCharUnicode, int caretIndex) {
-
+		
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 		
 		// Autocomplete disabled
 		if (!settingsInstance.AutocompleteTags) return;
-
-		/*
-		// Find latest opening
-		caretIndex = caretIndex == -1 ? 0 : caretIndex;
-
-		int currentLine = messageTextEdit.GetCaretLine(caretIndex);
-		int currentColumn = messageTextEdit.GetCaretColumn(caretIndex);
-
-		(bool isCurrentlyOpen, Vector2I openingPos) = SearchForTagOpeningAt(currentLine, currentColumn);
-
-		if (!isCurrentlyOpen) return; // only act on open tags
-	
-		int tagOpeningStringIndex = messageTextEdit.GetLineStartIndex(openingPos.Y) + openingPos.X;
-		int currentIndex = messageTextEdit.GetLineStartIndex(currentLine) + currentColumn;
-
-		// Find currently typed context name
-		string currentName = messageTextEdit.Text[(tagOpeningStringIndex + 1)..currentIndex];
-		currentName = currentName.TrimStart();
-
-		if (currentName.Length == 0) return; // do not act on empty names
-
-		// Find all context names
-		var contentHints = TypeToSquad.Model.Markup.MessageLexer.ContextHintStrings.Keys;
-
-		string[] contextHints = Enumerable.Concat(
-									settingsInstance
-										.VoiceChanges
-										.Select(row => row.hint),
-									settingsInstance
-										.TextReplacements
-										.Select(row => "context")
-								)
-								.Distinct()
-								.ToArray();
-
-		// Find matches
-		static string? GetSingleOrNullNoThrow(IEnumerable<string> seq) {
-			string[] possible = seq.Take(2).ToArray();
-			if (possible.Length == 1) return possible[0];
-			return null;
-		}
-
-		string? possibleContext = GetSingleOrNullNoThrow(contextHints.Where(s => s.StartsWith(currentName)));
-		string? possibleContent = GetSingleOrNullNoThrow(contentHints.Where(s => s.StartsWith(currentName, StringComparison.OrdinalIgnoreCase)));
-
-		string? autoCompleteText = null;
-
-		if (possibleContext is not null && possibleContent is null) {
-			// Context only
-			autoCompleteText = possibleContext[currentName.Length..] + "]";
-
-		} else if (possibleContext is null && possibleContent is not null) {
-			// Content only
-			autoCompleteText = possibleContent[currentName.Length..] + " ";
-
-		} else if (possibleContext is not null && possibleContent is not null) {
-			// Both possible
-			if (possibleContent.Equals(possibleContext, StringComparison.OrdinalIgnoreCase)) {
-				// Prefer one where case matters.
-				autoCompleteText = possibleContext[currentName.Length..];
-			}
-		}
-
-		// Insert
-		if (autoCompleteText is null) return;
-		messageTextEdit.InsertTextAtCaret(autoCompleteText, caretIndex);
-		*/
+		
+		// todo
 	}
-
-	/// <remarks>
-	/// Assumes partial valid tags.
-	/// Only works with the main caret.
-	/// </remarks>
-	/// <returns>true if the tab press was consumed</returns>
-	public bool OnInsertTagPressed() {
-
-		// Disabled from settings
-		if (!UserSettingsManager.Instance.Settings.TabToInsertTag) return false;
-
-		// Find latest opening
-		int currentLine = messageTextEdit.GetCaretLine(caretIndex: 0);
-		int currentColumn = messageTextEdit.GetCaretColumn(caretIndex: 0);
-
-		(bool isCurrentlyOpen, _) = SearchForTagOpeningAt(currentLine, currentColumn);
-
-		// Insert
-		messageTextEdit.InsertText(isCurrentlyOpen ? "]" : "[", currentLine, currentColumn, beforeSelectionBegin: true);
-
-		return true;
-	}
-
-
-	/// <returns>
-	/// Whether given position is after a tag opening and 
-	/// the position of the last opening or closing character.
-	/// </returns>
-	(bool isOpen, Vector2I position) SearchForTagOpeningAt(int line, int column) {
-
-		var searchFlags = (uint)TextEdit.SearchFlags.Backwards;
-		Vector2I lastOpen = messageTextEdit.Search("[", searchFlags, line, column);
-		Vector2I lastClose = messageTextEdit.Search("]", searchFlags, line, column);
-
-		// x is the column, y is the line	
-
-		// Invalidate anything after caret position
-		if (lastOpen.Y > line || (lastOpen.Y == line && lastOpen.X >= column)) {
-			lastOpen = new Vector2I(-1, -1);
-		}
-
-		if (lastClose.Y > line || (lastClose.Y == line && lastClose.X >= column)) {
-			lastClose = new Vector2I(-1, -1);
-		}
-
-		// Nothing found
-		if (lastOpen.Y == -1 && lastClose.Y == -1) {
-			return (false, lastClose);
-		}
-
-		// Close is latest
-		// (or close is found and open is not)
-		if (lastClose.Y > lastOpen.Y || (lastOpen.Y == lastClose.Y && lastClose.X > lastOpen.X)) {
-			return (false, lastClose);
-		}
-
-		// Otherwise open
-		return (true, lastOpen);
-	}
-
-	#endregion
-
 
 	public void OnSettingsPressed() {
 		bool useAdvanceSettings = UserSettingsManager.Instance.Settings.ShowAdvancedSettings;
@@ -312,6 +183,10 @@ public partial class MainWindow : WindowEx {
 			messageTextEdit.Text = queryResult; // also clears carets
 			messageTextEdit.SetCaretPositionToEnd();
 		}
+	}
+	
+	public void OnInsertTagPressed() {
+		MessageCompletionProvider.OpenOrCompleteTagAtAllCarets(messageTextEdit);
 	}
 
 }
