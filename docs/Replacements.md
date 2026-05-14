@@ -17,6 +17,9 @@ Patterns are applied in the order they are placed in the table.
 The pattern and replacement are written as regular expressions (regex).
 This allows for both simple and complex substitutions.
 
+Because the tags are never matched, the start and end of string tokens (`^` and `$`)
+additionally refer to the start/end of text after/before a tag.
+
 Replacing capture groups is supported.
 
 You can use the following tool to create and understand regex replacements:

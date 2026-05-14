@@ -87,7 +87,7 @@ public static class MessageProcessor {
 	}
 
 	/// <summary>Creates a new list of segments by performing 1 pass of text replacements in current segments.</summary>
-	static List<MessageSegment> PerformReplacements(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
+	static List<MessageSegment> PerformReplacementPass(IEnumerable<MessageSegment> segments, out bool anyTextReplaced) {
 		
 		List<MessageSegment> newSegments = new();
 		anyTextReplaced = false;
@@ -105,7 +105,7 @@ public static class MessageProcessor {
 
 			if (newText != seg.Text) {
 				anyTextReplaced = true;
-				newSegments.AddRange(MessageLexer.SegmentMessage(newText));
+				newSegments.AddRange(MessageLexer.SegmentMessage(newText)); // with replacements
 				continue;
 			}
 
@@ -268,7 +268,7 @@ public static class MessageProcessor {
 		
 		// Text replacements
 		for (int i = 0, n = UserSettingsManager.Instance.Settings.MaxReplacementPasses; i < n; i++) {
-			segments = PerformReplacements(segments, out bool anyReplaced);
+			segments = PerformReplacementPass(segments, out bool anyReplaced);
 			//segments = CombineAdjacentPlainTextSegments(segments);
 			if (!anyReplaced) break;
 
