@@ -76,7 +76,7 @@ public record UserSettings {
 	/// <summary>A table of sound effect hints and file paths they correspond to.</summary>
 	public readonly Table<(string hint, string path, int volumePercent)> SoundEffects = new(
 		() => new FieldTagContent(),
-		() => new Field<string>(""),
+		() => new FieldPath(),
 		() => new FieldNumericRange<int>(0, 100, defaultValue: 100)
 	);
 	
