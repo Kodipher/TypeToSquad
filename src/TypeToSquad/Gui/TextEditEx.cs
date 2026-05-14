@@ -17,17 +17,18 @@ public partial class TextEditEx : TextEdit {
 
 		// Keep original behavior
 		// (calling base does nothing apparently)
-		var charAsString = new string((char)unicodeChar, 1);
+		var charAsString = char.ConvertFromUtf32(unicodeChar);
 		//StartAction(EditAction.Typing);
 		InsertTextAtCaret(charAsString);
 		//EndAction();
 
 		// but also emit signal
-		EmitSignalOnUnicodeInput((char)unicodeChar, caretIndex);
+		EmitSignalOnUnicodeInput(unicodeChar, caretIndex);
 	}
 
+	/// <summary>Emitted after a character has been typed.</summary>
 	[Signal]
-	public delegate void OnUnicodeInputEventHandler(char unicodeChar, int caretIndex);
+	public delegate void OnUnicodeInputEventHandler(int unicodeChar, int caretIndex);
 
 	#endregion
 

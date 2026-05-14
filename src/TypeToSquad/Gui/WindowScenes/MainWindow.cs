@@ -100,7 +100,7 @@ public partial class MainWindow : WindowEx {
 	#region /--- Tag autocomplete, Tab handling ---/
 
 	/// <remarks>Assumes partial valid tags.</remarks>
-	public void OnCharacterTyped(char typedChar, int caretIndex) {
+	public void OnCharacterTyped(int typedCharUnicode, int caretIndex) {
 
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 		
