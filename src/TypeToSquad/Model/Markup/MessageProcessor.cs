@@ -182,6 +182,7 @@ public static class MessageProcessor {
 
 	const string SsmlIpa = """<phoneme alphabet="ipa" ph="{0}"></phoneme>""";
 	const string SsmlBreak = """<break time="{0}"/>""";
+	const string SsmlAudio = """<audio src="{0}"/>""";
 	
 	/// <remarks>User tags must be handled before this method is called.</remarks>
 	static string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
@@ -245,8 +246,18 @@ public static class MessageProcessor {
 					} break;
 					
 					case MessageLexer.TagTypeAudio:
+						
 						if (seg.TagArgument == "") break;
-						throw new NotImplementedException("Inserting audio is not implemented.");
+						
+						string? path = settingsInstance
+										.SoundEffects
+										.Where(row => row.hint == seg.TagArgument)
+										.Select(string? (row) => row.path)
+										.FirstOrDefault();
+						
+						if (path is null) break;
+						
+						sb.AppendFormat(SsmlAudio, SecurityElement.Escape(path));
 						break;
 					
 					case MessageLexer.TagTypeBreak:

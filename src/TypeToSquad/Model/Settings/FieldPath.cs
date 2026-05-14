@@ -13,12 +13,8 @@ namespace TypeToSquad.Model.Settings;
 /// that would make a tag invalid syntactically.
 /// </summary>
 public class FieldPath : Field<string> {
-	
-	static readonly char[] invalidChars = Path
-									.GetInvalidPathChars()
-									.Concat(Path.GetInvalidFileNameChars())
-									.Distinct()
-									.ToArray();
+
+	static readonly char[] invalidChars = Path.GetInvalidPathChars();
 	
 	protected override string ReturnValid(string value) {
 		IEnumerable<char> charsFiltered = value.Where(chr => !invalidChars.Contains(chr));
