@@ -71,9 +71,9 @@ No rules are applied to built-in tags.
 ### Tricks
 
 - Multiple rules can exist for the same tag type and will be applied in order.
-- If an argument is irrelevant, this pattern - `^.*$` - always produces 1 match, no matter the input.
+- If the argument is irrelevant, this pattern - `^.*$` - always produces 1 match, no matter the input.
 - If one rule matches the output of another unintentionally, there is a botch to fix that:
   - This pattern - `(?<!{[^}]*)THING(?!}[^{]*)` - matches `THING` that is not
     inside of curly braces `{}`.
   - This trick can be used to effectively isolate the output of a rule by
-    putting it inside braces, which can be removed at the very with a separate rule.
+    putting it inside braces, which can be removed at the very end with a separate rule.
