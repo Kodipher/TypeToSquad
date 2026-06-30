@@ -21,7 +21,7 @@ Invalid syntax (nested tags, unclosed tags, unknown tags) is skipped over.
 A few tags are built:
 - `[ipa {text}]` - Explicit phonetic spelling
 - `[voice {hint}]` - A voice change, running change.
-- `[audio {hint}]` - A sound effect
+- `[audio {hint}]` or `[sound {hint}]` - A sound effect
 - `[wait {time}]` or `[break {time}]` - A pause of a specified duration
 
 

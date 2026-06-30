@@ -138,6 +138,7 @@ public static class MessageLexer {
 	public const string TagTypePhonetic = "ipa";
 	public const string TagTypeVoice = "voice";
 	public const string TagTypeAudio = "audio";
+	public const string TagTypeAudioAlt = "sound";
 	public const string TagTypeBreak = "break";
 	public const string TagTypeBreakAlt = "wait";
 
@@ -146,6 +147,7 @@ public static class MessageLexer {
 																			TagTypePhonetic,
 																			TagTypeVoice,
 																			TagTypeAudio,
+																			TagTypeAudioAlt,
 																			TagTypeBreak,
 																			TagTypeBreakAlt
 																		}.AsReadOnly();

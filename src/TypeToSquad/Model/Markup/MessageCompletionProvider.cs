@@ -51,6 +51,7 @@ public static class MessageCompletionProvider {
 					break;
 				
 				case MessageLexer.TagTypeAudio:
+				case MessageLexer.TagTypeAudioAlt:
 					IEnumerable<string> audioHints = settings.SoundEffects.Select(row => row.hint).Distinct();
 					if (TryCompleteString(partialArgument, audioHints, out completionAppendageArgument)) {
 						// Insert

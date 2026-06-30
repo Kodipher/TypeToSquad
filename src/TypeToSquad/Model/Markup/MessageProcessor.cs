@@ -246,6 +246,7 @@ public static class MessageProcessor {
 					} break;
 					
 					case MessageLexer.TagTypeAudio:
+					case MessageLexer.TagTypeAudioAlt:
 						
 						if (seg.TagArgument == "") break;
 						
