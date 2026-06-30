@@ -29,6 +29,7 @@ public static class FieldInputCreator {
 			FieldOptionsRuntime fieldOptions => CreateForOptions(fieldOptions),
 			FieldNumericRange<int> fieldRangeInt => CreateForNumeric(fieldRangeInt),
 			FieldNumericRange<double> fieldRangeDouble => CreateForNumeric(fieldRangeDouble),
+			FieldPath fieldPath => CreateForFilePath(fieldPath),
 			Field<bool> fieldBool => CreateForBool(fieldBool),
 			Field<string> fieldString => CreateForString(fieldString),
 			_ => throw new NotSupportedException()
@@ -43,6 +44,12 @@ public static class FieldInputCreator {
 	public static void ConnectOnControlSubmit(Control node, Action onSubmit) {
 
 		switch (node) {
+			
+			case FileInput fileInput:
+				fileInput.LineEdit.TextSubmitted += _ => onSubmit();
+				fileInput.LineEdit.FocusExited += onSubmit;
+				fileInput.FileSelectedThroughDialog += _ => onSubmit();
+				break;
 			
 			case OptionButton optionButton:
 				optionButton.ItemSelected += _ => onSubmit();
@@ -169,5 +176,26 @@ public static class FieldInputCreator {
 
 		return optionsInput;
 	}
-	
+
+	static readonly PackedScene fileInputScene = GD.Load<PackedScene>("uid://dkpebb1i6gden");
+
+	public static FileInput CreateForFilePath(FieldPath field) {
+		
+		FileInput fileInput = fileInputScene.Instantiate<FileInput>();
+		fileInput.FindAndSetupChildren();
+
+		fileInput.LineEdit.Text = field.Value;
+		
+		void OnTextSubmit(string text) {
+			field.Value = text;
+			fileInput.LineEdit.Text = field.Value;
+		}
+		
+		fileInput.LineEdit.TextSubmitted += OnTextSubmit;
+		fileInput.LineEdit.FocusExited += () => OnTextSubmit(fileInput.LineEdit.Text);
+		fileInput.FileSelectedThroughDialog += OnTextSubmit;
+
+		return fileInput;
+	}
+
 }
