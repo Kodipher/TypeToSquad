@@ -38,8 +38,6 @@ public static class MessageCompletionProvider {
 			(string tagType, string partialArgument) = MessageLexer.ParseTag("[" + currentPartialTag + "]", out _);
 			var settings = UserSettingsManager.Instance.Settings;
 			string completionAppendageArgument;
-
-			GD.Print($"\"{tagType}\",\"{partialArgument}\"");
 			
 			switch (tagType) {
 				case MessageLexer.TagTypeVoice:
