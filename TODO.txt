@@ -2,7 +2,6 @@ TODO (features):
 - feature: compile message with multiple requests, allowing for more features
 - feature: fix audio tag usage, handle sound effect volume
 - feature: direct hardware input to grab and release focus
-- extend autocomplete to work on voice and audio tags
 - add proper icons to TableEdit
 
 TODO (misc quality):
