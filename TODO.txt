@@ -10,7 +10,6 @@ TODO (misc quality):
 - handle tag content errors instead of instead of letting the daemon crash  
 - min window sizes for all windows
 - check tab order in all windows
-- document [wait {time}] format
 - handle voice list not being loaded yet when settings is opened
 
 TO TEST:
