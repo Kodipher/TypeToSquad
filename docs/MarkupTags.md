@@ -19,10 +19,14 @@ Invalid syntax (nested tags, unclosed tags, unknown tags) is skipped over.
 ## Built-in tags
 
 A few tags are built:
-- `[ipa {text}]` - Explicit phonetic spelling
+- `[ipa {text}]` - Explicit phonetic spelling.
 - `[voice {hint}]` - A voice change, running change.
-- `[audio {hint}]` or `[sound {hint}]` - A sound effect
-- `[wait {time}]` or `[break {time}]` - A pause of a specified duration
+- `[audio {hint}]` or `[sound {hint}]` - A sound effect.
+- `[wait {time}]` or `[break {time}]` - A pause of a specified duration, e.g. `[wait 0.5s]` or  `[wait 500ms]`.
+
+Technical details:
+- The `ipa` tag is converted to the [phoneme](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_phoneme) in SSML with `alphabet="ipa"`.
+- The `wait`/`break` tag is converted to [break](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_break) in SSML with the `time` attribute.
 
 
 ### Voice and Audio Hints
