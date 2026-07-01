@@ -1,10 +1,9 @@
 using Godot;
-using System;
 
 using TypeToSquad.Utils;
 
 
-namespace TypeToSquad.Gui;
+namespace TypeToSquad.Gui.FieldInputs;
 
 
 public partial class FileInput : HBoxContainer {

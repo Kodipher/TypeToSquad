@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://b2w437qnsyeoh"]
+[gd_scene format=3 uid="uid://b2w437qnsyeoh"]
 
 [ext_resource type="Script" uid="uid://bv5p0v7yacuvv" path="res://Gui/WindowScenes/Settings/EditTextReplacementsWindow.cs" id="1_2015u"]
-[ext_resource type="PackedScene" uid="uid://bnk332u7rxegx" path="res://Gui/WindowScenes/Settings/table_edit.tscn" id="1_xkik6"]
+[ext_resource type="PackedScene" uid="uid://bnk332u7rxegx" path="res://Gui/FieldInputs/table_edit.tscn" id="1_xkik6"]
 [ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_rrtd5"]
 [ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_wxo4p"]
 

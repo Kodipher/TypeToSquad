@@ -3,6 +3,7 @@ using Godot;
 using TypeToSquad.Utils;
 using TypeToSquad.Model;
 using TypeToSquad.Model.Settings;
+using TypeToSquad.Gui.FieldInputs;
 
 
 namespace TypeToSquad.Gui.WindowScenes.Settings;

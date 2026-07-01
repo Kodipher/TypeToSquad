@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dkpebb1i6gden"]
 
-[ext_resource type="Script" uid="uid://cok7pucdkmr63" path="res://Gui/FileInput.cs" id="1_n4ey7"]
+[ext_resource type="Script" uid="uid://cok7pucdkmr63" path="res://Gui/FieldInputs/FileInput.cs" id="1_n4ey7"]
 
 [node name="FileInput" type="HBoxContainer" unique_id=125367925]
 anchors_preset = 15

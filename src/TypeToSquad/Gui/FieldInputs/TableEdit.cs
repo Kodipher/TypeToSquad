@@ -2,13 +2,12 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 using TypeToSquad.Model.Settings;
 using TypeToSquad.Utils;
 
 
-namespace TypeToSquad.Gui.WindowScenes.Settings;
+namespace TypeToSquad.Gui.FieldInputs;
 
 
 /// <summary>
@@ -16,7 +15,7 @@ namespace TypeToSquad.Gui.WindowScenes.Settings;
 /// A generic edit for all <see cref="Table{TRowTuple}"/>.
 /// </para>
 /// <para>
-/// Has to be initiated in code with <see cref="InitiateFor(Table)"/>
+/// Has to be initiated in code with <see cref="InitiateFor"/>
 /// and other methods.
 /// </para>
 /// </summary>

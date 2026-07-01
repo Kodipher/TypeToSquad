@@ -5,7 +5,7 @@ using System.Numerics;
 using TypeToSquad.Model.Settings;
 
 
-namespace TypeToSquad.Gui.WindowScenes.Settings;
+namespace TypeToSquad.Gui.FieldInputs;
 
 
 public static class FieldInputCreator {
