@@ -132,6 +132,32 @@ public static class MessageProcessor {
 		return newSegments;
 	}
 	
+	/// <summary>Returns a new list of segments where adjacent plain text segments are joined into one.</summary>
+	public static List<MessageSegment> CombineAdjacentPlainTextSegments(List<MessageSegment> segments) {
+
+		List<MessageSegment> newSegments = new();
+
+		foreach (MessageSegment seg in segments) {
+			
+			// Add non-plain-text
+			if (!seg.IsPlainText) {
+				newSegments.Add(seg);
+				continue;
+			}
+
+			// Add plain-text after non-plain-text
+			if (newSegments.Count == 0 || !newSegments[^1].IsPlainText) {
+				newSegments.Add(seg);
+				continue;
+			}
+
+			// Join text segments
+			newSegments[^1] = MessageLexer.MakePlainSegment(newSegments[^1].Text + seg.Text);
+		}
+
+		return newSegments;
+	}
+	
 	#endregion
 	
 	#region /--- Compiling Render Nodes ---/
