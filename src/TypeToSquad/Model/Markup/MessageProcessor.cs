@@ -164,7 +164,7 @@ public static class MessageProcessor {
 	
 	#region /--- Compiling Render Nodes ---/
 	
-	static RenderNode SegmentsToTree(IEnumerable<MessageSegment> segments) {
+	static RenderNode SegmentsToInitialTree(IEnumerable<MessageSegment> segments) {
 		
 		// Shortcuts
 		var settingsInstance = UserSettingsManager.Instance.Settings;
@@ -343,8 +343,11 @@ public static class MessageProcessor {
 		};
 	}
 
+	static RenderNode ProcessInitialNodeTree(RenderNode root) {
+		// TODO
+		return root;
 	}
-
+	
 	#endregion
 
 	/// <summary>Processes the message, performing analysis and text replacements.</summary>
@@ -363,9 +366,8 @@ public static class MessageProcessor {
 		}
 
 		// Compile
-		var tree = SegmentsToTree(segments);
-
-		// TODO: pull out non-ssml
+		var tree = SegmentsToInitialTree(segments);
+		tree = ProcessInitialNodeTree(tree);
 		
 		return tree;
 	}
