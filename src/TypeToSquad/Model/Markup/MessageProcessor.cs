@@ -207,7 +207,7 @@ public static class MessageProcessor {
 					
 				case MessageLexer.TagTypeBreak:
 				case MessageLexer.TagTypeBreakAlt:
-					AppendChildAtCurrent(CreateBreakNode(seg.TagArgument));
+					AppendChildAtCurrent(CreateBreakNode(seg.TagArgument.Trim() == "" ? null : seg.TagArgument.Trim()));
 					break;
 				
 				case MessageLexer.TagTypeAudio:
@@ -269,11 +269,12 @@ public static class MessageProcessor {
 		};
 	}
 	
-	static RenderNode CreateBreakNode(string time) {
-		return new RenderNode() {
-			Type = RenderNodeType.Break,
-			Attributes = { { RenderNodeAttribute.BreakTime, SecurityElement.Escape(time) } }
-		};
+	static RenderNode CreateBreakNode(string? time) {
+		var node = new RenderNode() { Type = RenderNodeType.Break };
+		if (time is not null) {
+			node.Attributes.Add(RenderNodeAttribute.BreakTime, SecurityElement.Escape(time));
+		}
+		return node;
 	}
 	
 	static RenderNode CreateSoundNode(string hint) {
