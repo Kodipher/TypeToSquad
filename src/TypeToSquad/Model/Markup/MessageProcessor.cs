@@ -158,12 +158,44 @@ public static class MessageProcessor {
 			}
 
 			switch (seg.TagType) {
-					
-				case MessageLexer.TagTypeEmpty:
+
+				case MessageLexer.TagTypeEmpty: {
 
 					RenderNode[] orderedParents = nodeStack.ToArray();
+
+					// Find voice
+					int topVoiceIndex = -1;
+
+					for (int i = 0; i < orderedParents.Length; i++) {
+						if (orderedParents[i].Type == RenderNodeType.Voice) {
+							topVoiceIndex = i;
+							break;
+						}
+					}
+
+					// Not in a voice tag: do nothing
+					if (topVoiceIndex == -1) break;
+
+					// Pull out tags until including voice
+					// then push other changes back
+					for (int i = 0; i <= topVoiceIndex; i++) {
+						nodeStack.Pop();
+					}
+					for (int i = topVoiceIndex - 1; i >= 0; i--) {
+						AppendChildAtCurrent(orderedParents[i].ShallowClone());
+					}
+
+				} break;
+
+				case MessageLexer.TagTypeIpa:
+					nodeStack.Peek().Children.Add(CreateIpaNode(seg.TagArgument));
+					break;
+
+				case MessageLexer.TagTypeVoice: {
 					
-					// Reset voice
+					RenderNode[] orderedParents = nodeStack.ToArray();
+					
+					// Find voice
 					int topVoiceIndex = -1;
 					for (int i = 0; i < orderedParents.Length; i++) {
 						if (orderedParents[i].Type == RenderNodeType.Voice) {
@@ -172,37 +204,36 @@ public static class MessageProcessor {
 						}
 					}
 
-					if (topVoiceIndex == -1) {
-						// Not in a voice tag, do nothing
-						break;
+					// Pull out until including voice
+					if (topVoiceIndex != -1) {
+						for (int i = 0; i <= topVoiceIndex; i++) {
+							nodeStack.Pop();
+						}
+					}
+
+					// Push new voice
+					if (seg.TagArgument != "") {
+						string? voiceKey = settingsInstance
+							.VoiceChanges
+							.Where(row => row.hint == seg.TagArgument)
+							.Select(row => row.voiceKey)
+							.FirstOrDefault();
+
+						if (voiceKey is not null) {
+							var voiceInfo = voiceStorage.GetVoiceByKey(voiceKey);
+							var voiceNode = CreateVoiceNode(voiceInfo);
+							AppendChildAtCurrent(voiceNode);
+							nodeStack.Push(voiceNode);
+						}
 					}
 					
-					// TODO: pull until voice tag, then push new matching nodes
-					#error TODO
+					// Push other changes
+					if (topVoiceIndex != -1) {
+						for (int i = topVoiceIndex - 1; i >= 0; i--) {
+							AppendChildAtCurrent(orderedParents[i].ShallowClone());
+						}
+					}
 					
-					break;
-					
-				case MessageLexer.TagTypeIpa:
-					nodeStack.Peek().Children.Add(CreateIpaNode(seg.TagArgument));
-					break;
-
-				case MessageLexer.TagTypeVoice: {
-					
-					// TODO: pull until voice tag if exists
-					#error TODO
-
-					if (seg.TagArgument == "") break;
-						
-					string? voiceKey = settingsInstance
-						.VoiceChanges
-						.Where(row => row.hint == seg.TagArgument)
-						.Select(row => row.voiceKey)
-						.FirstOrDefault();
-
-					if (voiceKey is null) break;
-
-					var voiceInfo = voiceStorage.GetVoiceByKey(voiceKey);
-					AppendChildAtCurrent(CreateVoiceNode(voiceInfo));
 				} break;
 					
 				case MessageLexer.TagTypeBreak:
@@ -332,8 +363,10 @@ public static class MessageProcessor {
 
 		// Compile
 		var tree = SegmentsToTree(segments);
+
+		// TODO: pull out non-ssml
 		
-		// TODO
+		return tree;
 	}
 
 }

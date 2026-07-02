@@ -19,7 +19,12 @@ public record RenderNode {
 	public List<RenderNode> Children { get; } = new();
 	
 	public Dictionary<RenderNodeAttribute, string> Attributes { get; } = new();
-	
+
+	public RenderNode ShallowClone() {
+		RenderNode other = new() { Type = this.Type };
+		foreach (var pair in this.Attributes) other.Attributes.Add(pair.Key, pair.Value);
+		return other;
+	}
 }
 
 
