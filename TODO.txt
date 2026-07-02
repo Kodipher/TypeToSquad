@@ -1,6 +1,7 @@
 TODO (features):
-- feature: compile message with multiple requests, allowing for more features
-- feature: fix audio tag usage, handle sound effect volume
+- compile message into multiple requests and audio hints instead of a single request
+-- also fixes audio tag
+-- also add break tag with no argument handling
 - feature: direct hardware input to grab and release focus
 - add proper icons to TableEdit
 
