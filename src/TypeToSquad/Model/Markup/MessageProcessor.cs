@@ -285,6 +285,35 @@ public static class MessageProcessor {
 
 	#endregion
 
+	#region /--- Debug Printing ---/
+
+	public static string StringifyNodeRecursive(RenderNode root) {
+		
+		System.Text.StringBuilder sb = new();
+		
+		void AppendRecursiveHelper(RenderNode node, int indentLevel) {
+
+			string indentString = new string(' ', indentLevel * 4);
+			
+			sb.AppendJoin(null, indentString, "<", node.Type);
+			foreach (var pair in node.Attributes) {
+				sb.AppendJoin(null, " ", pair.Key, "=\"", pair.Value, "\"");
+			}
+			sb.Append(">\n");
+
+			foreach (var child in node.Children) {
+				AppendRecursiveHelper(child, indentLevel + 1);
+			}
+
+			sb.AppendJoin(null, indentString, "</", node.Type, ">\n");
+		}
+		
+		AppendRecursiveHelper(root, 0);
+		return sb.ToString();
+	}
+
+	#endregion
+
 	/// <summary>Processes the message, performing analysis and text replacements.</summary>
 	public static RenderNode ProcessMessage(string message) {
 
