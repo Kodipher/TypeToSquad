@@ -38,7 +38,7 @@ public static class MessageProcessor {
 			}
 
 			// Join text segments
-			newSegments[^1] = MessageSegment.MakePlain(newSegments[^1].Text + seg.Text);
+			newSegments[^1] = MessageLexer.MakePlainSegment(newSegments[^1].Text + seg.Text);
 		}
 
 		return newSegments;
