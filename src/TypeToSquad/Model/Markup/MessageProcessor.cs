@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
-
-using System.Text;
 using System.Text.RegularExpressions;
+
+using VoiceInfo = WinRTSpeechSynthServer.Protocol.VoiceInfo;
 
 
 namespace TypeToSquad.Model.Markup;
@@ -17,40 +17,6 @@ namespace TypeToSquad.Model.Markup;
 /// See docs folder for details.
 /// </summary>
 public static class MessageProcessor {
-	
-	/// <summary>Returns a new list of segments where adjacent plain text segments are joined into one.</summary>
-	public static List<MessageSegment> CombineAdjacentPlainTextSegments(List<MessageSegment> segments) {
-
-		List<MessageSegment> newSegments = new();
-
-		foreach (MessageSegment seg in segments) {
-			
-			// Add non-plain-text
-			if (!seg.IsPlainText) {
-				newSegments.Add(seg);
-				continue;
-			}
-
-			// Add plain-text after non-plain-text
-			if (newSegments.Count == 0 || !newSegments[^1].IsPlainText) {
-				newSegments.Add(seg);
-				continue;
-			}
-
-			// Join text segments
-			newSegments[^1] = MessageLexer.MakePlainSegment(newSegments[^1].Text + seg.Text);
-		}
-
-		return newSegments;
-	}
-	
-	static string StringJoinValidSegments(IEnumerable<MessageSegment> segments) {
-		StringBuilder sb = new StringBuilder();
-		foreach (var seg in segments) {
-			if (seg.IsValid) sb.Append(seg.Text);
-		}
-		return sb.ToString();
-	}
 	
 	#region /--- Text replacements, User Tags ---/
 	
@@ -168,134 +134,159 @@ public static class MessageProcessor {
 	
 	#endregion
 	
-	#region /--- Compile SSML ---/
+	#region /--- Compiling Render Nodes ---/
 	
-	const string SsmlHeaderFormat = """
-<speak version="1.0"
-	xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="{0}">
-""";
-
-	const string SsmlFooter = "</speak>";
-
-	const string SsmlVoiceOpen = """<voice name="{0}" xml:lang="{1}">""";
-	const string SsmlVoiceClose = "</voice>";
-
-	const string SsmlIpa = """<phoneme alphabet="ipa" ph="{0}"></phoneme>""";
-	const string SsmlBreak = """<break time="{0}"/>""";
-	const string SsmlAudio = """<audio src="{0}"/>""";
-	
-	/// <remarks>User tags must be handled before this method is called.</remarks>
-	static string SegmentedMessageToSsml(IEnumerable<MessageSegment> segments) {
+	static RenderNode SegmentsToTree(IEnumerable<MessageSegment> segments) {
 		
 		// Shortcuts
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 		var voiceStorage = DaemonVoiceStorage.Instance;
 		
+		// Create tree
+		Stack<RenderNode> nodeStack = new Stack<RenderNode>();
 		
-		StringBuilder sb = new StringBuilder();
-		
-		// Header
-		string defaultVoiceLang = voiceStorage.GetVoiceByKey(settingsInstance.VoiceKey).Language;
-		sb.AppendFormat(SsmlHeaderFormat, SecurityElement.Escape(defaultVoiceLang));
-		
-		// Content
-		bool isInsideVoice = false;
+		RenderNode root = CreateSsmlRoot(voiceStorage.GetVoiceByKey(settingsInstance.VoiceKey));
+		nodeStack.Push(root);
 
 		foreach (var seg in segments) {
 
 			if (!seg.IsValid) continue;
 
-			if (seg.IsTag) {
-
-				switch (seg.TagType) {
-					
-					case MessageLexer.TagTypeEmpty:
-						if (isInsideVoice) {
-							sb.Append(SsmlVoiceClose);
-							isInsideVoice = false;
-						}
-						break;
-					
-					case MessageLexer.TagTypePhonetic:
-						sb.AppendFormat(SsmlIpa, SecurityElement.Escape(seg.TagArgument));
-						break;
-
-					case MessageLexer.TagTypeVoice: {
-						
-						if (isInsideVoice) {
-							sb.Append(SsmlVoiceClose);
-							isInsideVoice = false;
-						}
-
-						if (seg.TagArgument == "") break;
-						
-						string? voiceKey = settingsInstance
-											.VoiceChanges
-											.Where(row => row.hint == seg.TagArgument)
-											.Select(string? (row) => row.voiceKey)
-											.FirstOrDefault();
-
-						if (voiceKey is null) break;
-
-						var voiceInfo = voiceStorage.GetVoiceByKey(voiceKey);
-						string voiceName = SecurityElement.Escape(voiceInfo.Name);
-						string voiceLang = SecurityElement.Escape(voiceInfo.Language);
-
-						sb.AppendFormat(SsmlVoiceOpen, voiceName, voiceLang);
-						isInsideVoice = true;
-					} break;
-					
-					case MessageLexer.TagTypeAudio:
-					case MessageLexer.TagTypeAudioAlt:
-						
-						if (seg.TagArgument == "") break;
-						
-						string? path = settingsInstance
-										.SoundEffects
-										.Where(row => row.hint == seg.TagArgument)
-										.Select(string? (row) => row.path)
-										.FirstOrDefault();
-						
-						if (path is null) break;
-						
-						sb.AppendFormat(SsmlAudio, SecurityElement.Escape(path));
-						break;
-					
-					case MessageLexer.TagTypeBreak:
-					case MessageLexer.TagTypeBreakAlt:
-						sb.AppendFormat(SsmlBreak, SecurityElement.Escape(seg.TagArgument));
-						break;
-					
-					default:
-						throw new InvalidOperationException("Unhandled tag found.");
-				}
-
+			if (seg.IsPlainText) {
+				AppendChildAtCurrent(CreateTextNode(seg.Text));
 				continue;
 			}
-			
-			// Plain text
-			string segText = seg.Text;
-			segText = SecurityElement.Escape(segText);
-			sb.Append(segText);
 
+			switch (seg.TagType) {
+					
+				case MessageLexer.TagTypeEmpty:
+
+					RenderNode[] orderedParents = nodeStack.ToArray();
+					
+					// Reset voice
+					int topVoiceIndex = -1;
+					for (int i = 0; i < orderedParents.Length; i++) {
+						if (orderedParents[i].Type == RenderNodeType.Voice) {
+							topVoiceIndex = i;
+							break;
+						}
+					}
+
+					if (topVoiceIndex == -1) {
+						// Not in a voice tag, do nothing
+						break;
+					}
+					
+					// TODO: pull until voice tag, then push new matching nodes
+					#error TODO
+					
+					break;
+					
+				case MessageLexer.TagTypeIpa:
+					nodeStack.Peek().Children.Add(CreateIpaNode(seg.TagArgument));
+					break;
+
+				case MessageLexer.TagTypeVoice: {
+					
+					// TODO: pull until voice tag if exists
+					#error TODO
+
+					if (seg.TagArgument == "") break;
+						
+					string? voiceKey = settingsInstance
+						.VoiceChanges
+						.Where(row => row.hint == seg.TagArgument)
+						.Select(row => row.voiceKey)
+						.FirstOrDefault();
+
+					if (voiceKey is null) break;
+
+					var voiceInfo = voiceStorage.GetVoiceByKey(voiceKey);
+					AppendChildAtCurrent(CreateVoiceNode(voiceInfo));
+				} break;
+					
+				case MessageLexer.TagTypeBreak:
+				case MessageLexer.TagTypeBreakAlt:
+					AppendChildAtCurrent(CreateBreakNode(seg.TagArgument));
+					break;
+				
+				case MessageLexer.TagTypeAudio:
+				case MessageLexer.TagTypeAudioAlt:
+					AppendChildAtCurrent(CreateSoundNode(seg.TagArgument));
+					break;
+					
+				default:
+					throw new InvalidOperationException($"Unhandled tag of type \"{seg.TagType}\" found.");
+			}
+			
 			// [continue]
 		}
 
-		if (isInsideVoice) sb.Append(SsmlVoiceClose);
+		return root;
 		
-		// Footer
-		sb.Append(SsmlFooter);
-
-		return sb.ToString();
+		// Local helpers
+		void AppendChildAtCurrent(RenderNode node) {
+			nodeStack.Peek().Children.Add(node);
+		}
+		
+	}
+	
+	static RenderNode CreateSsmlRoot(VoiceInfo defaultVoice) {
+		return new RenderNode() {
+			Type = RenderNodeType.SsmlRoot,
+			Attributes = {
+				{ RenderNodeAttribute.SsmlRootVersion, "1.0" },
+				{ RenderNodeAttribute.SsmlXmlNamespace, "http://www.w3.org/2001/10/synthesis" },
+				{ RenderNodeAttribute.SsmlLanguage, SecurityElement.Escape(defaultVoice.Language) },
+			}
+		};
+	}
+	
+	static RenderNode CreateTextNode(string text) {
+		return new RenderNode() {
+			Type = RenderNodeType.Text,
+			Attributes = { { RenderNodeAttribute.TextContent, SecurityElement.Escape(text) } }
+		};
+	}
+	
+	static RenderNode CreateVoiceNode(VoiceInfo voiceInfo) {
+		return new RenderNode() {
+			Type = RenderNodeType.Voice,
+			Attributes = {
+				{ RenderNodeAttribute.VoiceName, SecurityElement.Escape(voiceInfo.Name) },
+				{ RenderNodeAttribute.VoiceLanguage, SecurityElement.Escape(voiceInfo.Language) },
+			}
+		};
+	}
+	
+	static RenderNode CreateIpaNode(string phonemes) {
+		return new RenderNode() {
+			Type = RenderNodeType.Phoneme,
+			Attributes = {
+				{ RenderNodeAttribute.PhonemeAlphabet, "ipa" },
+				{ RenderNodeAttribute.PhonemePhonemes, SecurityElement.Escape(phonemes) },
+			}
+		};
+	}
+	
+	static RenderNode CreateBreakNode(string time) {
+		return new RenderNode() {
+			Type = RenderNodeType.Break,
+			Attributes = { { RenderNodeAttribute.BreakTime, SecurityElement.Escape(time) } }
+		};
+	}
+	
+	static RenderNode CreateSoundNode(string hint) {
+		return new RenderNode() {
+			Type = RenderNodeType.Sound,
+			Attributes = { { RenderNodeAttribute.SoundHint, hint } }
+		};
 	}
 
 	#endregion
 
-	/// <summary>
-	/// Processes the message, performing analysis and text replacements.
-	/// Returns a plain text or a message in SSML format.
-	/// </summary>
-	public static (string requestString, bool isSsml) ProcessMessage(string message) {
+	/// <summary>Processes the message, performing analysis and text replacements.</summary>
+	public static RenderNode ProcessMessage(string message) {
 
 		var segments = MessageLexer.SegmentMessage(message);
 		
@@ -309,13 +300,10 @@ public static class MessageProcessor {
 			if (i == n - 1) GD.PushError("Text replacement passes limit reached.");
 		}
 
-		// Text-only message
-		if (segments.All(seg => !seg.IsValid || seg.IsPlainText)) {
-			return (StringJoinValidSegments(segments), false);
-		}
-
-		// Message with contexts
-		return (SegmentedMessageToSsml(segments), true);
+		// Compile
+		var tree = SegmentsToTree(segments);
+		
+		// TODO
 	}
 
 }

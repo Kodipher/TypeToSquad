@@ -166,7 +166,7 @@ public static class MessageLexer {
 	#region /--- Tag Types ---/
 
 	public const string TagTypeEmpty = "";
-	public const string TagTypePhonetic = "ipa";
+	public const string TagTypeIpa = "ipa";
 	public const string TagTypeVoice = "voice";
 	public const string TagTypeAudio = "audio";
 	public const string TagTypeAudioAlt = "sound";
@@ -175,7 +175,7 @@ public static class MessageLexer {
 
 	public static readonly ReadOnlyCollection<string> BuildInTagTypes = new[] {
 																			TagTypeEmpty,
-																			TagTypePhonetic,
+																			TagTypeIpa,
 																			TagTypeVoice,
 																			TagTypeAudio,
 																			TagTypeAudioAlt,
