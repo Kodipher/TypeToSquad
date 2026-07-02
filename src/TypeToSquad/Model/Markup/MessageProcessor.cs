@@ -164,6 +164,22 @@ public static class MessageProcessor {
 	
 	#region /--- Compiling Render Nodes ---/
 	
+	/// <summary>
+	/// <para>
+	/// Creates an initial node tree.
+	/// </para>
+	/// <para>
+	/// The tree has an ssml "speak" node as root,
+	/// though it is not ready to be sent to the synthesizer.
+	/// </para>
+	/// <para>
+	/// Some nodes are not in the standard but rather are specific to this app,
+	/// like <see cref="RenderNodeType.Sound"/> (which is different to the audio tag in the standard).
+	/// </para>
+	/// <para>
+	/// Text nodes are also elements in this tree for simplicity.
+	/// </para>
+	/// </summary>
 	static RenderNode SegmentsToInitialTree(IEnumerable<MessageSegment> segments) {
 		
 		// Shortcuts
