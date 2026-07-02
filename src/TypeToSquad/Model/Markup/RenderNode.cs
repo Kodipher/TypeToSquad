@@ -61,6 +61,8 @@ public sealed class RenderNodeType(string value) : IEquatable<RenderNodeType> {
 
 	public static bool operator !=(RenderNodeType? left, RenderNodeType? right) => !Equals(left, right);
 	
+	public static implicit operator string(RenderNodeType obj) => obj.ToString();
+
 	#endregion
 	
 }
@@ -107,6 +109,8 @@ public sealed class RenderNodeAttribute(string value) : IEquatable<RenderNodeAtt
 	public static bool operator ==(RenderNodeAttribute? left, RenderNodeAttribute? right) => Equals(left, right);
 
 	public static bool operator !=(RenderNodeAttribute? left, RenderNodeAttribute? right) => !Equals(left, right);
+	
+	public static implicit operator string(RenderNodeAttribute obj) => obj.ToString();
 	
 	#endregion
 	

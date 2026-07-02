@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+
+using System.Text;
 using System.Text.RegularExpressions;
 
 using VoiceInfo = WinRTSpeechSynthServer.Protocol.VoiceInfo;
@@ -341,33 +343,6 @@ public static class MessageProcessor {
 		};
 	}
 
-	#endregion
-
-	#region /--- Debug Printing ---/
-
-	public static string StringifyNodeRecursive(RenderNode root) {
-		
-		System.Text.StringBuilder sb = new();
-		
-		void AppendRecursiveHelper(RenderNode node, int indentLevel) {
-
-			string indentString = new string(' ', indentLevel * 4);
-			
-			sb.AppendJoin(null, indentString, "<", node.Type);
-			foreach (var pair in node.Attributes) {
-				sb.AppendJoin(null, " ", pair.Key, "=\"", pair.Value, "\"");
-			}
-			sb.Append(">\n");
-
-			foreach (var child in node.Children) {
-				AppendRecursiveHelper(child, indentLevel + 1);
-			}
-
-			sb.AppendJoin(null, indentString, "</", node.Type, ">\n");
-		}
-		
-		AppendRecursiveHelper(root, 0);
-		return sb.ToString();
 	}
 
 	#endregion
@@ -393,6 +368,42 @@ public static class MessageProcessor {
 		// TODO: pull out non-ssml
 		
 		return tree;
+	}
+	
+	/// <remarks>Text nodes are appended as text, every other node - as a dom element.</remarks>
+	public static string StringifyNodeRecursive(RenderNode root, bool indented = false) {
+		
+		StringBuilder sb = new();
+		
+		void AppendRecursiveHelper(RenderNode node, int indentLevel) {
+			
+			string indentString = indented ? new string(' ', indentLevel * 4) : "";
+
+			// Handle text nodes as text, not elements
+			if (node.Type == RenderNodeType.Text) {
+				if (indented) sb.Append(indentString);
+				sb.Append(node.Attributes[RenderNodeAttribute.TextContent]);
+				if (indented) sb.Append('\n');
+				return;
+			}
+			
+			sb.AppendJoin("", [indentString, "<", node.Type]);
+			foreach (var pair in node.Attributes) {
+				sb.AppendJoin<string>("", [" ", pair.Key, "=\"", pair.Value, "\""]);
+			}
+			sb.Append('>');
+			if (indented) sb.Append('\n');
+
+			foreach (var child in node.Children) {
+				AppendRecursiveHelper(child, indentLevel + 1);
+			}
+
+			sb.AppendJoin("", [indentString, "</", node.Type, ">"]);
+			if (indented) sb.Append('\n');
+		}
+		
+		AppendRecursiveHelper(root, 0);
+		return sb.ToString();
 	}
 
 }
