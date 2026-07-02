@@ -144,7 +144,7 @@ public static class MessageLexer {
 		if (typeExclusiveEndIndex < 0) {
 			// Empty argument
 			argumentStartIndex = null;
-			return (tagWithBrackets[typeStartIndex..], "");
+			return (tagWithBrackets[typeStartIndex..^1], "");
 		}
 
 		argumentStartIndex = typeExclusiveEndIndex + 1;
@@ -157,7 +157,7 @@ public static class MessageLexer {
 		
 		return (
 			tagWithBrackets[typeStartIndex..typeExclusiveEndIndex],
-			tagWithBrackets[(typeExclusiveEndIndex + 1)..]
+			tagWithBrackets[(typeExclusiveEndIndex + 1)..^1]
 		);
 	}
 	
