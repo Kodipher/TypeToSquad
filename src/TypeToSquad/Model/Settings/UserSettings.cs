@@ -50,7 +50,7 @@ public record UserSettings {
 	public readonly FieldNumericRange<int> MaxConcurrentStreams = new(1, 64, defaultValue: 6);
 
 
-	// ===== ===== ===== TEXT ===== ===== =====
+	// ===== ===== ===== MESSAGES ===== ===== =====
 
 	/// <summary>Number of previous inputs held in memory.</summary>
 	public readonly FieldNumericRange<int> HistorySlots = new(0, short.MaxValue, defaultValue: 32);
