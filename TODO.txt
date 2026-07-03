@@ -1,6 +1,7 @@
 TODO (features):
-- feature: compile message with multiple requests, allowing for more features
-- feature: fix audio tag usage, handle sound effect volume
+- Implement the rest of the nodes in AudioProvider
+-- <sound>
+-- <serial>
 - feature: direct hardware input to grab and release focus
 - add proper icons to TableEdit
 

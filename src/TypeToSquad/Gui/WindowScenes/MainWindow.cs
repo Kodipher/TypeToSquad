@@ -1,14 +1,8 @@
 using Godot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using TypeToSquad.Model;
 using TypeToSquad.Utils;
 using TypeToSquad.Model.Markup;
-
-using SynthesizeRequest = WinRTSpeechSynthServer.Protocol.Messages.SynthesizeRequest;
-using SynthesisResultResponse = WinRTSpeechSynthServer.Protocol.Messages.SynthesisResultResponse;
 
 
 namespace TypeToSquad.Gui.WindowScenes;
@@ -129,37 +123,18 @@ public partial class MainWindow : WindowEx {
 		if (string.IsNullOrWhiteSpace(messageTextEdit.Text)) return;
 		
 		// Add to history
-		GD.Print("Speaking.");
 		HistoryTracker.Instance.AddHistoryEntry(messageTextEdit.Text);
 		HistoryTracker.Instance.NavigateReset();
 
 		// Speak
-		(string requestString, bool isSsml) = MessageProcessor.ProcessMessage(messageTextEdit.Text);
-
-		SynthesizeRequest synthRequest = new SynthesizeRequest() {
-			InputString = requestString,
-			IsSsml = isSsml,
-			VoiceName = DaemonVoiceStorage.Instance.GetVoiceByKey(settingsInstance.VoiceKey).Name,
-			Pitch = settingsInstance.VoicePitch,
-			Rate = settingsInstance.VoiceRate,
-			Volume = settingsInstance.SynthesisVolumePercent / 100.0
-		};
-
-		SpeechDaemon.Instance.DispatchRequest<SynthesisResultResponse>(
-			synthRequest,
-			(response) => {
-
-				// Voice does not exist
-				if (!response.GivenVoiceExists) {
-					GD.PushError("Selected voice does not exist.");
-					var voiceField = settingsInstance.VoiceKey;
-					voiceField.Value = voiceField.DefaultValue;
-				}
-
-				// Play resulting data
-				AudioManager.Instance.PlayNew(response.SynthesizedData);
-			}
-		);
+		GD.Print("Processing...");
+		var root = MessageProcessor.ProcessMessage(messageTextEdit.Text);
+		
+		GD.Print("Synthesizing...");
+		AudioProvider.Instance.CreateStream(root, stream => {
+			GD.Print("Playing...");
+			AudioManager.Instance.PlayNew(stream);
+		});
 
 		// Reset textbox
 		messageTextEdit.Clear();
