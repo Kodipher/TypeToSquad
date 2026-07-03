@@ -29,8 +29,8 @@ Empty arguments induce special cases:
 - `[wait]`/`[break]` splits the message into multiple, each of which is synthesized separately. This may change the tone of voice. 
 
 Some advanced technical details for those in the know:
-- The `ipa` tag is converted to [<phoneme>](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_phoneme) in SSML with `alphabet="ipa"`.
-- The `wait`/`break` tag is converted to [<break>](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_break) in SSML with the `time` attribute.
+- The `ipa` tag is converted to [&lt;phoneme&gt;](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_phoneme) in SSML with `alphabet="ipa"`.
+- The `wait`/`break` tag is converted to [&lt;break&gt;](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_break) in SSML with the `time` attribute.
 
 
 ### Voice and Audio Hints
