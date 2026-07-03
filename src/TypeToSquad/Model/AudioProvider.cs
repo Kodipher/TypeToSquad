@@ -124,8 +124,14 @@ public partial class AudioProvider : Node {
 		}
 		
 		// Load external
-		static AudioStream WrapStreamWithVolume(AudioStream stream, double volumeMult) {
-			throw new NotImplementedException();
+		static AudioStream WrapStreamWithVolume(AudioStream stream, float volumeMult) {
+			if (volumeMult >= 1) return stream;
+
+			var wrapper = new AudioStreamSynchronized();
+			wrapper.StreamCount = 1;
+			wrapper.SetSyncStream(0, stream);
+			wrapper.SetSyncStreamVolume(0, Mathf.LinearToDb(volumeMult));
+			return wrapper;
 		}
 		
 		string extension = (Path.GetExtension(path) ?? "").ToLower();
@@ -134,37 +140,19 @@ public partial class AudioProvider : Node {
 			case ".wav":
 			case ".wave": {
 				var stream = AudioStreamWav.LoadFromFile(path);
-				double volumeMultiplier = soundRow.Value.volumePercent / 100.0;
-				
-				if (volumeMultiplier >= 1) {
-					callback(stream);
-					break;
-				}
-
+				float volumeMultiplier = soundRow.Value.volumePercent / 100f;
 				callback(WrapStreamWithVolume(stream, volumeMultiplier));
 			} break;
 			
 			case ".ogg": {
 				var stream = AudioStreamOggVorbis.LoadFromFile(path);
-				double volumeMultiplier = soundRow.Value.volumePercent / 100.0;
-				
-				if (volumeMultiplier >= 1) {
-					callback(stream);
-					break;
-				}
-
+				float volumeMultiplier = soundRow.Value.volumePercent / 100f;
 				callback(WrapStreamWithVolume(stream, volumeMultiplier));
 			} break;
 			
 			case ".mp3": {
 				var stream = AudioStreamMP3.LoadFromFile(path);
-				double volumeMultiplier = soundRow.Value.volumePercent / 100.0;
-				
-				if (volumeMultiplier >= 1) {
-					callback(stream);
-					break;
-				}
-
+				float volumeMultiplier = soundRow.Value.volumePercent / 100f;
 				callback(WrapStreamWithVolume(stream, volumeMultiplier));
 			} break;
 			
