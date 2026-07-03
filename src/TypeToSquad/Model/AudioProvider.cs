@@ -181,16 +181,22 @@ public partial class AudioProvider : Node {
 			throw new ArgumentException($"Incorrect node type. Got {serialNode.Type}.", nameof(serialNode));
 		}
 
+		int supportedChildCount = serialNode.Children.Count;
+		if (supportedChildCount > AudioStreamPlaylist.MaxStreams) {
+			supportedChildCount = (int)AudioStreamPlaylist.MaxStreams;
+			GD.PushError($"Message is too complex. Only the first {supportedChildCount} audio streams will be played.");
+		}
+
 		AudioStreamPlaylist playlist = new() {
 			FadeTime = 0,
 			Loop = false,
 			Shuffle = false,
-			StreamCount = serialNode.Children.Count
+			StreamCount = supportedChildCount
 		};
 		
 		void IndexedCallback(int index) {
 
-			if (index == serialNode.Children.Count) {
+			if (index == supportedChildCount) {
 				callback(playlist);
 				return;
 			}
