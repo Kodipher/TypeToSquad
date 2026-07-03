@@ -467,7 +467,13 @@ public static class MessageProcessor {
 			
 		}
 		
-		// 4: single node in serial root -- remove serial wrapper
+		// 4: remove empty text elements
+		serialRoot.Children.RemoveAll(child => 
+			child.Type == RenderNodeType.Text &&
+			string.IsNullOrWhiteSpace(child.Attributes.GetValueOrDefault(RenderNodeAttribute.TextContent, ""))
+		);
+		
+		// 5: single node in serial root -- remove serial wrapper
 		if (serialRoot.Children.Count == 0) {
 			GD.PushError($"0 children at the end of {nameof(ProcessInitialNodeTree)}.");
 			return CreateTextNode("");
