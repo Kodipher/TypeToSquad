@@ -1,6 +1,7 @@
 ﻿using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using TypeToSquad.Model.Markup;
@@ -102,7 +103,75 @@ public partial class AudioProvider : Node {
 			throw new ArgumentException($"Incorrect node type. Got {soundNode.Type}.", nameof(soundNode));
 		}
 
-		throw new NotImplementedException();
+		// Find sound file
+		var settingsInstance = UserSettingsManager.Instance.Settings;
+
+		string hint = soundNode.Attributes.GetValueOrDefault(RenderNodeAttribute.SoundHint, "");
+		
+		(string hint, string path, int volumePercent)? soundRow = settingsInstance
+			.SoundEffects
+			.Select(row => row as (string hint, string, int)?)
+			.FirstOrDefault(row => row!.Value.hint == hint, null);
+
+		if (soundRow is null) {
+			throw new InvalidOperationException($"Unknown sound effect \"{hint}\"");
+		}
+		
+		// Path check
+		string path = soundRow.Value.path;
+		if (!File.Exists(path)) {
+			throw new FileNotFoundException($"File not found at \"{path}\" for sound effect \"{hint}\"");
+		}
+		
+		// Load external
+		static AudioStream WrapStreamWithVolume(AudioStream stream, double volumeMult) {
+			throw new NotImplementedException();
+		}
+		
+		string extension = (Path.GetExtension(path) ?? "").ToLower();
+		switch (extension) {
+
+			case ".wav":
+			case ".wave": {
+				var stream = AudioStreamWav.LoadFromFile(path);
+				double volumeMultiplier = soundRow.Value.volumePercent / 100.0;
+				
+				if (volumeMultiplier >= 1) {
+					callback(stream);
+					break;
+				}
+
+				callback(WrapStreamWithVolume(stream, volumeMultiplier));
+			} break;
+			
+			case ".ogg": {
+				var stream = AudioStreamOggVorbis.LoadFromFile(path);
+				double volumeMultiplier = soundRow.Value.volumePercent / 100.0;
+				
+				if (volumeMultiplier >= 1) {
+					callback(stream);
+					break;
+				}
+
+				callback(WrapStreamWithVolume(stream, volumeMultiplier));
+			} break;
+			
+			case ".mp3": {
+				var stream = AudioStreamMP3.LoadFromFile(path);
+				double volumeMultiplier = soundRow.Value.volumePercent / 100.0;
+				
+				if (volumeMultiplier >= 1) {
+					callback(stream);
+					break;
+				}
+
+				callback(WrapStreamWithVolume(stream, volumeMultiplier));
+			} break;
+			
+			default:
+				throw new NotSupportedException($"File type \"{extension}\" of sound effect \"{hint}\" is not supported.");
+		}
+		
 	}
 	
 	public void CreateStreamFromSerial(RenderNode serialNode, Action<AudioStream> callback) {
