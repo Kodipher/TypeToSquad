@@ -31,29 +31,15 @@ public partial class AudioManager : Node {
 		AudioServer.OutputDevice = settingsInstance.Device;
 	}
 
-	/// <summary>
-	/// Plays PCM Wav data in a new <see cref="AudioStreamPlayer"/>.
-	/// </summary>
-	public void PlayNew(byte[] pcmWavData) {
-
-		// Create stream
-		const int wavImportCompressModePcm = 0;
-		const int wavImportLoopModeDisabled = 1;
-
-		AudioStreamWav newStream = AudioStreamWav.LoadFromBuffer(
-										pcmWavData,
-										new Godot.Collections.Dictionary {
-											["compress/mode"] = wavImportCompressModePcm,
-											["edit/loop_mode"] = wavImportLoopModeDisabled,
-										}
-									);
+	/// <remarks>Assumes exclusive ownership of <paramref name="stream."/></remarks>
+	public void PlayNew(AudioStream stream) {
 
 		// Create player
 		AudioStreamPlayer player = new();
 		player.Finished += () => OnPlaybackFinished(player);
 		this.AddChild(player);
 		
-		player.Stream = newStream;
+		player.Stream = stream;
 		player.Play();
 
 		// Check max

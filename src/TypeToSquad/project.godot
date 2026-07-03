@@ -36,9 +36,10 @@ driver/output_latency=30
 [autoload]
 
 UserSettingsManager="*res://Model/UserSettingsManager.cs"
-AudioManager="*res://Model/AudioManager.cs"
 SpeechDaemon="*res://Model/SpeechDaemon.cs"
 DaemonVoiceStorage="*res://Model/DaemonVoiceStorage.cs"
+AudioManager="*res://Model/AudioManager.cs"
+AudioProvider="*uid://e4c6swbo07dy"
 HistoryTracker="*res://Model/HistoryTracker.cs"
 LogMonitor="*res://Model/LogMonitor.cs"
 ExitHandler="*res://Model/ExitHandler.cs"
