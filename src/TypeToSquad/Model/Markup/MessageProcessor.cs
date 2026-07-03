@@ -7,6 +7,8 @@ using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Rephidock.GeneralUtilities.Collections;
+
 using VoiceInfo = WinRTSpeechSynthServer.Protocol.VoiceInfo;
 
 
@@ -359,9 +361,123 @@ public static class MessageProcessor {
 		};
 	}
 
+	/// <summary>
+	/// Given an initial tree, returns of the following populated nodes:
+	/// <see cref="RenderNodeType.Text"/> with no children,
+	/// <see cref="RenderNodeType.SsmlRoot"/>,
+	/// <see cref="RenderNodeType.Sound"/> with no children,
+	/// <see cref="RenderNodeType.Serial"/> with children of the above types.
+	/// </summary>
 	static RenderNode ProcessInitialNodeTree(RenderNode root) {
-		// TODO
-		return root;
+
+		RenderNode serialRoot = new RenderNode() { Type = RenderNodeType.Serial };
+		serialRoot.Children.Add(root);
+		
+		// 1: pull out all non-ssml tags out via dfs
+		//
+		// Pulling out once is changing
+		// ```
+		// <a4>
+		//   <b1></b1>
+		//   <b2></b2>
+		//   <target></target>
+		//   <b3></b3>
+		// </a4>
+		// <a5></a5>
+		// ```
+		// into
+		// ```
+		// <a4>
+		//   <b1></b1>
+		//   <b2></b2>
+		// </a4>
+		// <target></target>
+		// <a4>
+		//   <b3></b3>
+		// </a4>
+		// <a5></a5>
+		// ```
+		void DfsPullOutWalk(RenderNode node, RenderNode? parent, int indexInParent, out bool pullOutCurrent) {
+
+			if (node.Type == RenderNodeType.Sound) {
+				pullOutCurrent = true;
+				return;
+			}
+			
+			if (node.Type == RenderNodeType.Break && !node.Attributes.ContainsKey(RenderNodeAttribute.BreakTime)) {
+				pullOutCurrent = true;
+				return;
+			}
+			
+			for (int i = 0; i < node.Children.Count; i++) { // children list *is* mutated
+				
+				DfsPullOutWalk(node.Children[i], node, i, out bool pullingOut);
+
+				if (pullingOut && parent is not null) {
+					var pullOutChild = node.Children[i];
+					var followingChildren = node.Children[(i + 1)..];
+					
+					var nodeCopy = node.ShallowClone();
+					node.Children.RemoveRange(i, node.Children.Count - i);
+					nodeCopy.Children.AddRange(followingChildren);
+					
+					parent.Children.InsertRange(indexInParent + 1, [pullOutChild, nodeCopy]);
+					
+					if (i < node.Children.Count) {
+						GD.PushError($"i < node.Children.Count assertion failed in {nameof(ProcessInitialNodeTree)}");
+						break;
+					}
+				}
+				
+			}
+			pullOutCurrent = false;
+		}
+		
+		DfsPullOutWalk(serialRoot, null, -1, out _);
+		
+		// 2: remove [break]s (with no attribute)
+		// They have been pulled out already and did what they were meant to do
+		serialRoot.Children.RemoveAll(child => 
+										child.Type == RenderNodeType.Break &&
+										!child.Attributes.ContainsKey(RenderNodeAttribute.BreakTime)
+									);
+		
+		// 3: If ssml only contains text remove ssml wrapper 
+		for (int i = 0; i < serialRoot.Children.Count; i++) {
+			RenderNode currentChild = serialRoot.Children[i];
+			
+			if (
+				currentChild.Type == RenderNodeType.SsmlRoot &&
+				currentChild.Children.All(node => node.Type == RenderNodeType.Text)
+			) {
+
+				RenderNode joinedTextNode =
+					currentChild.Children.Count == 1
+						? currentChild.Children[0]
+						: CreateTextNode(
+							currentChild
+								.Children
+								.Select(node => node.Attributes[RenderNodeAttribute.TextContent])
+								.JoinString("")
+						);
+				
+				serialRoot.Children.RemoveAt(i);
+				serialRoot.Children.Insert(i, joinedTextNode);
+			}
+			
+		}
+		
+		// 4: single node in serial root -- remove serial wrapper
+		if (serialRoot.Children.Count == 0) {
+			GD.PushError($"0 children at the end of {nameof(ProcessInitialNodeTree)}.");
+			return CreateTextNode("");
+		}
+		
+		if (serialRoot.Children.Count == 1) {
+			return serialRoot.Children[0];
+		}
+		
+		return serialRoot;
 	}
 	
 	#endregion

@@ -20,6 +20,10 @@ public record RenderNode {
 	
 	public Dictionary<RenderNodeAttribute, string> Attributes { get; } = new();
 
+	/// <summary>
+	/// Creates a copy of this node and it's attributes
+	/// but not children.
+	/// </summary>
 	public RenderNode ShallowClone() {
 		RenderNode other = new() { Type = this.Type };
 		foreach (var pair in this.Attributes) other.Attributes.Add(pair.Key, pair.Value);
@@ -37,7 +41,8 @@ public sealed class RenderNodeType(string value) : IEquatable<RenderNodeType> {
 		Voice = new("voice"),
 		Phoneme = new("phoneme"),
 		Break = new("break"),
-		Sound = new("sound");
+		Sound = new("sound"),
+		Serial = new("serial");
 
 	#region /--- ToString, Equality ---/
 	
