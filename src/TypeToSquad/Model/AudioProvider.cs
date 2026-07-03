@@ -181,7 +181,28 @@ public partial class AudioProvider : Node {
 			throw new ArgumentException($"Incorrect node type. Got {serialNode.Type}.", nameof(serialNode));
 		}
 
-		throw new NotImplementedException();
+		AudioStreamPlaylist playlist = new() {
+			FadeTime = 0,
+			Loop = false,
+			Shuffle = false,
+			StreamCount = serialNode.Children.Count
+		};
+		
+		void IndexedCallback(int index) {
+
+			if (index == serialNode.Children.Count) {
+				callback(playlist);
+				return;
+			}
+			
+			CreateStream(serialNode.Children[index], stream => {
+				playlist.SetListStream(index, stream);
+				IndexedCallback(index + 1);
+			});
+		}
+
+		// Start the chain
+		IndexedCallback(0);
 	}
 
 	public AudioStreamWav CreateStreamFromDaemonResponse(SynthesisResultResponse response) {
