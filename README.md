@@ -3,7 +3,7 @@
 
 
 
-### What is this
+## What is this
 
 This app will speak out what you type in. You can use it in combination with a virtual microphone to speak to your friends over voice chat by typing, if you need to be quiet IRL for one reason or another.
 
@@ -13,7 +13,7 @@ The app uses the text to speech voices installed on your system.
 
 
 
-### Advanced Features
+## Advanced Features
 
 Though more technical, in addition to writing simple text, you can also:
 
@@ -22,4 +22,5 @@ Though more technical, in addition to writing simple text, you can also:
 - change the voice mid-message via the `[voice]` tag,
 - add pauses and sound effects via `[wait]` and `[sound]` tags.
 
-Some of this requires setting up in settings. See [/docs/Replacements](./docs/Replacements.md) and [/docs/MarkupTags](./docs/MarkupTags.md) for further information.
+Some of this requires setting up, like adding shorthands for sound effect paths.
+See [/docs/Replacements](./docs/Replacements.md) and [/docs/MarkupTags](./docs/MarkupTags.md) for further information.
