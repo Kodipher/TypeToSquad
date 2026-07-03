@@ -28,9 +28,9 @@ Empty arguments induce special cases:
 - `[voice]` resets the voice to default.
 - `[wait]`/`[break]` splits the message into multiple, each of which is synthesized separately. This may change the tone of voice. 
 
-Technical details:
-- The `ipa` tag is converted to the [phoneme](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_phoneme) in SSML with `alphabet="ipa"`.
-- The `wait`/`break` tag is converted to [break](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_break) in SSML with the `time` attribute.
+Some advanced technical details for those in the know:
+- The `ipa` tag is converted to [<phoneme>](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_phoneme) in SSML with `alphabet="ipa"`.
+- The `wait`/`break` tag is converted to [<break>](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_break) in SSML with the `time` attribute.
 
 
 ### Voice and Audio Hints
@@ -62,7 +62,7 @@ however additional rules apply to tags:
    - the `[` and `]` characters are treated as text during matching and
    - the markup syntax only become final after the last rule.
 4. After the rules are applied, the processed content becomes plain text.
-   - Event if no rule applied to a piece of text within the argument, it is still retained.
+   - Even if no rule applied to a piece of text within the argument, it is still retained.
 5. Text replacements still apply after the rules, but locality is still in effect:
    - Text replacements do not match across tag boundaries,
      even after the tag is replaced with its processed argument.
