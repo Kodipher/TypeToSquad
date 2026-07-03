@@ -1,11 +1,8 @@
 TODO (features):
-- Implement the rest of the nodes in AudioProvider
--- <sound>
--- <serial>
 - feature: direct hardware input to grab and release focus
-- add proper icons to TableEdit
 
 TODO (misc quality):
+- add proper icons to TableEdit
 - handle regex format errors 
 - handle tag content errors instead of instead of letting the daemon crash  
 - min window sizes for all windows
