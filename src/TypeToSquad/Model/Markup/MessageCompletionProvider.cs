@@ -27,21 +27,47 @@ public static class MessageCompletionProvider {
 		int tagOpeningStringIndex = textEdit.GetLineStartIndex(position.Y) + position.X;
 		int caretPositionInString = (tagOpeningStringIndex - position.X) + currentColumn;
 		
-		string currentName = textEdit.Text[(tagOpeningStringIndex + 1)..caretPositionInString];
-		currentName = currentName.TrimStart();
+		string currentPartialTag = textEdit.Text[(tagOpeningStringIndex + 1)..caretPositionInString];
+		currentPartialTag = currentPartialTag.TrimStart();
 		
-		if (currentName.Length == 0) return; // do not act on empty names
-		if (currentName.Any(char.IsWhiteSpace)) return; // type was typed
+		if (currentPartialTag.Length == 0) return; // do not act on empty names
 		
-		// Find possibilities
+		// Find argument possibilities
+		if (currentPartialTag.Any(char.IsWhiteSpace)) {
+			
+			(string tagType, string partialArgument) = MessageLexer.ParseTag("[" + currentPartialTag + "]", out _);
+			var settings = UserSettingsManager.Instance.Settings;
+			string completionAppendageArgument;
+			
+			switch (tagType) {
+				case MessageLexer.TagTypeVoice:
+					IEnumerable<string> voiceHints = settings.VoiceChanges.Select(row => row.hint).Distinct();
+					if (TryCompleteString(partialArgument, voiceHints, out completionAppendageArgument)) {
+						// Insert
+						textEdit.InsertTextAtCaret(completionAppendageArgument + "]", caretIndex);
+					}
+					break;
+				
+				case MessageLexer.TagTypeAudio:
+				case MessageLexer.TagTypeAudioAlt:
+					IEnumerable<string> audioHints = settings.SoundEffects.Select(row => row.hint).Distinct();
+					if (TryCompleteString(partialArgument, audioHints, out completionAppendageArgument)) {
+						// Insert
+						textEdit.InsertTextAtCaret(completionAppendageArgument + "]", caretIndex);
+					}
+					break;
+			}
+			
+			return; 
+		}
+		
+		// Find tag possibilities
 		IEnumerable<string> allTagTypes = MessageLexer.BuildInTagTypes.Concat(MessageLexer.GetUserTags());
 
-		string[] possibilities = allTagTypes.Where(s => s!.StartsWith(currentName)).ToArray();
-		if (possibilities.Length != 1) return; // not a single possibility
-		
-		// Insert
-		string autoCompleteText = possibilities[0][currentName.Length..] + " ";
-		textEdit.InsertTextAtCaret(autoCompleteText, caretIndex);
+		if (TryCompleteString(currentPartialTag, allTagTypes, out string completionAppendage)) {
+			// Insert
+			textEdit.InsertTextAtCaret(completionAppendage + " ", caretIndex);
+		}
 	}
 	
 	/// <summary>
@@ -77,7 +103,7 @@ public static class MessageCompletionProvider {
 	/// <paramref name="position"/> will have the position of the last
 	/// opening or closing tag character, or (-1, -1) if neither is found.
 	/// </returns>
-	public static bool SearchForTagOpeningAt(TextEdit textEdit, int line, int column, out Vector2I position) {
+	static bool SearchForTagOpeningAt(TextEdit textEdit, int line, int column, out Vector2I position) {
 
 		var searchFlags = (uint)TextEdit.SearchFlags.Backwards;
 		Vector2I lastOpen = textEdit.Search(MessageLexer.TagOpen.ToString(), searchFlags, line, column);
@@ -109,6 +135,33 @@ public static class MessageCompletionProvider {
 
 		// Otherwise open
 		position = lastOpen;
+		return true;
+	}
+
+	/// <summary>
+	/// <para>
+	/// Given a <paramref name="current"/> string and <paramref name="options"/> for complete strings,
+	/// if exactly one possible option is possible to get to by appending characters,
+	/// returns true and <paramref name="restToComplete"/> is set to the required character to get
+	/// to that option.
+	/// </para>
+	/// <para>
+	/// If more than one option or no options is possible, false is returned and
+	/// <paramref name="restToComplete"/> is set to an empty string.
+	/// </para>
+	/// </summary>
+	/// <remarks>Enumerates <paramref name="options"/>. Expects no repeats.</remarks>
+	static bool TryCompleteString(string current, IEnumerable<string> options, out string restToComplete) {
+		
+		string[] possibilities = options.Where(s => s!.StartsWith(current)).ToArray();
+
+		if (possibilities.Length != 1) {
+			// not a single possibility
+			restToComplete = "";
+			return false;
+		}
+
+		restToComplete = possibilities[0][current.Length..];
 		return true;
 	}
 	

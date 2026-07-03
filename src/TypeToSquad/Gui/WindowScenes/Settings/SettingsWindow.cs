@@ -3,6 +3,7 @@ using Godot;
 using TypeToSquad.Utils;
 using TypeToSquad.Model;
 using TypeToSquad.Model.Settings;
+using TypeToSquad.Gui.FieldInputs;
 
 
 namespace TypeToSquad.Gui.WindowScenes.Settings;
@@ -80,6 +81,8 @@ public partial class SettingsWindow : WindowEx {
 		// General
 		ImplaceByProperInput(settings.EnableErrorNotifications, "%EnableErrorNotificationsInput");
 		ImplaceByProperInput(settings.EnableWarningNotifications, "%EnableWarnNotificationsInput");
+		
+		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);
 
 		// Voice
 		ImplaceByProperInput(settings.VoiceKey, "%MainVoiceInput");
@@ -102,7 +105,7 @@ public partial class SettingsWindow : WindowEx {
 			() => this.CallOneFrameLater(AudioManager.Instance.EnsureConcurrentNodeMax)
 		);
 
-		// Input
+		// Messages
 		var historySlotsInput = ImplaceByProperInput(settings.HistorySlots, "%HistorySlotsInput");
 		FieldInputCreator.ConnectOnControlSubmit(
 			historySlotsInput,
@@ -111,8 +114,6 @@ public partial class SettingsWindow : WindowEx {
 
 		ImplaceByProperInput(settings.MaxReplacementPasses, "%ReplacementPassesInput");
 		LinkButtonToExternalWindow("%OpenReplacementsButton", WindowType.EditReplacements);
-		
-		LinkButtonToExternalWindow("%OpenShortcutsButton", WindowType.Shortcuts);
 
 		// Contexts
 		LinkButtonToExternalWindow("%OpenVoiceChangesButton", WindowType.EditVoiceChanges);

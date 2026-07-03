@@ -12,19 +12,20 @@ config_version=5
 
 config/name="Type To Squad"
 config/description="An app that uses Window's speech synthesis and fowards it into select audio devices"
-config/version="0.6.0"
+config/version="0.7.0"
+config/tags=PackedStringArray("public")
 run/main_scene="uid://c4k01cdp7xpsd"
 run/enable_alt_space_menu=true
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Kodipher/TypeToSquad"
 config/auto_accept_quit=false
-config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
+config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 run/flush_stdout_on_print=true
 run/max_fps=60
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.105, 0.12, 0.15, 1)
 boot_splash/show_image=false
-boot_splash/fullsize=false
+boot_splash/stretch_mode=0
 boot_splash/use_filter=false
 config/icon="uid://g03we4p304wj"
 
@@ -35,9 +36,10 @@ driver/output_latency=30
 [autoload]
 
 UserSettingsManager="*res://Model/UserSettingsManager.cs"
-AudioManager="*res://Model/AudioManager.cs"
 SpeechDaemon="*res://Model/SpeechDaemon.cs"
 DaemonVoiceStorage="*res://Model/DaemonVoiceStorage.cs"
+AudioManager="*res://Model/AudioManager.cs"
+AudioProvider="*uid://e4c6swbo07dy"
 HistoryTracker="*res://Model/HistoryTracker.cs"
 LogMonitor="*res://Model/LogMonitor.cs"
 ExitHandler="*res://Model/ExitHandler.cs"

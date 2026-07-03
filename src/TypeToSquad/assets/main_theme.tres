@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=33 format=3 uid="uid://cg2oy1w7gxbkx"]
+[gd_resource type="Theme" format=3 uid="uid://cg2oy1w7gxbkx"]
 
 [ext_resource type="StyleBox" uid="uid://mfx8a888qb7g" path="res://assets/panel_stylebox.tres" id="1_d80jv"]
 [ext_resource type="FontFile" uid="uid://edw88ex55cqt" path="res://assets/KurintoSans-Rg.ttf" id="1_xgdp2"]
@@ -241,6 +241,7 @@ CheckBox/styles/hover = SubResource("StyleBoxFlat_2jsj3")
 CheckBox/styles/hover_pressed = SubResource("StyleBoxFlat_2est8")
 CheckBox/styles/normal = SubResource("StyleBoxEmpty_7ojh6")
 CheckBox/styles/pressed = SubResource("StyleBoxEmpty_6f8b1")
+FileDialog/styles/panel = ExtResource("1_d80jv")
 ItemList/styles/focus = SubResource("StyleBoxEmpty_pefyd")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_xgdp2")
 LineEdit/styles/normal = ExtResource("1_d80jv")

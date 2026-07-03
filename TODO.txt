@@ -1,11 +1,8 @@
 TODO (features):
-- feature: compile message with multiple requests, allowing for more features
-- feature: fix audio tag usage, handle sound effect volume
 - feature: direct hardware input to grab and release focus
-- extend autocomplete to work on voice and audio tags
-- add proper icons to TableEdit
 
 TODO (misc quality):
+- add proper icons to TableEdit
 - handle regex format errors 
 - handle tag content errors instead of instead of letting the daemon crash  
 - min window sizes for all windows

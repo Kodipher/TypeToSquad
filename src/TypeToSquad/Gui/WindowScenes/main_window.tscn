@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://0w4yxg65pc57"]
+[gd_scene format=3 uid="uid://0w4yxg65pc57"]
 
 [ext_resource type="Script" uid="uid://b2gyqbxewtq7x" path="res://Gui/WindowScenes/MainWindow.cs" id="1_3e08y"]
 [ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_f3pvk"]
@@ -35,7 +35,7 @@ pressed = true
 [sub_resource type="Shortcut" id="Shortcut_7es2g"]
 events = [SubResource("InputEventAction_xqhr5")]
 
-[node name="MainWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
+[node name="MainWindow" type="Window" unique_id=1802042560 node_paths=PackedStringArray("AutoFocusNode")]
 oversampling_override = 1.0
 initial_position = 1
 size = Vector2i(500, 150)
@@ -45,7 +45,7 @@ MainTheme = ExtResource("2_f3pvk")
 KeyboardPatchTheme = ExtResource("3_ulwh1")
 RevertThemeOnMouseInput = true
 
-[node name="TransferParent" type="Control" parent="."]
+[node name="TransferParent" type="Control" parent="." unique_id=1594648696]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,7 +55,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="TransferParent"]
+[node name="MarginContainer" type="MarginContainer" parent="TransferParent" unique_id=383529374]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,15 +63,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBox" type="HBoxContainer" parent="TransferParent/MarginContainer"]
+[node name="HBox" type="HBoxContainer" parent="TransferParent/MarginContainer" unique_id=1946968741]
 layout_mode = 2
 
-[node name="VBoxLeft" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox"]
+[node name="VBoxLeft" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox" unique_id=718577007]
 layout_mode = 2
 size_flags_horizontal = 0
 alignment = 1
 
-[node name="SettingsButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxLeft"]
+[node name="SettingsButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxLeft" unique_id=860063959]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Settings"
@@ -80,11 +80,11 @@ shortcut_in_tooltip = false
 icon = ExtResource("4_7es2g")
 icon_alignment = 1
 
-[node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox"]
+[node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox" unique_id=724277024]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MessageTextEdit" type="TextEdit" parent="TransferParent/MarginContainer/HBox/VBoxMiddle"]
+[node name="MessageTextEdit" type="TextEdit" parent="TransferParent/MarginContainer/HBox/VBoxMiddle" unique_id=247528262]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -99,12 +99,12 @@ caret_move_on_right_click = false
 syntax_highlighter = SubResource("SyntaxHighlighter_6lbqb")
 script = ExtResource("5_tsue3")
 
-[node name="VBoxRight" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox"]
+[node name="VBoxRight" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox" unique_id=654328071]
 layout_mode = 2
 size_flags_horizontal = 8
 alignment = 1
 
-[node name="SpeakButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxRight"]
+[node name="SpeakButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxRight" unique_id=1315522384]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -115,7 +115,7 @@ shortcut_in_tooltip = false
 icon = ExtResource("5_a1awg")
 icon_alignment = 1
 
-[node name="ShutButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxRight"]
+[node name="ShutButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxRight" unique_id=109983166]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -126,7 +126,7 @@ shortcut_in_tooltip = false
 icon = ExtResource("6_tsue3")
 icon_alignment = 1
 
-[node name="ErrorIndicator" type="TextureButton" parent="TransferParent"]
+[node name="ErrorIndicator" type="TextureButton" parent="TransferParent" unique_id=1176894343]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1

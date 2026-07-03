@@ -7,7 +7,7 @@ namespace TypeToSquad.Model.Markup;
 
 
 /// <summary>
-/// Implements splitting the message into segments,
+/// Implements splitting the message into <see cref="MessageSegment"/>s,
 /// where each segment is either plain text or a tag.
 /// </summary>
 public static class MessageLexer {
@@ -32,7 +32,7 @@ public static class MessageLexer {
 
 			// Add text before tag (if there is any between tags)
 			if (i != currentSegmentStartI) {
-				segments.Add(MessageSegment.MakePlain(message[currentSegmentStartI..i]));
+				segments.Add(MakePlainSegment(message[currentSegmentStartI..i]));
 				currentSegmentStartI = i;
 			}
 
@@ -62,20 +62,20 @@ public static class MessageLexer {
 
 			// Unclosed tag
 			if (i >= message.Length) {
-				segments.Add(MessageSegment.MakeInvalid(message[currentSegmentStartI..]));
+				segments.Add(MakeInvalidSegment(message[currentSegmentStartI..]));
 				currentSegmentStartI = message.Length;
 				break;
 			}
 
 			// Closed tag but has nesting
 			if (hasNested) {
-				segments.Add(MessageSegment.MakeInvalid(message[currentSegmentStartI..(i + 1)]));
+				segments.Add(MakeInvalidSegment(message[currentSegmentStartI..(i + 1)]));
 				currentSegmentStartI = i + 1;
 				continue;
 			}
 			
 			// Valid tag
-			segments.Add(MessageSegment.MakeTag(message[currentSegmentStartI..(i + 1)]));
+			segments.Add(MakeTagSegment(message[currentSegmentStartI..(i + 1)]));
 			currentSegmentStartI = i + 1;
 
 			// [continue]
@@ -83,12 +83,41 @@ public static class MessageLexer {
 
 		// Add till the end
 		if (currentSegmentStartI < message.Length) {
-			segments.Add(MessageSegment.MakePlain(message[currentSegmentStartI..]));
+			segments.Add(MakePlainSegment(message[currentSegmentStartI..]));
 		}
 
 		return segments;
 	}
+	
+	#region /--- Constructing Segemnts ---/
+	
+	public static MessageSegment MakePlainSegment(string str) {
+		return new MessageSegment {
+			IsValid = true,
+			Text = str
+		};
+	}
+	
+	public static MessageSegment MakeInvalidSegment(string str) {
+		return new MessageSegment {
+			IsValid = false,
+			Text = str
+		};
+	}
+	
+	public static MessageSegment MakeTagSegment(string strWithBrackets) {
 
+		(string type, string argument) = ParseTag(strWithBrackets, out _);
+		
+		return new MessageSegment {
+			IsValid = true,
+			Text = strWithBrackets,
+			IsTag = true,
+			TagType = type,
+			TagArgument = argument
+		};
+	}
+	
 	public static (string type, string argument) ParseTag(string tagWithBrackets, out int? argumentStartIndex) {
 		
 		int typeStartIndex = -1;
@@ -115,7 +144,7 @@ public static class MessageLexer {
 		if (typeExclusiveEndIndex < 0) {
 			// Empty argument
 			argumentStartIndex = null;
-			return (tagWithBrackets[typeStartIndex..(tagWithBrackets.Length - 1)], "");
+			return (tagWithBrackets[typeStartIndex..^1], "");
 		}
 
 		argumentStartIndex = typeExclusiveEndIndex + 1;
@@ -127,25 +156,29 @@ public static class MessageLexer {
 		}
 		
 		return (
-				tagWithBrackets[typeStartIndex..typeExclusiveEndIndex],
-				tagWithBrackets[(typeExclusiveEndIndex + 1)..(tagWithBrackets.Length - 1)]
-			);
+			tagWithBrackets[typeStartIndex..typeExclusiveEndIndex],
+			tagWithBrackets[(typeExclusiveEndIndex + 1)..^1]
+		);
 	}
+	
+	#endregion
 
 	#region /--- Tag Types ---/
 
 	public const string TagTypeEmpty = "";
-	public const string TagTypePhonetic = "ipa";
+	public const string TagTypeIpa = "ipa";
 	public const string TagTypeVoice = "voice";
 	public const string TagTypeAudio = "audio";
+	public const string TagTypeAudioAlt = "sound";
 	public const string TagTypeBreak = "break";
 	public const string TagTypeBreakAlt = "wait";
 
 	public static readonly ReadOnlyCollection<string> BuildInTagTypes = new[] {
 																			TagTypeEmpty,
-																			TagTypePhonetic,
+																			TagTypeIpa,
 																			TagTypeVoice,
 																			TagTypeAudio,
+																			TagTypeAudioAlt,
 																			TagTypeBreak,
 																			TagTypeBreakAlt
 																		}.AsReadOnly();

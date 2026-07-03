@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://dkpebb1i6gden"]
+
+[ext_resource type="Script" uid="uid://cok7pucdkmr63" path="res://Gui/FieldInputs/FileInput.cs" id="1_n4ey7"]
+
+[node name="FileInput" type="HBoxContainer" unique_id=125367925]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n4ey7")
+
+[node name="LineEdit" type="LineEdit" parent="." unique_id=1258060558]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FileButton" type="Button" parent="." unique_id=639528221]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Open"
+
+[node name="FileDialog" type="FileDialog" parent="." unique_id=1963525139]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Open a File"
+position = Vector2i(0, 36)
+file_mode = 0
+display_mode = 1
+access = 2
+filters = PackedStringArray("*.wav,*.ogg,*.mp3;Audio Files;audio/wav,audio/ogg,audio/mpeg")
+show_hidden_files = true
+folder_creation_enabled = false
+deleting_enabled = false
