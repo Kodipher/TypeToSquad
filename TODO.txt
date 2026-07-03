@@ -1,7 +1,7 @@
 TODO (features):
-- compile message into multiple requests and audio hints instead of a single request
--- also fixes audio tag
--- also add break tag with no argument handling
+- Implement the rest of the nodes in AudioProvider
+-- <sound>
+-- <serial>
 - feature: direct hardware input to grab and release focus
 - add proper icons to TableEdit
 
