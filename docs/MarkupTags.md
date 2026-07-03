@@ -24,6 +24,11 @@ A few tags are built:
 - `[audio {hint}]` or `[sound {hint}]` - A sound effect.
 - `[wait {time}]` or `[break {time}]` - A pause of a specified duration, e.g. `[wait 0.5s]` or  `[wait 500ms]`.
 
+Empty arguments induce special cases:
+- `[voice]` resets the voice to default.
+- `[audio]` behaves likes `[break]`.
+- `[wait]`/`[break]` splits the message into multiple, each of which is synthesized separately. This may change the tone of voice. 
+
 Technical details:
 - The `ipa` tag is converted to the [phoneme](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_phoneme) in SSML with `alphabet="ipa"`.
 - The `wait`/`break` tag is converted to [break](https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/#edef_break) in SSML with the `time` attribute.
@@ -39,10 +44,6 @@ sounds and voices are set in the respective tables.
 
 Example: `[audio buzzer]` will play a sound effect
 that has the hint `buzzer` in the sound effect table.
-
-Empty hints have special handling:
-- `[audio]` does nothing
-- `[voice]` resets the voice to default.
 
 
 ## Custom Tags
