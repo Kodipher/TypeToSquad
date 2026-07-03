@@ -26,7 +26,6 @@ A few tags are built:
 
 Empty arguments induce special cases:
 - `[voice]` resets the voice to default.
-- `[audio]` behaves likes `[break]`.
 - `[wait]`/`[break]` splits the message into multiple, each of which is synthesized separately. This may change the tone of voice. 
 
 Technical details:
