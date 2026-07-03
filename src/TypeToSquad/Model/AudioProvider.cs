@@ -43,26 +43,35 @@ public partial class AudioProvider : Node {
 			root.Type == RenderNodeType.SsmlRoot
 		) {
 			CreateStreamFromTextOrSsml(root, callback);
-			
-		} else {
+		} 
+		
+		else if (root.Type == RenderNodeType.Sound) {
+			CreateStreamFromSound(root, callback);
+		}
+		
+		else if (root.Type == RenderNodeType.Serial) {
+			CreateStreamFromSerial(root, callback);
+		}
+		
+		else {
 			throw new NotSupportedException($"Unsupported node type \"{root.Type}\"");
 		}
 		
 	}
 	
-	public void CreateStreamFromTextOrSsml(RenderNode textNode, Action<AudioStream> callback) {
+	public void CreateStreamFromTextOrSsml(RenderNode textOrSpeakNode, Action<AudioStream> callback) {
 
 		// Guards
-		if (!(textNode.Type == RenderNodeType.Text || textNode.Type == RenderNodeType.SsmlRoot)) {
-			throw new ArgumentException($"Incorrect node type. Got {textNode.Type}.", nameof(textNode));
+		if (!(textOrSpeakNode.Type == RenderNodeType.Text || textOrSpeakNode.Type == RenderNodeType.SsmlRoot)) {
+			throw new ArgumentException($"Incorrect node type. Got {textOrSpeakNode.Type}.", nameof(textOrSpeakNode));
 		}
 		
 		// Request
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 		
 		SynthesizeRequest synthRequest = new SynthesizeRequest() {
-			InputString = MessageProcessor.StringifyNodeRecursive(textNode, indented: false),
-			IsSsml = textNode.Type == RenderNodeType.SsmlRoot,
+			InputString = MessageProcessor.StringifyNodeRecursive(textOrSpeakNode, indented: false),
+			IsSsml = textOrSpeakNode.Type == RenderNodeType.SsmlRoot,
 			VoiceName = DaemonVoiceStorage.Instance.GetVoiceByKey(settingsInstance.VoiceKey).Name,
 			Pitch = settingsInstance.VoicePitch,
 			Rate = settingsInstance.VoiceRate,
@@ -84,6 +93,26 @@ public partial class AudioProvider : Node {
 			}
 		);
 		
+	}
+
+	public void CreateStreamFromSound(RenderNode soundNode, Action<AudioStream> callback) {
+		
+		// Guards
+		if (soundNode.Type != RenderNodeType.Sound) {
+			throw new ArgumentException($"Incorrect node type. Got {soundNode.Type}.", nameof(soundNode));
+		}
+
+		throw new NotImplementedException();
+	}
+	
+	public void CreateStreamFromSerial(RenderNode serialNode, Action<AudioStream> callback) {
+		
+		// Guards
+		if (serialNode.Type != RenderNodeType.Serial) {
+			throw new ArgumentException($"Incorrect node type. Got {serialNode.Type}.", nameof(serialNode));
+		}
+
+		throw new NotImplementedException();
 	}
 
 	public AudioStreamWav CreateStreamFromDaemonResponse(SynthesisResultResponse response) {
