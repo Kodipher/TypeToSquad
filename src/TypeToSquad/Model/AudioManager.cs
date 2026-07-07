@@ -31,7 +31,7 @@ public partial class AudioManager : Node {
 		AudioServer.OutputDevice = settingsInstance.Device;
 	}
 
-	/// <remarks>Assumes exclusive ownership of <paramref name="stream."/></remarks>
+	/// <remarks>Assumes exclusive ownership of <paramref name="stream"/>.</remarks>
 	public void PlayNew(AudioStream stream) {
 
 		// Create player
