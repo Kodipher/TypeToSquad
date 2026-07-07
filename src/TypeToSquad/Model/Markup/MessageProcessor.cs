@@ -322,7 +322,7 @@ public static class MessageProcessor {
 	static RenderNode CreateTextNode(string text) {
 		return new RenderNode() {
 			Type = RenderNodeType.Text,
-			Attributes = { { RenderNodeAttribute.TextContent, SecurityElement.Escape(text) } }
+			Attributes = { { RenderNodeAttribute.TextContent, text } }
 		};
 	}
 	
@@ -515,14 +515,18 @@ public static class MessageProcessor {
 		
 		StringBuilder sb = new();
 		
-		void AppendRecursiveHelper(RenderNode node, int indentLevel) {
+		void AppendRecursiveHelper(RenderNode node, int indentLevel, bool isInsideDom) {
 			
 			string indentString = indented ? new string(' ', indentLevel * 4) : "";
 
 			// Handle text nodes as text, not elements
 			if (node.Type == RenderNodeType.Text) {
 				if (indented) sb.Append(indentString);
-				sb.Append(node.Attributes[RenderNodeAttribute.TextContent]);
+
+				string textContent = node.Attributes[RenderNodeAttribute.TextContent];
+				if (isInsideDom) textContent = SecurityElement.Escape(textContent);
+				sb.Append(textContent);
+				
 				if (indented) sb.Append('\n');
 				return;
 			}
@@ -535,14 +539,15 @@ public static class MessageProcessor {
 			if (indented) sb.Append('\n');
 
 			foreach (var child in node.Children) {
-				AppendRecursiveHelper(child, indentLevel + 1);
+				bool isChildInDom = isInsideDom || root.Type == RenderNodeType.SsmlRoot;
+				AppendRecursiveHelper(child, indentLevel + 1, isChildInDom);
 			}
 
 			sb.AppendJoin("", [indentString, "</", node.Type, ">"]);
 			if (indented) sb.Append('\n');
 		}
 		
-		AppendRecursiveHelper(root, 0);
+		AppendRecursiveHelper(root, 0, root.Type == RenderNodeType.SsmlRoot);
 		return sb.ToString();
 	}
 
