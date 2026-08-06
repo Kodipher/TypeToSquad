@@ -18,7 +18,7 @@ Invalid syntax (nested tags, unclosed tags, unknown tags) is skipped over.
 
 ## Built-in tags
 
-A few tags are built:
+A few tags are built-in:
 - `[ipa {text}]` - Explicit phonetic spelling.
 - `[voice {hint}]` - A voice change, running change.
 - `[audio {hint}]` or `[sound {hint}]` - A sound effect.
@@ -54,7 +54,7 @@ Technically, shortcuts are achievable with text replacements alone,
 however additional rules apply to tags:
 
 1. The rules are local to the tag, meaning:
-   - the rules only active inside the tag of the specified type and
+   - the rules only activate inside the tag of the specified type and
    - the rules don't match anything outside of that tag.
 2. Each rule is only applied once per tag.
    - The rules are still applied in the order they are in the table.
