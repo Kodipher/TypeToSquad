@@ -25,3 +25,16 @@ Though more technical, in addition to writing simple text, you can also:
 
 Some of the above requires setting up, like adding shorthands for sound effect paths.
 See [/docs/Replacements](./docs/Replacements.md) and [/docs/MarkupTags](./docs/MarkupTags.md) for further information.
+
+
+
+## Installation
+
+The app is portable. You can download it as an archive from the Releases tab.
+
+However, you must have .NET installed to run it.
+
+You can check which .NET version you have installed by running `dotnet --list-runtimes` in a terminal.
+
+If you don't have `Microsoft.WindowsDesktop.App 8.0.0` or later in the list, you might need to download 
+a `.NET Desktop Runtime` from [the official download page](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
