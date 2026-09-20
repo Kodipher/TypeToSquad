@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://bnk332u7rxegx"]
 
 [ext_resource type="Script" uid="uid://bm018rwyy2jcm" path="res://Gui/FieldInputs/TableEdit.cs" id="1_t8jsl"]
+[ext_resource type="Texture2D" uid="uid://sxtb1my6hpx2" path="res://assets/icons/m-chevron-up.svg" id="2_75f4o"]
+[ext_resource type="Texture2D" uid="uid://c74ulaaxk0tn8" path="res://assets/icons/m-chevron-down.svg" id="3_u60o7"]
+[ext_resource type="Texture2D" uid="uid://btotejvyorvdc" path="res://assets/icons/m-trash.svg" id="4_usojj"]
 
-[node name="TableEdit" type="ScrollContainer"]
+[node name="TableEdit" type="ScrollContainer" unique_id=1702125326]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -15,68 +18,73 @@ horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 script = ExtResource("1_t8jsl")
 
-[node name="MarginContainerRight" type="MarginContainer" parent="."]
+[node name="MarginContainerRight" type="MarginContainer" parent="." unique_id=1431168734]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_type_variation = &"MarginContainerRightOnly"
 
-[node name="VBox" type="VBoxContainer" parent="MarginContainerRight"]
+[node name="VBox" type="VBoxContainer" parent="MarginContainerRight" unique_id=121483788]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MainGrid" type="GridContainer" parent="MarginContainerRight/VBox"]
+[node name="MainGrid" type="GridContainer" parent="MarginContainerRight/VBox" unique_id=1351606230]
 unique_name_in_owner = true
 layout_mode = 2
 columns = 4
 
-[node name="UpPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid"]
+[node name="UpPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid" unique_id=616464401]
 layout_mode = 2
 
-[node name="DownPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid"]
+[node name="DownPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid" unique_id=1122142497]
 layout_mode = 2
 
-[node name="ColumnNamePrototype" type="Label" parent="MarginContainerRight/VBox/MainGrid"]
+[node name="ColumnNamePrototype" type="Label" parent="MarginContainerRight/VBox/MainGrid" unique_id=1634131900]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Unnamed"
 
-[node name="DeletePlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid"]
+[node name="DeletePlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid" unique_id=406274481]
 layout_mode = 2
 
-[node name="UpButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
+[node name="UpButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid" unique_id=339034113]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Move Row Up"
-text = "U"
+icon = ExtResource("2_75f4o")
+icon_alignment = 1
 
-[node name="DownButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
+[node name="DownButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid" unique_id=1643849889]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Move Row Down"
-text = "D"
+text = "
+"
+icon = ExtResource("3_u60o7")
+icon_alignment = 1
 
-[node name="InputPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid"]
+[node name="InputPlaceholder" type="Control" parent="MarginContainerRight/VBox/MainGrid" unique_id=528373119]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="DeleteButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid"]
+[node name="DeleteButtonPrototype" type="Button" parent="MarginContainerRight/VBox/MainGrid" unique_id=1312874977]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 tooltip_text = "Delete Row"
-text = "Del"
+icon = ExtResource("4_usojj")
+icon_alignment = 1
 
-[node name="AddRowButton" type="Button" parent="MarginContainerRight/VBox"]
+[node name="AddRowButton" type="Button" parent="MarginContainerRight/VBox" unique_id=1198705273]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Add Row"
 text = "+"
 
-[node name="PrototypeDump" type="Control" parent="MarginContainerRight/VBox"]
+[node name="PrototypeDump" type="Control" parent="MarginContainerRight/VBox" unique_id=133371410]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
