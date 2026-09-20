@@ -543,18 +543,29 @@ public static class MessageProcessor {
 				return;
 			}
 			
+			// Opening tag
 			sb.AppendJoin("", [indentString, "<", node.Type]);
 			foreach (var pair in node.Attributes) {
 				sb.AppendJoin<string>("", [" ", pair.Key, "=\"", pair.Value, "\""]);
 			}
+
+			if (node.Children.Count == 0) {
+				// No children: close it
+				sb.Append("/>");
+				if (indented) sb.Append('\n');
+				return;
+			}
+			
 			sb.Append('>');
 			if (indented) sb.Append('\n');
 
+			// Children
 			foreach (var child in node.Children) {
 				bool isChildInDom = isInsideDom || root.Type == RenderNodeType.SsmlRoot;
 				AppendRecursiveHelper(child, indentLevel + 1, isChildInDom);
 			}
 
+			// Closing tag
 			sb.AppendJoin("", [indentString, "</", node.Type, ">"]);
 			if (indented) sb.Append('\n');
 		}
