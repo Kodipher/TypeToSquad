@@ -45,7 +45,7 @@ public static class MessageCompletionProvider {
 					IEnumerable<string> voiceHints = settings.VoiceChanges.Select(row => row.hint).Distinct();
 					if (TryCompleteString(partialArgument, voiceHints, "]", out completionAppendageArgument)) {
 						// Insert
-						textEdit.InsertTextAtCaret(completionAppendageArgument + "]", caretIndex);
+						textEdit.InsertTextAtCaret(completionAppendageArgument, caretIndex);
 					}
 					break;
 				
