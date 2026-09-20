@@ -8,7 +8,7 @@ namespace TypeToSquad.Gui;
 public enum WindowType {
 	Unknown,
 	Main,
-	UnusedSlotDebug,
+	RawSsmlInput,
 	SimpleSettings,
 	Settings,
 	Shortcuts,

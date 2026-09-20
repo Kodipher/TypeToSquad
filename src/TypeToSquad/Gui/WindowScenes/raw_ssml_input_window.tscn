@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://c7m4cd1qr2is2"]
+
+[ext_resource type="Script" uid="uid://c3telbu2biq3q" path="res://Gui/WindowScenes/RawSsmlInputWindow.cs" id="1_ybsc3"]
+
+[node name="RawSsmlInputWindow" type="Window" unique_id=604361471]
+oversampling_override = 1.0
+title = "Raw SSML Input"
+initial_position = 2
+size = Vector2i(600, 300)
+min_size = Vector2i(200, 150)
+script = ExtResource("1_ybsc3")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=983448198]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=521382045]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1246911119]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Close
+"

@@ -101,11 +101,16 @@ icon_alignment = 1
 [node name="ToolsSelectionPopup" parent="TransferParent/MarginContainer/HBox/VBoxLeft/ToolsButton" unique_id=2083197965 instance=ExtResource("6_6lbqb")]
 unique_name_in_owner = true
 visible = false
-item_count = 1
+item_count = 2
 item_0/text = "Advanced Tools"
 item_0/id = 99
 item_0/disabled = true
 item_0/separator = true
+item_1/text = "Raw SSML Input"
+item_1/id = 0
+ItemIdToWindowType = Dictionary[int, int]({
+0: 2
+})
 
 [node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox" unique_id=724277024]
 layout_mode = 2
