@@ -13,9 +13,10 @@ public partial class MainWindow : WindowEx {
 	#region /--- Setup ---/
 
 	// Nodes
+	public TextEditEx MessageTextEdit { get; private set; } = null!;
+	
 	BaseButton speakButton = null!;
 	BaseButton shutButton = null!;
-	TextEditEx messageTextEdit = null!;
 
 	BaseButton settingsButton = null!;
 	BaseButton toolsButton = null!;
@@ -28,8 +29,8 @@ public partial class MainWindow : WindowEx {
 		base._Ready();
 
 		// Find main text edit
-		messageTextEdit = this.GetNodeNotNull<TextEditEx>("%MessageTextEdit");
-		messageTextEdit.OnUnicodeInput += OnCharacterTyped;
+		MessageTextEdit = this.GetNodeNotNull<TextEditEx>("%MessageTextEdit");
+		MessageTextEdit.OnUnicodeInput += OnCharacterTyped;
 		
 		// Init error indicator
 		errorIndicator = this.GetNodeNotNull<BaseButton>("%ErrorIndicator");
@@ -53,7 +54,7 @@ public partial class MainWindow : WindowEx {
 		toolsSelectionPopup = this.GetNodeNotNull<PopupMenu>("%ToolsSelectionPopup");
 
 		// Connect focus
-		this.FocusEntered += messageTextEdit.GrabFocus;
+		this.FocusEntered += MessageTextEdit.GrabFocus;
 	}
 
 	public override void _Input(InputEvent @event) {
@@ -70,7 +71,7 @@ public partial class MainWindow : WindowEx {
 		}
 
 		if (inputEventKey.IsActionPressed("print_newline", exactMatch: true)) {
-			messageTextEdit.InsertTextAtCaret("\n");
+			MessageTextEdit.InsertTextAtCaret("\n");
 			SetInputAsHandled();
 			return;
 		}
@@ -104,7 +105,7 @@ public partial class MainWindow : WindowEx {
 		
 		// Autocomplete
 		if (settingsInstance.AutocompleteTags) {
-			MessageCompletionProvider.TryAutocompleteTag(messageTextEdit, caretIndex);
+			MessageCompletionProvider.TryAutocompleteTag(MessageTextEdit, caretIndex);
 		}
 		
 	}
@@ -134,15 +135,15 @@ public partial class MainWindow : WindowEx {
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 
 		// Skip empty messages
-		if (string.IsNullOrWhiteSpace(messageTextEdit.Text)) return;
+		if (string.IsNullOrWhiteSpace(MessageTextEdit.Text)) return;
 		
 		// Add to history
-		HistoryTracker.Instance.AddHistoryEntry(messageTextEdit.Text);
+		HistoryTracker.Instance.AddHistoryEntry(MessageTextEdit.Text);
 		HistoryTracker.Instance.NavigateReset();
 
 		// Speak
 		GD.Print("Processing...");
-		var root = MessageProcessor.ProcessMessage(messageTextEdit.Text);
+		var root = MessageProcessor.ProcessMessage(MessageTextEdit.Text);
 		
 		GD.Print("Synthesizing...");
 		AudioProvider.Instance.CreateStream(root, stream => {
@@ -151,33 +152,33 @@ public partial class MainWindow : WindowEx {
 		});
 
 		// Reset textbox
-		messageTextEdit.Clear();
-		messageTextEdit.GrabFocus();
-		messageTextEdit.ClearUndoHistory();
+		MessageTextEdit.Clear();
+		MessageTextEdit.GrabFocus();
+		MessageTextEdit.ClearUndoHistory();
 	}
 
 	public void OnShutPressed() {
 		GD.Print("Shutting.");
 		AudioManager.Instance.StopAll();
-		messageTextEdit.GrabFocus();
+		MessageTextEdit.GrabFocus();
 	}
 
 	public void OnHistoryPrevRequest() {
-		if (HistoryTracker.Instance.TryNavigatePrevious(messageTextEdit.Text, out string queryResult)) {
-			messageTextEdit.Text = queryResult; // also clears carets
-			messageTextEdit.SetCaretPositionToEnd();
+		if (HistoryTracker.Instance.TryNavigatePrevious(MessageTextEdit.Text, out string queryResult)) {
+			MessageTextEdit.Text = queryResult; // also clears carets
+			MessageTextEdit.SetCaretPositionToEnd();
 		}
 	}
 
 	public void OnHistoryNextRequest() {
-		if (HistoryTracker.Instance.TryNavigateNext(messageTextEdit.Text, out string queryResult)) {
-			messageTextEdit.Text = queryResult; // also clears carets
-			messageTextEdit.SetCaretPositionToEnd();
+		if (HistoryTracker.Instance.TryNavigateNext(MessageTextEdit.Text, out string queryResult)) {
+			MessageTextEdit.Text = queryResult; // also clears carets
+			MessageTextEdit.SetCaretPositionToEnd();
 		}
 	}
 	
 	public void OnInsertTagPressed() {
-		MessageCompletionProvider.OpenOrCompleteTagAtAllCarets(messageTextEdit);
+		MessageCompletionProvider.OpenOrCompleteTagAtAllCarets(MessageTextEdit);
 	}
 
 }
