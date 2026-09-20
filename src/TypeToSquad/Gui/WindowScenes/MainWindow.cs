@@ -139,6 +139,7 @@ public partial class MainWindow : WindowEx {
 		// Reset textbox
 		messageTextEdit.Clear();
 		messageTextEdit.GrabFocus();
+		messageTextEdit.ClearUndoHistory();
 	}
 
 	public void OnShutPressed() {
