@@ -368,7 +368,7 @@ public static class MessageProcessor {
 	/// <see cref="RenderNodeType.Sound"/> with no children,
 	/// <see cref="RenderNodeType.Serial"/> with children of the above types.
 	/// </summary>
-	static RenderNode ProcessInitialNodeTree(RenderNode root) {
+	static RenderNode ProcessInitialNodeTree(RenderNode root, bool keepSsmlRoot = false) {
 
 		RenderNode serialRoot = new RenderNode() { Type = RenderNodeType.Serial };
 		serialRoot.Children.Add(root);
@@ -442,27 +442,31 @@ public static class MessageProcessor {
 										!child.Attributes.ContainsKey(RenderNodeAttribute.BreakTime)
 									);
 		
-		// 3: If ssml only contains text remove ssml wrapper 
-		for (int i = 0; i < serialRoot.Children.Count; i++) {
-			RenderNode currentChild = serialRoot.Children[i];
-			
-			if (
-				currentChild.Type == RenderNodeType.SsmlRoot &&
-				currentChild.Children.All(node => node.Type == RenderNodeType.Text)
-			) {
+		// 3: If ssml only contains text remove ssml wrapper
+		if (!keepSsmlRoot) {
 
-				RenderNode joinedTextNode =
-					currentChild.Children.Count == 1
-						? currentChild.Children[0]
-						: CreateTextNode(
-							currentChild
-								.Children
-								.Select(node => node.Attributes[RenderNodeAttribute.TextContent])
-								.JoinString("")
-						);
-				
-				serialRoot.Children.RemoveAt(i);
-				serialRoot.Children.Insert(i, joinedTextNode);
+			for (int i = 0; i < serialRoot.Children.Count; i++) {
+				RenderNode currentChild = serialRoot.Children[i];
+
+				if (
+					currentChild.Type == RenderNodeType.SsmlRoot &&
+					currentChild.Children.All(node => node.Type == RenderNodeType.Text)
+				) {
+
+					RenderNode joinedTextNode =
+						currentChild.Children.Count == 1
+							? currentChild.Children[0]
+							: CreateTextNode(
+								currentChild
+									.Children
+									.Select(node => node.Attributes[RenderNodeAttribute.TextContent])
+									.JoinString("")
+							);
+
+					serialRoot.Children.RemoveAt(i);
+					serialRoot.Children.Insert(i, joinedTextNode);
+				}
+
 			}
 			
 		}
@@ -489,7 +493,7 @@ public static class MessageProcessor {
 	#endregion
 
 	/// <summary>Processes the message, performing analysis and text replacements.</summary>
-	public static RenderNode ProcessMessage(string message) {
+	public static RenderNode ProcessMessage(string message, bool keepSsmlRoot = false) {
 
 		var segments = MessageLexer.SegmentMessage(message);
 		
@@ -505,7 +509,7 @@ public static class MessageProcessor {
 
 		// Compile
 		var tree = SegmentsToInitialTree(segments);
-		tree = ProcessInitialNodeTree(tree);
+		tree = ProcessInitialNodeTree(tree, keepSsmlRoot);
 		
 		return tree;
 	}
