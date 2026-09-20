@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cf7npoespw7ys" path="res://assets/icons/checkbox-checked.svg" id="2_upuy7"]
 [ext_resource type="Texture2D" uid="uid://bcbfumv1yvp46" path="res://assets/icons/checkbox-radio-checked.svg" id="3_2jsj3"]
 [ext_resource type="Texture2D" uid="uid://dhtgy3a5orrk2" path="res://assets/icons/checkbox-radio-unchecked.svg" id="4_2est8"]
+[ext_resource type="FontFile" uid="uid://dako6d0rmy5es" path="res://assets/KurintoMonoCore-Rg.ttf" id="5_2jsj3"]
 [ext_resource type="Texture2D" uid="uid://du25mo7esg0my" path="res://assets/icons/checkbox-unchecked.svg" id="5_7ojh6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_64js0"]
@@ -241,6 +242,7 @@ CheckBox/styles/hover = SubResource("StyleBoxFlat_2jsj3")
 CheckBox/styles/hover_pressed = SubResource("StyleBoxFlat_2est8")
 CheckBox/styles/normal = SubResource("StyleBoxEmpty_7ojh6")
 CheckBox/styles/pressed = SubResource("StyleBoxEmpty_6f8b1")
+CodeEdit/fonts/font = ExtResource("5_2jsj3")
 FileDialog/styles/panel = ExtResource("1_d80jv")
 ItemList/styles/focus = SubResource("StyleBoxEmpty_pefyd")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_xgdp2")
