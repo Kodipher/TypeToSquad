@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://d1bjr4y6hqkn1"]
+
+[ext_resource type="Script" uid="uid://m1idayen36ic" path="res://Gui/WindowSelectionPopup.cs" id="1_bkc52"]
+
+[node name="WindowSelectionPopup" type="PopupMenu" unique_id=2083197965]
+oversampling_override = 1.0
+title = "Tools"
+size = Vector2i(198, 100)
+visible = true
+script = ExtResource("1_bkc52")
