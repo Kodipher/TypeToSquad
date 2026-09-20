@@ -475,7 +475,6 @@ public static class MessageProcessor {
 		
 		// 5: single node in serial root -- remove serial wrapper
 		if (serialRoot.Children.Count == 0) {
-			GD.PushError($"0 children at the end of {nameof(ProcessInitialNodeTree)}.");
 			return CreateTextNode("");
 		}
 		
@@ -508,6 +507,19 @@ public static class MessageProcessor {
 		tree = ProcessInitialNodeTree(tree);
 		
 		return tree;
+	}
+
+	public static RenderNode WrapInSsmlIfPlainText(RenderNode node) {
+
+		if (node.Type != RenderNodeType.Text) return node;
+		
+		// Wrap
+		var settingsInstance = UserSettingsManager.Instance.Settings;
+		var voiceStorage = DaemonVoiceStorage.Instance;
+		
+		RenderNode root = CreateSsmlRoot(voiceStorage.GetVoiceByKey(settingsInstance.VoiceKey));
+		root.Children.Add(node);
+		return root;
 	}
 	
 	/// <remarks>Text nodes are appended as text, every other node - as a dom element.</remarks>
