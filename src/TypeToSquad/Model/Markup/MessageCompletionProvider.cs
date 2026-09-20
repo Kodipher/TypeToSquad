@@ -99,7 +99,7 @@ public static class MessageCompletionProvider {
 			return;
 		}
 
-		// Open => remove tailing backspace
+		// Open => trim end and close
 		string lineText = textEdit.GetLine(currentLine);
 		int lastNonWhiteSpaceI;
 		for (lastNonWhiteSpaceI = currentColumn - 1; lastNonWhiteSpaceI >= 0; lastNonWhiteSpaceI--) {
