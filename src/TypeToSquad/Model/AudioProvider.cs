@@ -62,17 +62,25 @@ public partial class AudioProvider : Node {
 	
 	public void CreateStreamFromTextOrSsml(RenderNode textOrSpeakNode, Action<AudioStream> callback) {
 
-		// Guards
 		if (!(textOrSpeakNode.Type == RenderNodeType.Text || textOrSpeakNode.Type == RenderNodeType.SsmlRoot)) {
 			throw new ArgumentException($"Incorrect node type. Got {textOrSpeakNode.Type}.", nameof(textOrSpeakNode));
 		}
+		
+		CreateStreamFromTextOrSsml(
+			inputString: MessageProcessor.StringifyNodeRecursive(textOrSpeakNode, indented: false),
+			isSsml: textOrSpeakNode.Type == RenderNodeType.SsmlRoot,
+			callback: callback
+		);
+	}
+
+	public void CreateStreamFromTextOrSsml(string inputString, bool isSsml, Action<AudioStream> callback) {
 		
 		// Request
 		var settingsInstance = UserSettingsManager.Instance.Settings;
 		
 		SynthesizeRequest synthRequest = new SynthesizeRequest() {
-			InputString = MessageProcessor.StringifyNodeRecursive(textOrSpeakNode, indented: false),
-			IsSsml = textOrSpeakNode.Type == RenderNodeType.SsmlRoot,
+			InputString = inputString,
+			IsSsml = isSsml,
 			VoiceName = DaemonVoiceStorage.Instance.GetVoiceByKey(settingsInstance.VoiceKey).Name,
 			Pitch = settingsInstance.VoicePitch,
 			Rate = settingsInstance.VoiceRate,
