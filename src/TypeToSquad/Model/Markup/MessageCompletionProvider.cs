@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rephidock.GeneralUtilities.Collections;
 
 using TypeToSquad.Utils;
 
@@ -42,7 +43,7 @@ public static class MessageCompletionProvider {
 			switch (tagType) {
 				case MessageLexer.TagTypeVoice:
 					IEnumerable<string> voiceHints = settings.VoiceChanges.Select(row => row.hint).Distinct();
-					if (TryCompleteString(partialArgument, voiceHints, out completionAppendageArgument)) {
+					if (TryCompleteString(partialArgument, voiceHints, "]", out completionAppendageArgument)) {
 						// Insert
 						textEdit.InsertTextAtCaret(completionAppendageArgument + "]", caretIndex);
 					}
@@ -51,9 +52,9 @@ public static class MessageCompletionProvider {
 				case MessageLexer.TagTypeAudio:
 				case MessageLexer.TagTypeAudioAlt:
 					IEnumerable<string> audioHints = settings.SoundEffects.Select(row => row.hint).Distinct();
-					if (TryCompleteString(partialArgument, audioHints, out completionAppendageArgument)) {
+					if (TryCompleteString(partialArgument, audioHints, "]", out completionAppendageArgument)) {
 						// Insert
-						textEdit.InsertTextAtCaret(completionAppendageArgument + "]", caretIndex);
+						textEdit.InsertTextAtCaret(completionAppendageArgument, caretIndex);
 					}
 					break;
 			}
@@ -64,9 +65,9 @@ public static class MessageCompletionProvider {
 		// Find tag possibilities
 		IEnumerable<string> allTagTypes = MessageLexer.BuildInTagTypes.Concat(MessageLexer.GetUserTags());
 
-		if (TryCompleteString(currentPartialTag, allTagTypes, out string completionAppendage)) {
+		if (TryCompleteString(currentPartialTag, allTagTypes, " ", out string completionAppendage)) {
 			// Insert
-			textEdit.InsertTextAtCaret(completionAppendage + " ", caretIndex);
+			textEdit.InsertTextAtCaret(completionAppendage, caretIndex);
 		}
 	}
 	
@@ -165,20 +166,45 @@ public static class MessageCompletionProvider {
 	/// If more than one option or no options is possible, false is returned and
 	/// <paramref name="restToComplete"/> is set to an empty string.
 	/// </para>
+	/// <para>
+	/// Partial completions are accounted for.
+	/// <paramref name="finalizingPostfix"/> is also appended if the completion is not partial.
+	/// </para>
 	/// </summary>
-	/// <remarks>Enumerates <paramref name="options"/>. Expects no repeats.</remarks>
-	static bool TryCompleteString(string current, IEnumerable<string> options, out string restToComplete) {
+	/// <remarks>Enumerates <paramref name="options"/>.</remarks>
+	static bool TryCompleteString(
+		string current, 
+		IEnumerable<string> options,
+		string finalizingPostfix,
+		out string restToComplete
+	) {
 		
-		string[] possibilities = options.Where(s => s!.StartsWith(current)).ToArray();
+		string[] possibilities = options
+									.Where(s => s.StartsWith(current))
+									.Select(s => s[current.Length..])
+									.ToArray();
 
-		if (possibilities.Length != 1) {
-			// not a single possibility
+		if (possibilities.Length == 0) {
 			restToComplete = "";
 			return false;
 		}
+		
+		if (possibilities.Length == 1) {
+			restToComplete = possibilities[0] + finalizingPostfix;
+			return true;
+		}
+		
+		string shortestPossibility = possibilities.MinBy(s => s.Length) ?? "";
+		restToComplete = shortestPossibility
+								.TakeWhile((c, i) => possibilities.All(s => s[i] == c))
+								.JoinString();
 
-		restToComplete = possibilities[0][current.Length..];
-		return true;
+		string restToCompleteCopy = restToComplete; // cannot use out param in lambda
+		if (possibilities.All(s => s == restToCompleteCopy)) {
+			restToComplete += finalizingPostfix;
+		}
+		
+		return restToComplete != "";
 	}
 	
 }
