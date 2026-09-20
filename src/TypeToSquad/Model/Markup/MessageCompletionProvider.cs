@@ -91,10 +91,26 @@ public static class MessageCompletionProvider {
 		int currentLine = textEdit.GetCaretLine(caretIndex);
 		int currentColumn = textEdit.GetCaretColumn(caretIndex);
 
-		bool isCurrentlyOpen = SearchForTagOpeningAt(textEdit, currentLine, currentColumn, out _);
-			
-		string insertText = isCurrentlyOpen ? MessageLexer.TagCloseAsString : MessageLexer.TagOpenAsString;
-		textEdit.InsertTextAtCaret(insertText, caretIndex);
+		bool isCurrentlyOpen = SearchForTagOpeningAt(textEdit, currentLine, currentColumn, out Vector2I lastTagCharPosition);
+
+		// Not open => open up
+		if (!isCurrentlyOpen) {
+			textEdit.InsertTextAtCaret(MessageLexer.TagOpenAsString, caretIndex);
+			return;
+		}
+
+		// Open => remove tailing backspace
+		string lineText = textEdit.GetLine(currentLine);
+		int lastNonWhiteSpaceI;
+		for (lastNonWhiteSpaceI = currentColumn - 1; lastNonWhiteSpaceI >= 0; lastNonWhiteSpaceI--) {
+			if (!char.IsWhiteSpace(lineText[lastNonWhiteSpaceI])) break;
+		}
+
+		if (lastNonWhiteSpaceI != currentColumn - 1) {
+			textEdit.RemoveText(currentLine, lastNonWhiteSpaceI + 1, currentLine, currentColumn);
+		}
+
+		textEdit.InsertTextAtCaret(MessageLexer.TagCloseAsString, caretIndex);
 	}
 
 	/// <returns>
@@ -105,7 +121,7 @@ public static class MessageCompletionProvider {
 	/// </returns>
 	static bool SearchForTagOpeningAt(TextEdit textEdit, int line, int column, out Vector2I position) {
 
-		var searchFlags = (uint)TextEdit.SearchFlags.Backwards;
+		const uint searchFlags = (uint)TextEdit.SearchFlags.Backwards;
 		Vector2I lastOpen = textEdit.Search(MessageLexer.TagOpen.ToString(), searchFlags, line, column);
 		Vector2I lastClose = textEdit.Search(MessageLexer.TagClose.ToString(), searchFlags, line, column);
 
