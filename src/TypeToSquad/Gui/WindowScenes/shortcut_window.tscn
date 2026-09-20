@@ -1,44 +1,45 @@
-[gd_scene load_steps=4 format=3 uid="uid://s0vn2q14tstu"]
+[gd_scene format=3 uid="uid://s0vn2q14tstu"]
 
 [ext_resource type="Script" uid="uid://0jclji41sk3h" path="res://Gui/WindowScenes/ShortcutWindow.cs" id="1_dbdd4"]
 [ext_resource type="Theme" uid="uid://cg2oy1w7gxbkx" path="res://assets/main_theme.tres" id="2_i64qa"]
 [ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_yaxp4"]
 
-[node name="ShortcutWindow" type="Window" node_paths=PackedStringArray("AutoFocusNode")]
+[node name="ShortcutWindow" type="Window" unique_id=604361471 node_paths=PackedStringArray("AutoFocusNode")]
+oversampling_override = 1.0
 title = "Shortcuts"
 initial_position = 2
 size = Vector2i(300, 300)
 min_size = Vector2i(200, 150)
 script = ExtResource("1_dbdd4")
-DisplayedShortcuts = PackedStringArray("shortcut_speak", "print_newline", "history_prev", "history_next", "shortcut_shut", "shortcut_settings")
+DisplayedShortcuts = PackedStringArray("shortcut_speak", "print_newline", "history_prev", "history_next", "shortcut_shut", "shortcut_settings", "shortcut_tools")
 AutoFocusNode = NodePath("MarginContainer/VBoxContainer/CloseButton")
 MainTheme = ExtResource("2_i64qa")
 KeyboardPatchTheme = ExtResource("3_yaxp4")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=983448198]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=521382045]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=1604614900]
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
 horizontal_scroll_mode = 0
 
-[node name="ShortcutGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="ShortcutGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=2023929929]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
 
-[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1246911119]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6

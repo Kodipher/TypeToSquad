@@ -18,6 +18,8 @@ public partial class MainWindow : WindowEx {
 	TextEditEx messageTextEdit = null!;
 
 	BaseButton settingsButton = null!;
+	BaseButton toolsButton = null!;
+	PopupMenu toolsSelectionPopup = null!;
 
 	BaseButton errorIndicator = null!;
 
@@ -41,10 +43,14 @@ public partial class MainWindow : WindowEx {
 		speakButton = this.GetNodeNotNull<BaseButton>("%SpeakButton");
 		shutButton = this.GetNodeNotNull<BaseButton>("%ShutButton");
 		settingsButton = this.GetNodeNotNull<BaseButton>("%SettingsButton");
+		toolsButton = this.GetNodeNotNull<BaseButton>("%ToolsButton");
 
 		speakButton.Pressed += OnSpeakPressed;
 		shutButton.Pressed += OnShutPressed;
 		settingsButton.Pressed += OnSettingsPressed;
+		toolsButton.Pressed += OnToolsPressed;
+		
+		toolsSelectionPopup = this.GetNodeNotNull<PopupMenu>("%ToolsSelectionPopup");
 
 		// Connect focus
 		this.FocusEntered += messageTextEdit.GrabFocus;
@@ -107,6 +113,14 @@ public partial class MainWindow : WindowEx {
 		bool useAdvanceSettings = UserSettingsManager.Instance.Settings.ShowAdvancedSettings;
 		var windowType = useAdvanceSettings ? WindowType.Settings : WindowType.SimpleSettings;
 		WindowManager.Instance.CreateWindowAtSelfUnique(windowType);
+	}
+
+	public void OnToolsPressed() {
+		Vector2 popupPosition = toolsButton.GetScreenPosition() + toolsButton.Size;
+		popupPosition.Y -= toolsButton.Size.Y / 2f;
+		popupPosition.Y -= toolsSelectionPopup.Size.Y / 2f;
+		toolsSelectionPopup.Position = (Vector2I)popupPosition;
+		toolsSelectionPopup.Popup();
 	}
 
 	public void OnErrorIndicatorPressed() {

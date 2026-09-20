@@ -5,13 +5,22 @@
 [ext_resource type="Theme" uid="uid://buhkmdg2cgg55" path="res://assets/focus_outline_merge.tres" id="3_ulwh1"]
 [ext_resource type="Texture2D" uid="uid://dcf76i0j56fy5" path="res://assets/icons/m-cog-6-tooth.svg" id="4_7es2g"]
 [ext_resource type="Texture2D" uid="uid://b4vqky88rxt8i" path="res://assets/icons/m-exclamation-triangle.svg" id="4_ulwh1"]
+[ext_resource type="Texture2D" uid="uid://dsqo5g07g18fu" path="res://assets/icons/m-squares-2x2.svg" id="5_6lbqb"]
 [ext_resource type="Texture2D" uid="uid://brgulx2rg7qdj" path="res://assets/icons/m-speaker-wave.svg" id="5_a1awg"]
 [ext_resource type="Script" uid="uid://ct6ox020sjk61" path="res://Model/Markup/MessageSyntaxHighlighter.cs" id="5_pe0vv"]
 [ext_resource type="Script" uid="uid://b7kry6ncjve5d" path="res://Gui/TextEditEx.cs" id="5_tsue3"]
+[ext_resource type="PackedScene" uid="uid://d1bjr4y6hqkn1" path="res://Gui/window_selection_popup.tscn" id="6_6lbqb"]
 [ext_resource type="Texture2D" uid="uid://k8nk6kkqhwld" path="res://assets/icons/m-speaker-x-mark.svg" id="6_tsue3"]
 
-[sub_resource type="InputEventAction" id="InputEventAction_f3pvk"]
+[sub_resource type="InputEventAction" id="InputEventAction_5wkq0"]
 action = &"shortcut_settings"
+pressed = true
+
+[sub_resource type="Shortcut" id="Shortcut_pe0vv"]
+events = [SubResource("InputEventAction_5wkq0")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_f3pvk"]
+action = &"shortcut_tools"
 pressed = true
 
 [sub_resource type="Shortcut" id="Shortcut_ulwh1"]
@@ -75,10 +84,28 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Settings"
-shortcut = SubResource("Shortcut_ulwh1")
+shortcut = SubResource("Shortcut_pe0vv")
 shortcut_in_tooltip = false
 icon = ExtResource("4_7es2g")
 icon_alignment = 1
+
+[node name="ToolsButton" type="Button" parent="TransferParent/MarginContainer/HBox/VBoxLeft" unique_id=826015594]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "More / Tools"
+shortcut = SubResource("Shortcut_ulwh1")
+shortcut_in_tooltip = false
+icon = ExtResource("5_6lbqb")
+icon_alignment = 1
+
+[node name="ToolsSelectionPopup" parent="TransferParent/MarginContainer/HBox/VBoxLeft/ToolsButton" unique_id=2083197965 instance=ExtResource("6_6lbqb")]
+unique_name_in_owner = true
+visible = false
+item_count = 1
+item_0/text = "Advanced Tools"
+item_0/id = 99
+item_0/disabled = true
+item_0/separator = true
 
 [node name="VBoxMiddle" type="VBoxContainer" parent="TransferParent/MarginContainer/HBox" unique_id=724277024]
 layout_mode = 2
