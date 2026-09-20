@@ -45,7 +45,7 @@ size_flags_vertical = 0
 tooltip_text = "Parse the message from the main window
 and import the result.
 
-Important: The result may not be pure SSML, 
+Important: The result may be not pure SSML, 
 as some features are app-specific.
 "
 text = "Import"
