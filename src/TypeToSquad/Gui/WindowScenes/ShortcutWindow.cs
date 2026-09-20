@@ -11,14 +11,11 @@ namespace TypeToSquad.Gui.WindowScenes;
 
 
 public partial class ShortcutWindow : WindowEx {
-
-	#region /--- Displayed Shortcuts ---/
-
+	
 	/// <summary>A list of shortcuts to display.</summary>
 	[Export]
 	public string[] DisplayedShortcuts { get; set; } = Array.Empty<string>();
-
-	#endregion
+	
 
 	public override void _Ready() {
 		base._Ready();
